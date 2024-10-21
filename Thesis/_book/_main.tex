@@ -1,0 +1,376 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  12pt,
+  a4paper,
+  oneside]{book}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% ----------- Cover Master Thesis Faculty of Sciences ---------------
+% This document should be compiled with pdflatex.  If you want to use
+% latex to compile to dvi/ps, you have to convert the images to (e)ps
+%                           -- December 2012
+% -------------------------------------------------------------------
+\RequirePackage{fix-cm}
+
+% ------------------------- Load packages ---------------------------
+% You can eventually add these while you load other packages
+% in case you want to integrate the titlepage with the rest of your thesis
+% -------------------------------------------------------------------
+\usepackage{graphicx,xcolor,textpos}
+\usepackage{helvet}
+
+% ------------------------ Page settings -----------------------------
+% If you change these, the cover layout will also change.  In that
+% case you have to adjust the latter manually.
+% --------------------------------------------------------------------
+
+\topmargin -10mm
+\textwidth 160truemm
+\textheight 240truemm
+\oddsidemargin 0mm
+\evensidemargin 0mm
+
+% ---------------------- textpos settings ----------------------------
+% Some additional settings for the cover
+% --------------------------------------------------------------------
+
+\definecolor{bluetitle}{RGB}{29,141,176}
+\definecolor{blueaff}{RGB}{0,0,128}
+\definecolor{blueline}{RGB}{82,189,236}
+\setlength{\TPHorizModule}{1mm}
+\setlength{\TPVertModule}{1mm}
+
+% --------------------------------------------------------------------
+\frontmatter
+\rmfamily
+\pagenumbering{Roman}
+\usepackage[]{natbib}
+\bibliographystyle{plainnat}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+% ----------------------- Cover --------------------------------------
+% Please fill in:
+% - The title and subtitle (if applicable)
+%         to include a formula in the title or subtitle
+%         use  \form{$...$}
+% - Your name
+% - Your (co)supervisor, mentor (if applicable)
+% - Your master
+% - The academic year
+% --------------------------------------------------------------------
+\thispagestyle{empty}
+\newcommand{\form}[1]{\scalebox{1.087}{\boldmath{#1}}}
+\sffamily
+%
+\begin{textblock}{191}(-18,-11)
+\colorbox{bluetitle}{\hspace{139mm}\ \parbox[c][18truemm]{52mm}{\textcolor{white}{FACULTY OF SCIENCE}}}
+\end{textblock}
+%
+\begin{textblock}{70}(-12,-19)
+\textblockcolour{}
+\includegraphics*[height=19.8truemm]{Images/LogoKULeuven}
+\end{textblock}
+%
+\begin{textblock}{160}(-6,63)
+\textblockcolour{}
+\vspace{-\parskip}
+\flushleft
+\fontsize{40}{42}\selectfont \textcolor{bluetitle}{Candlestick Patterns}\\[1.5mm]
+\fontsize{20}{22}\selectfont Analysis of their predictive power on intraday stock market data
+\end{textblock}
+%
+\begin{textblock}{82}(50,103)
+\textblockcolour{}
+\vspace{-\parskip}
+\flushleft
+% \fbox{\parbox{79mm}{The background can be left blank or you can insert an image (maximum height 10 cm, width variable, mind author’s rights…). NO logos (you can use the logos inside the manuscript, but not on front or back cover). \textit{Delete this textbox.}}}
+\end{textblock}
+%
+\begin{textblock}{160}(8,153)
+\textblockcolour{}
+\vspace{-\parskip}
+\flushright
+\fontsize{14}{16}\selectfont \textbf{Wout NOTERMANS}
+\end{textblock}
+%
+\begin{textblock}{70}(-6,191)
+\textblockcolour{}
+\vspace{-\parskip}
+\flushleft
+Supervisor: Prof.~Dr.~P.~Leoni\\[-2pt]
+\textcolor{blueaff}{Affiliation \textsl{(optional)}}\\[5pt]
+Co-supervisor: Prof.~Dr.~W.~Schoutens\\[-2pt]
+\textcolor{blueaff}{Affiliation \textsl{(optional)}}\\[5pt]
+% Mentor: \textsl{(optional)}\\[-2pt]
+% \textcolor{blueaff}{Affiliation \textsl{(optional)}}\\
+\end{textblock}
+%
+\begin{textblock}{160}(8,191)
+\textblockcolour{}
+\vspace{-\parskip}
+\flushright
+Thesis presented in\\[4.5pt]
+fulfillment of the requirements\\[4.5pt]
+for the degree of Master of Science\\[4.5pt]
+in Mathematics\\
+\end{textblock}
+%
+\begin{textblock}{160}(8,232)
+\textblockcolour{}
+\vspace{-\parskip}
+\flushright
+Academic year 2024-2025
+\end{textblock}
+%
+\begin{textblock}{191}(-18,245)
+{\color{blueline}\rule{550pt}{5.5pt}}
+\end{textblock}
+%
+\vfill
+\newpage
+
+\chapter*{Foreword}\label{foreword}
+\addcontentsline{toc}{chapter}{Foreword}
+
+\vfill
+
+© Copyright by KU Leuven
+
+Without prior written permission from both the supervisor(s) and the author(s), copying, reproducing, using, or realizing this publication or parts thereof is prohibited. For requests or information regarding the copying and/or use and/or realization of parts of this publication, please contact KU Leuven, Faculty of Science, Celestijnenlaan 200H - box 2100, 3001 Leuven (Heverlee), Telephone +32 16 32 14 01.
+
+Prior written permission from the supervisor(s) is also required for using the (original) methods, products, circuits, and programs described in this work for industrial or commercial purposes, and for submitting this publication for scientific awards or contests.
+
+\chapter{Popularising Summary}\label{popularising-summary}
+
+\vfill
+
+Copyright Information: student paper as part of an academic education and examination. No correction was made to the paper after examination.
+
+\chapter{Summary}\label{summary}
+
+\chapter{List of Abbreviations}\label{list-of-abbreviations}
+
+\chapter{List of Symbols}\label{list-of-symbols}
+
+\tableofcontents
+\mainmatter
+
+\chapter{Introduction and literature study}\label{introduction-and-literature-study}
+
+Some ideas:
+
+\begin{itemize}
+\item
+  taxes?
+\item
+  trend definition: (exponential) moving average --\textgreater{} which period?
+\item
+  Stop loss?
+\item
+  Comparison with reference index performance?
+\item
+  volume?
+\item
+  real body: divide by open or close? volume or no normalization also a valid option to explore
+\item
+  ATR as additional filter
+\item
+  make use of slope (E)MA, count + and - to define trend
+\item
+  Bollinger band --\textgreater{} widening
+\item
+  make use of machine learning to classify trends? quite advanced. manual training set creation?
+\end{itemize}
+
+Measuring performance:
+
+\begin{itemize}
+\item
+  set/variable holding period? --\textgreater{} transaction costs?
+\item
+  buy at opening, sell at closing?
+\item
+  buy and hold not a useful benchmark on intraday trading (Fock, Klein, Zwergel)
+\item
+  compare against randomized buy signals (Fock, Klein, Zwergel) (hold for 30 minutes)
+\end{itemize}
+
+Introduction:
+
+\begin{itemize}
+\item
+  explanation of candlesticks
+\item
+  developed in the late 18th century in Japan by Munehisa Honma, a rice trader. Unknown in the west until Nison published Japanese Candlestick Charting Techniques in 1991. as such, quite a bit of literature is from the east.
+\item
+  current literature mainly about daily candles, but they can encapsulate any period of time
+\item
+  believed to possess some predictive power
+\item
+  known to almost every investor in Taiwan (Goo, Chen, Chang)
+\item
+  some papers find evidence of predictive power (Goo, Chen, Chang), (Lu, Shiu, Liu), others find none (Fock, Klein, Zwergel)
+\item
+  results not easily comparable because of different datasets, trading rules, definitions, statistical tests, transaction costs, time periods, \ldots{}
+\item
+  Historical data may produce upward bias (Ball, Kothari, Wasley 2005)
+\item
+  technical analysis is futile under weak efficient market hypothesis
+\end{itemize}
+
+Statistical tests:
+
+\begin{itemize}
+\item
+  Z-test
+\item
+  t-test
+\item
+  bootstrap
+\item
+  GLM
+\item
+  F
+\item
+  Duncan's multiple range test
+\end{itemize}
+
+Definitions:
+
+\begin{itemize}
+\tightlist
+\item
+  interesting definition of small, medium, long length in (Goo, Chen, Chang) and (Fock, Klein, Zwergel)
+\end{itemize}
+
+\chapter{Baseline predictive power of candlestick patterns}\label{baseline-predictive-power-of-candlestick-patterns}
+
+\chapter{Improving predictive power through additional filters}\label{improving-predictive-power-through-additional-filters}
+
+\chapter{Machine learning}\label{machine-learning}
+
+\chapter{Conclusion}\label{conclusion}
+
+\chapter{References}\label{references}
+
+\appendix
+
+
+\chapter{Candlestick pattern definitions}\label{candlestick-pattern-definitions}
+
+here
+
+  \bibliography{bib.bib}
+
+% ----------------------- Back cover ------------------------------
+% Please fill in:
+% - Department
+% - Department's address
+% - Telephone number and fax number
+% -----------------------------------------------------------------
+\newpage
+\backmatter
+\thispagestyle{empty}
+\sffamily
+%
+\begin{textblock}{191}(119,-13)
+{\color{blueline}\rule{160pt}{5.5pt}}
+\end{textblock}
+%
+\begin{textblock}{191}(174,-13)
+{\color{blueline}\rule{5.5pt}{59pt}}
+\end{textblock}
+%
+\begin{textblock}{183}(-24,-11)
+\textblockcolour{}
+\flushright
+\fontsize{7}{7.5}\selectfont
+\textbf{Faculty of Science}\\
+Celestijnen 200H - box 2100\\
+3001 Leuven (Heverlee), BELGIUM\\
+Tel. + 32 16 32 14 01\\
+www.kuleuven.be\\
+\end{textblock}
+%
+\begin{textblock}{191}(161,-6)
+\textblockcolour{}
+\includegraphics*[height=16.5truemm]{Images/sedes}
+\end{textblock}
+%
+\begin{textblock}{191}(-14,233)
+{\color{bluetitle}\rule{544pt}{55pt}}
+\end{textblock}
+
+\end{document}

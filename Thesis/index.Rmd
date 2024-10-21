@@ -1,0 +1,36 @@
+---
+site: bookdown::bookdown_site
+documentclass: book
+classoption:
+  - 12pt
+  - a4paper
+  - oneside
+bibliography: bib.bib
+link-citations: yes
+---
+
+
+# Foreword {-}
+
+\vfill
+
+© Copyright by KU Leuven
+
+Without prior written permission from both the supervisor(s) and the author(s), copying, reproducing, using, or realizing this publication or parts thereof is prohibited. For requests or information regarding the copying and/or use and/or realization of parts of this publication, please contact KU Leuven, Faculty of Science, Celestijnenlaan 200H - box 2100, 3001 Leuven (Heverlee), Telephone +32 16 32 14 01.
+
+Prior written permission from the supervisor(s) is also required for using the (original) methods, products, circuits, and programs described in this work for industrial or commercial purposes, and for submitting this publication for scientific awards or contests.
+
+# Popularising Summary
+
+\vfill
+
+Copyright Information: student paper as part of an academic education and examination. No correction was made to the paper after examination.
+
+# Summary
+
+# List of Abbreviations
+
+# List of Symbols
+
+\tableofcontents
+\mainmatter

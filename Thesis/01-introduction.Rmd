@@ -1,0 +1,71 @@
+# Introduction and literature study
+
+Some ideas:
+
+-   taxes?
+
+-   trend definition: (exponential) moving average –\> which period?
+
+-   Stop loss?
+
+-   Comparison with reference index performance?
+
+-   volume?
+
+-   real body: divide by open or close? volume or no normalization also a valid option to explore
+
+-   ATR as additional filter
+
+-   make use of slope (E)MA, count + and - to define trend
+
+-   Bollinger band –\> widening
+
+-   make use of machine learning to classify trends? quite advanced. manual training set creation?
+
+Measuring performance:
+
+-   set/variable holding period? –\> transaction costs?
+
+-   buy at opening, sell at closing?
+
+-   buy and hold not a useful benchmark on intraday trading (Fock, Klein, Zwergel)
+
+-   compare against randomized buy signals (Fock, Klein, Zwergel) (hold for 30 minutes)
+
+Introduction:
+
+-   explanation of candlesticks
+
+-   developed in the late 18th century in Japan by Munehisa Honma, a rice trader. Unknown in the west until Nison published Japanese Candlestick Charting Techniques in 1991. as such, quite a bit of literature is from the east.
+
+-   current literature mainly about daily candles, but they can encapsulate any period of time
+
+-   believed to possess some predictive power
+
+-   known to almost every investor in Taiwan (Goo, Chen, Chang)
+
+-   some papers find evidence of predictive power (Goo, Chen, Chang), (Lu, Shiu, Liu), others find none (Fock, Klein, Zwergel)
+
+-   results not easily comparable because of different datasets, trading rules, definitions, statistical tests, transaction costs, time periods, ...
+
+-   Historical data may produce upward bias (Ball, Kothari, Wasley 2005)
+
+-   technical analysis is futile under weak efficient market hypothesis
+
+Statistical tests:
+
+-   Z-test
+
+-   t-test
+
+-   bootstrap
+
+-   GLM
+
+-   F
+
+-   Duncan's multiple range test
+
+Definitions:
+
+-   interesting definition of small, medium, long length in (Goo, Chen, Chang) and (Fock, Klein, Zwergel)
