@@ -3,35 +3,56 @@ import pandas as pd
 import numpy as np
 import candlestick_functions as cf
 import patterns as pat
-from inspect import getmembers, isfunction
-from tqdm import tqdm
+import time
 
 
 def main():
-    print("Reading data...")
-    df = pd.read_parquet("../Data/ESCC.parquet")[:100000]
-    nrow = len(df)
-    print("Done.")
-    print("Setting date as index...")
-    df["datetime"] = pd.to_datetime(df["datetime"])
-    df = df.set_index("datetime")
-    print("Done.")
-    print("Calculating moving average...")
+    print("Reading and handling data", end="\r")
+    t = time.time()
+    df = pd.read_parquet("../Data/ESCC.parquet")  # read data
+    df["datetime"] = pd.to_datetime(df["datetime"])  # parse datetime
+    df = df.set_index("datetime")  # set datetime as index for mplfinance
+    print(f"Reading and handling data done in {round(time.time()-t,2)}s")
+
+    print("Calculating moving average", end="\r")
+    t = time.time()
     df["5_MA"] = df["close"].rolling(5).mean()
-    print("Done.")
-    tqdm.pandas(desc="Calculating trend", total=nrow)
-    df["5_MA_trend"] = df["5_MA"].rolling(7).progress_apply(cf.trend, raw=True)
-    # df["hb"] = df.apply(lambda x: cf.hb(x.open, x.close), axis=1)
-    patterns = [x[0] for x in getmembers(pat, isfunction)]
-    i = 1
-    for pattern in patterns:
-        # print(f"Detecting pattern {pattern} ({i}/{len(patterns)})")
-        tqdm.pandas(desc=f"Detecting {pattern} ({i}/{len(patterns)})", total=nrow)
-        i += 1
-        df[pattern] = df.progress_apply(
-            lambda x: getattr(pat, pattern)(x.open, x.high, x.low, x.close), axis=1
+    print(f"Calculating moving average done in {round(time.time()-t,2)}s")
+
+    print("Calculating trend", end="\r")
+    t = time.time()
+    df["5_MA_trend"] = (
+        df["5_MA"]
+        .rolling(7)
+        .apply(
+            cf.trend,
+            raw=True,
+            engine="numba",
         )
-        subset = df[df[pattern] == True]
+    )
+    print(f"Calculated trend in {round(time.time()-t,2)}s")
+
+    # df["hb"] = df.apply(lambda x: cf.hb(x.open, x.close), axis=1)
+    i = 1
+
+    pattern_funcs = []  # get all functions names of the pattern functions
+    for name in dir(pat):
+        attr = getattr(pat, name)
+        if callable(attr):
+            pattern_funcs.append(name)
+
+    for fun in pattern_funcs:
+        print(f"Detecting pattern {fun} ({i}/{len(pattern_funcs)})", end="\r")
+        t = time.time()
+        func = getattr(pat, fun)
+        df[fun] = df.apply(
+            lambda x: func(x[0], x[1], x[2], x[3]),
+            axis=1,
+            raw=True,
+            engine="numba",
+        )
+
+        subset = df[df[fun] == True]
         # fig, axlist = mpf.plot(
         #     subset[: min(len(subset), 10)],
         #     type="candle",
@@ -39,8 +60,11 @@ def main():
         #     returnfig=True,
         # )
         n = len(subset)
-        print(f"Detected {pattern} {n} times.")
-        # axlist[0].set_title(f"{pattern}, n={n}")
+        print(
+            f"Detected pattern {fun} ({i}/{len(pattern_funcs)}) {n} time(s) in {round(time.time()-t,2)}s."
+        )
+        i += 1
+        # axlist[0].set_title(f"{fun}, n={n}")
         # mpf.show()
 
 
