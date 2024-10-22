@@ -12,12 +12,12 @@ def main():
     df = pd.read_parquet("../Data/ESCC.parquet")  # read data
     df["datetime"] = pd.to_datetime(df["datetime"])  # parse datetime
     df = df.set_index("datetime")  # set datetime as index for mplfinance
-    print(f"Reading and handling data done in {round(time.time()-t,2)}s")
+    print(f"Reading and handling data done in {round(time.time()-t,1)}s")
 
     print("Calculating moving average", end="\r")
     t = time.time()
     df["5_MA"] = df["close"].rolling(5).mean()
-    print(f"Calculating moving average done in {round(time.time()-t,2)}s")
+    print(f"Calculating moving average done in {round(time.time()-t,1)}s")
 
     print("Calculating trend", end="\r")
     t = time.time()
@@ -30,7 +30,7 @@ def main():
             engine="numba",
         )
     )
-    print(f"Calculated trend in {round(time.time()-t,2)}s")
+    print(f"Calculated trend in {round(time.time()-t,1)}s")
 
     # df["hb"] = df.apply(lambda x: cf.hb(x.open, x.close), axis=1)
     i = 1
@@ -42,7 +42,7 @@ def main():
             pattern_funcs.append(name)
 
     for fun in pattern_funcs:
-        print(f"Detecting pattern {fun} ({i}/{len(pattern_funcs)})", end="\r")
+        print(f"Detecting pattern {fun:<50} ({i:>3}/{len(pattern_funcs)})", end="\r")
         t = time.time()
         func = getattr(pat, fun)
         df[fun] = df.apply(
@@ -61,7 +61,7 @@ def main():
         # )
         n = len(subset)
         print(
-            f"Detected pattern {fun} ({i}/{len(pattern_funcs)}) {n} time(s) in {round(time.time()-t,2)}s."
+            f"Detected pattern {fun:<50} ({i:>3}/{len(pattern_funcs)}) {n:<6} time(s) in {round(time.time()-t,1):<3}s."
         )
         i += 1
         # axlist[0].set_title(f"{fun}, n={n}")
