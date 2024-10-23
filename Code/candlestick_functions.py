@@ -72,9 +72,14 @@ def white_body(O: float, C: float) -> bool:
 
 @numba.jit
 def trend(C: list) -> int:
-    if (np.sort(C) == C).all():
-        return 1
-    elif (-np.sort(-C) == C).all():
-        return -1
-    else:
-        return 0
+    for i in range(len(C)):
+        if C[i] >= C[i + 1]:
+            break
+        if i == len(C) - 1:
+            return 1
+    for i in range(len(C)):
+        if C[i] <= C[i + 1]:
+            break
+        if i == len(C) - 1:
+            return -1
+    return 0
