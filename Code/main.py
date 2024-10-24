@@ -7,6 +7,7 @@ import time
 
 
 def main():
+    total_time = time.time()
     print("Reading and handling data", end="\r")
     t = time.time()
     df = pd.read_parquet("../Data/ESCC.parquet")  # read data
@@ -46,7 +47,7 @@ def main():
         t = time.time()
         func = getattr(pat, fun)
         df[fun] = df.apply(
-            lambda x: func(x[0], x[1], x[2], x[3]),
+            lambda x: func(x[0], x[1], x[2], x[3], x[4], x[6]),
             axis=1,
             raw=True,
             engine="numba",
@@ -66,6 +67,7 @@ def main():
         i += 1
         # axlist[0].set_title(f"{fun}, n={n}")
         # mpf.show()
+    print(f"All done. Total running time: {round(time.time()-total_time,1)}s")
 
 
 if __name__ == "__main__":
