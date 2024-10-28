@@ -4,14 +4,226 @@
 import numpy as np
 import numba
 
+QUANTILES = [0.0001148, 0.00017857, 0.00027445]
+
 
 @numba.jit
 def hb(O: float, C: float) -> float:
     """Inputs: open and close.
     Outputs: the height of the real body.
-    NOTE:No normalization
+    NOTE:Normalization: close.
     """
     return abs(O - C)
+
+
+@numba.jit
+def sli_greater(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+    Outputs: true if x is slightly greater then y.
+    NOTE:Normalization: y.
+    """
+    return 0 < (x - y) / y < 0.0001148
+
+
+@numba.jit
+def mod_greater(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+    Outputs: true if x is moderately greater then y.
+    NOTE:Normalization: y.
+    """
+    return 0.0001148 <= (x - y) / y < 0.00017857
+
+
+@numba.jit
+def lar_greater(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+    Outputs: true if x is largely greater then y.
+    NOTE:Normalization: y.
+    """
+    return 0.00017857 <= (x - y) / y < 0.00027445
+
+
+@numba.jit
+def ext_greater(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+    Outputs: true if x is extremely greater then y.
+    NOTE:Normalization: y.
+    """
+    return (x - y) / y > 0.00027445
+
+
+@numba.jit
+def sli_less(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+    Outputs: true if x is slightly less then y.
+    NOTE:Normalization: x.
+    """
+    return 0 < (y - x) / x < 0.0001148
+
+
+@numba.jit
+def mod_less(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+    Outputs: true if x is moderately less then y.
+    NOTE:Normalization: x.
+    """
+    return 0.0001148 <= (y - x) / x < 0.00017857
+
+
+@numba.jit
+def lar_less(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+    Outputs: true if x is largely less then y.
+    NOTE:Normalization: x.
+    """
+    return 0.00017857 <= (y - x) / x < 0.00027445
+
+
+@numba.jit
+def ext_less(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+    Outputs: true if x is extremely less then y.
+    NOTE:Normalization: x.
+    """
+    return (y - x) / x > 0.00027445
+
+
+@numba.jit
+def mod_near(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+    Outputs: true if x and y are moderately near.
+    NOTE:Normalization: max(x,y)
+    """
+    return 0 < abs(x - y) / max(x, y) < 0.0001148
+
+
+@numba.jit
+def near(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+    Outputs: true if x and y are near.
+    NOTE:Normalization: max(x,y)
+    """
+    return abs(x - y) / max(x, y) <= 0.00017857
+
+
+@numba.jit
+def doji(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: true if open == close.
+    """
+    return O == C
+
+
+@numba.jit
+def short_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: true if bottom of the body is slightly less than the top.
+    """
+    return sli_less(bottom_body(O, C), top_body(O, C))
+
+
+@numba.jit
+def normal_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: true if bottom of the body is moderately less than the top.
+    """
+    return mod_less(bottom_body(O, C), top_body(O, C))
+
+
+@numba.jit
+def tall_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: true if bottom of the body is largely less than the top.
+    """
+    return lar_less(bottom_body(O, C), top_body(O, C))
+
+
+@numba.jit
+def extall_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: true if bottom of the body is extremely less than the top.
+    """
+    return ext_less(bottom_body(O, C), top_body(O, C))
+
+
+@numba.jit
+def no_us(O: float, H: float, C: float) -> bool:
+    """Inputs: open, high and close.
+    Outputs: true if high == the top of the body.
+    """
+    return H == top_body(O, C)
+
+
+@numba.jit
+def small_us(O: float, H: float, C: float) -> bool:
+    """Inputs: open, high and close.
+    Outputs: true if high is slightly greater than the top of the body.
+    """
+    return sli_greater(H, top_body(O, C))
+
+
+@numba.jit
+def normal_us(O: float, H: float, C: float) -> bool:
+    """Inputs: open, high and close.
+    Outputs: true if high is moderately greater than the top of the body.
+    """
+    return mod_greater(H, top_body(O, C))
+
+
+@numba.jit
+def long_us(O: float, H: float, C: float) -> bool:
+    """Inputs: open, high and close.
+    Outputs: true if high is largely greater than the top of the body.
+    """
+    return lar_greater(H, top_body(O, C))
+
+
+@numba.jit
+def exlong_us(O: float, H: float, C: float) -> bool:
+    """Inputs: open, high and close.
+    Outputs: true if high is extremely greater than the top of the body.
+    """
+    return ext_greater(H, top_body(O, C))
+
+
+@numba.jit
+def no_ls(O: float, L: float, C: float) -> bool:
+    """Inputs: open, low and close.
+    Outputs: true if low == the bottom of the body.
+    """
+    return L == bottom_body(O, C)
+
+
+@numba.jit
+def small_ls(O: float, L: float, C: float) -> bool:
+    """Inputs: open, low and close.
+    Outputs: true if low is slightly less than the bottom of the body.
+    """
+    return sli_less(L, bottom_body(O, C))
+
+
+@numba.jit
+def normal_ls(O: float, L: float, C: float) -> bool:
+    """Inputs: open, low and close.
+    Outputs: true if low is moderately less than the bottom of the body.
+    """
+    return mod_less(L, bottom_body(O, C))
+
+
+@numba.jit
+def long_ls(O: float, L: float, C: float) -> bool:
+    """Inputs: open, low and close.
+    Outputs: true if low is largely less than the bottom of the body.
+    """
+    return lar_less(L, bottom_body(O, C))
+
+
+@numba.jit
+def exlongbottom(O: float, L: float, C: float) -> bool:
+    """Inputs: open, low and close.
+    Outputs: true if low is extremely less than the bottom of the body.
+    """
+    return ext_less(L, bottom_body(O, C))
 
 
 @numba.jit
@@ -63,11 +275,75 @@ def black_body(O: float, C: float) -> bool:
 
 
 @numba.jit
+def short_black_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: True if open > close and body is small.
+    """
+    return O > C and short_body(O, C)
+
+
+@numba.jit
+def normal_black_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: True if open > close and body is normal.
+    """
+    return O > C and normal_body(O, C)
+
+
+@numba.jit
+def tall_black_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: True if open > close and body is tall.
+    """
+    return O > C and tall_body(O, C)
+
+
+@numba.jit
+def extall_black_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: True if open > close and body is extremely tall.
+    """
+    return O > C and extall_body(O, C)
+
+
+@numba.jit
 def white_body(O: float, C: float) -> bool:
     """Inputs: open and close.
     Outputs: True if open < close.
     """
     return O < C
+
+
+@numba.jit
+def short_white_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: True if open < close and body is small.
+    """
+    return O < C and short_body(O, C)
+
+
+@numba.jit
+def normal_white_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: True if open < close and body is normal.
+    """
+    return O < C and normal_body(O, C)
+
+
+@numba.jit
+def tall_white_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: True if open < close and body is tall.
+    """
+    return O < C and tall_body(O, C)
+
+
+@numba.jit
+def extall_white_body(O: float, C: float) -> bool:
+    """Inputs: open and close.
+    Outputs: True if open < close and body is extremely tall.
+    """
+    return O < C and extall_body(O, C)
 
 
 @numba.jit

@@ -64,6 +64,10 @@ def main():
         print(
             f"Detected pattern {fun:<50} ({i:>3}/{len(pattern_funcs)}) {n:<6} time(s) in {round(time.time()-t,1):<3}s."
         )
+        df[fun].to_frame(name=fun).to_parquet(
+            f"../Data/Patterns/{fun}.parquet", compression="lz4", index=False
+        )
+        del df[fun]
         i += 1
         # axlist[0].set_title(f"{fun}, n={n}")
         # mpf.show()
