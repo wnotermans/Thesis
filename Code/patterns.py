@@ -6,7 +6,7 @@ import numba
 
 
 @numba.jit
-def belt_hold_bearish(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
+def belt_hold_bearish_(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
     """Definition: tall black candle in an uptrend with no upper shadow that closes near
     the low.
     Trend: up.
@@ -44,7 +44,7 @@ def belt_hold_bearish_opp_trend(
 
 
 @numba.jit
-def belt_hold_bullish(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
+def belt_hold_bullish_(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
     """Definition: tall white candle in a downtrend with no lower shadow that closes
     near the high.
     Trend: down.
@@ -82,7 +82,7 @@ def belt_hold_bullish_opp_trend(
 
 
 @numba.jit
-def candle_black(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
+def candle_black_(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
     """Definition: normal black candle with shadows that do not exceed the length of the
     body.
     Trend: either.
@@ -134,7 +134,7 @@ def candle_black_up_trend(O: list, H: list, L: list, C: list, V: list, T: list) 
 
 
 @numba.jit
-def candle_short_black(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
+def candle_short_black_(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
     """Definition: normal black candle with shadows that do not exceed the length of the
     body.
     Trend: either.
@@ -188,7 +188,7 @@ def candle_short_black_up_trend(
 
 
 @numba.jit
-def candle_short_white(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
+def candle_short_white_(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
     """Definition: normal white candle with shadows that do not exceed the length of the
     body.
     Trend: either.
@@ -242,7 +242,7 @@ def candle_short_white_up_trend(
 
 
 @numba.jit
-def candle_white(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
+def candle_white_(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
     """Definition: normal white candle with shadows that do not exceed the length of the
     body.
     Trend: either.
@@ -294,7 +294,7 @@ def candle_white_up_trend(O: list, H: list, L: list, C: list, V: list, T: list) 
 
 
 @numba.jit
-def doji_dragonfly(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
+def doji_dragonfly_(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
     """Definition: doji with long lower shadow and small upper shadow.
     Trend: either.
     Prediction: reversal if down.
@@ -325,7 +325,7 @@ def doji_dragonfly_up_trend(
 
 
 @numba.jit
-def marubozu_black(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
+def marubozu_black_(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
     """Definition: tall black candle without shadows.
     Trend: either.
     Prediction: continuation.
@@ -360,7 +360,7 @@ def marubozu_black_up_trend(
 
 
 @numba.jit
-def marubozu_closing_black(
+def marubozu_closing_black_(
     O: list, H: list, L: list, C: list, V: list, T: list
 ) -> bool:
     """Definition: tall black candle without lower shadow.
@@ -403,7 +403,7 @@ def marubozu_closing_black_up_trend(
 
 
 @numba.jit
-def marubozu_closing_white(
+def marubozu_closing_white_(
     O: list, H: list, L: list, C: list, V: list, T: list
 ) -> bool:
     """Definition: tall white candle without upper shadow.
@@ -446,7 +446,7 @@ def marubozu_closing_white_up_trend(
 
 
 @numba.jit
-def marubozu_opening_black(
+def marubozu_opening_black_(
     O: list, H: list, L: list, C: list, V: list, T: list
 ) -> bool:
     """Definition: tall black candle without upper shadow.
@@ -489,7 +489,7 @@ def marubozu_opening_black_up_trend(
 
 
 @numba.jit
-def marubozu_opening_white(
+def marubozu_opening_white_(
     O: list, H: list, L: list, C: list, V: list, T: list
 ) -> bool:
     """Definition: tall white candle without lower shadow.
@@ -532,7 +532,7 @@ def marubozu_opening_white_up_trend(
 
 
 @numba.jit
-def marubozu_white(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
+def marubozu_white_(O: list, H: list, L: list, C: list, V: list, T: list) -> bool:
     """Definition: tall white candle without shadows.
     Trend: either.
     Prediction: continuation.
