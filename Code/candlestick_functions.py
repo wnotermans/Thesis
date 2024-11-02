@@ -219,7 +219,7 @@ def long_ls(O: float, L: float, C: float) -> bool:
 
 
 @numba.jit
-def exlongbottom(O: float, L: float, C: float) -> bool:
+def exlong_ls(O: float, L: float, C: float) -> bool:
     """Inputs: open, low and close.
     Outputs: true if low is extremely less than the bottom of the body.
     """

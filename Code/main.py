@@ -62,7 +62,7 @@ def main():
         # )
         n = len(subset)
         print(
-            f"Detected pattern {fun:<50} ({i:>3}/{len(pattern_funcs)}) {n:<6} time(s) in {round(time.time()-t,1):<3}s."
+            f"Detected pattern {fun:<50} ({i:>3}/{len(pattern_funcs)}) {n:<7} time(s) in {round(time.time()-t,1):<3}s."
         )
         df[fun].to_frame(name=fun).to_parquet(
             f"../Data/Patterns/{fun}.parquet", compression="lz4", index=False
