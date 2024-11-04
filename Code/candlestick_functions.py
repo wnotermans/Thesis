@@ -13,7 +13,7 @@ def hb(O: float, C: float) -> float:
     Outputs: the height of the real body.
     NOTE:Normalization: close.
     """
-    return abs(O - C)
+    return np.abs(O - C)
 
 
 @numba.jit
@@ -22,7 +22,7 @@ def sli_greater(x: float, y: float) -> bool:
     Outputs: true if x is slightly greater then y.
     NOTE:Normalization: y.
     """
-    return 0 < (x - y) / y < 0.0001148
+    return np.logical_and(0 < (x - y) / y, (x - y) / y < 0.0001148)
 
 
 @numba.jit
@@ -31,7 +31,7 @@ def mod_greater(x: float, y: float) -> bool:
     Outputs: true if x is moderately greater then y.
     NOTE:Normalization: y.
     """
-    return 0.0001148 <= (x - y) / y < 0.00017857
+    return np.logical_and(0.0001148 <= (x - y) / y, (x - y) / y < 0.00017857)
 
 
 @numba.jit
@@ -40,7 +40,7 @@ def lar_greater(x: float, y: float) -> bool:
     Outputs: true if x is largely greater then y.
     NOTE:Normalization: y.
     """
-    return 0.00017857 <= (x - y) / y < 0.00027445
+    return np.logical_and(0.00017857 <= (x - y) / y, (x - y) / y < 0.00027445)
 
 
 @numba.jit
@@ -58,7 +58,7 @@ def sli_less(x: float, y: float) -> bool:
     Outputs: true if x is slightly less then y.
     NOTE:Normalization: x.
     """
-    return 0 < (y - x) / x < 0.0001148
+    return np.logical_and(0 < (y - x) / x, (y - x) / x < 0.0001148)
 
 
 @numba.jit
@@ -67,7 +67,7 @@ def mod_less(x: float, y: float) -> bool:
     Outputs: true if x is moderately less then y.
     NOTE:Normalization: x.
     """
-    return 0.0001148 <= (y - x) / x < 0.00017857
+    return np.logical_and(0.0001148 <= (y - x) / x, (y - x) / x < 0.00017857)
 
 
 @numba.jit
@@ -76,7 +76,7 @@ def lar_less(x: float, y: float) -> bool:
     Outputs: true if x is largely less then y.
     NOTE:Normalization: x.
     """
-    return 0.00017857 <= (y - x) / x < 0.00027445
+    return np.logical_and(0.00017857 <= (y - x) / x, (y - x) / x < 0.00027445)
 
 
 @numba.jit
@@ -94,7 +94,10 @@ def mod_near(x: float, y: float) -> bool:
     Outputs: true if x and y are moderately near.
     NOTE:Normalization: max(x,y)
     """
-    return 0 < abs(x - y) / max(x, y) < 0.0001148
+    return np.logical_and(
+        0 < np.abs(x - y) / np.maximum(x, y),
+        np.abs(x - y) / np.maximum(x, y) < 0.0001148,
+    )
 
 
 @numba.jit
@@ -103,7 +106,7 @@ def near(x: float, y: float) -> bool:
     Outputs: true if x and y are near.
     NOTE:Normalization: max(x,y)
     """
-    return abs(x - y) / max(x, y) <= 0.00017857
+    return np.abs(x - y) / np.maximum(x, y) <= 0.00017857
 
 
 @numba.jit
@@ -231,7 +234,7 @@ def top_body(O: float, C: float) -> float:
     """Inputs: open and close.
     Outputs: the top of the body.
     """
-    return max(O, C)
+    return np.maximum(O, C)
 
 
 @numba.jit
@@ -239,7 +242,7 @@ def bottom_body(O: float, C: float) -> float:
     """Inputs: open and close.
     Outputs: the bottom of the body.
     """
-    return min(O, C)
+    return np.minimum(O, C)
 
 
 @numba.jit
@@ -279,7 +282,7 @@ def short_black_body(O: float, C: float) -> bool:
     """Inputs: open and close.
     Outputs: True if open > close and body is small.
     """
-    return O > C and short_body(O, C)
+    return np.logical_and(O > C, short_body(O, C))
 
 
 @numba.jit
@@ -287,7 +290,7 @@ def normal_black_body(O: float, C: float) -> bool:
     """Inputs: open and close.
     Outputs: True if open > close and body is normal.
     """
-    return O > C and normal_body(O, C)
+    return np.logical_and(O > C, normal_body(O, C))
 
 
 @numba.jit
@@ -295,7 +298,7 @@ def tall_black_body(O: float, C: float) -> bool:
     """Inputs: open and close.
     Outputs: True if open > close and body is tall.
     """
-    return O > C and tall_body(O, C)
+    return np.logical_and(O > C, tall_body(O, C))
 
 
 @numba.jit
@@ -303,7 +306,7 @@ def extall_black_body(O: float, C: float) -> bool:
     """Inputs: open and close.
     Outputs: True if open > close and body is extremely tall.
     """
-    return O > C and extall_body(O, C)
+    return np.logical_and(O > C, extall_body(O, C))
 
 
 @numba.jit
@@ -319,7 +322,7 @@ def short_white_body(O: float, C: float) -> bool:
     """Inputs: open and close.
     Outputs: True if open < close and body is small.
     """
-    return O < C and short_body(O, C)
+    return np.logical_and(O < C, short_body(O, C))
 
 
 @numba.jit
@@ -327,7 +330,7 @@ def normal_white_body(O: float, C: float) -> bool:
     """Inputs: open and close.
     Outputs: True if open < close and body is normal.
     """
-    return O < C and normal_body(O, C)
+    return np.logical_and(O < C, normal_body(O, C))
 
 
 @numba.jit
@@ -335,7 +338,7 @@ def tall_white_body(O: float, C: float) -> bool:
     """Inputs: open and close.
     Outputs: True if open < close and body is tall.
     """
-    return O < C and tall_body(O, C)
+    return np.logical_and(O < C, tall_body(O, C))
 
 
 @numba.jit
@@ -343,7 +346,7 @@ def extall_white_body(O: float, C: float) -> bool:
     """Inputs: open and close.
     Outputs: True if open < close and body is extremely tall.
     """
-    return O < C and extall_body(O, C)
+    return np.logical_and(O < C, extall_body(O, C))
 
 
 @numba.jit
