@@ -1,6 +1,7 @@
 import mplfinance as mpf
 import pandas as pd
 import numpy as np
+import pyarrow as pa
 import candlestick_functions as cf
 import one_patterns as one_pat
 import time
@@ -34,7 +35,7 @@ def main():
     )
     print(f"Calculated trend in {round(time.time()-t,2)}s")
 
-    i = 1
+    i = 1  # counter for total number of patterns
     O = df["open"].values
     H = df["high"].values
     L = df["low"].values
@@ -55,26 +56,15 @@ def main():
         func = getattr(one_pat, fun)
         pat = np.zeros(len(df), dtype=bool)
         pat[:] = func(candle, T[:])
-        df[fun] = pat
-
-        subset = df[df[fun] == True]
-        # fig, axlist = mpf.plot(
-        #     subset[: min(len(subset), 10)],
-        #     type="candle",
-        #     volume=True,
-        #     returnfig=True,
-        # )
-        n = len(subset)
         print(
-            f"Detected pattern {fun:<50} ({i:>3}/{len(pattern_funcs)}) {n:<7} time(s) in {round(time.time()-t,2):<3.2f}s."
+            f"Detected pattern {fun:<50} ({i:>3}/{len(pattern_funcs)}) {pat.sum():<7} time(s) in {round(time.time()-t,2):<3.2f}s."
         )
-        df[fun].to_frame(name=fun).to_parquet(
-            f"../Data/Patterns/One/{fun}.parquet", compression="lz4", index=False
+        pa.parquet.write_table(
+            pa.table({f"{fun}": pat}),
+            f"../Data/Patterns/One/{fun}.parquet",
+            compression="LZ4",
         )
-        del df[fun]
         i += 1
-        # axlist[0].set_title(f"{fun}, n={n}")
-        # mpf.show()
     print(f"All done. Total running time: {round(time.time()-total_time,2)}s")
 
 
