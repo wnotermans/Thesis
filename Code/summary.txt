@@ -1,0 +1,80 @@
++------------------------------------+------------------------+-----------------+
+| Pattern                            | Number of candlesticks | Number detected |
++------------------------------------+------------------------+-----------------+
+| belt hold bearish                  |           1            |            1288 |
+| belt hold bearish no trend         |           1            |           23426 |
+| belt hold bearish opp trend        |           1            |            2775 |
+| belt hold bullish                  |           1            |            1139 |
+| belt hold bullish no trend         |           1            |           23713 |
+| belt hold bullish opp trend        |           1            |            3277 |
+| candle black                       |           1            |           15028 |
+| candle black down trend            |           1            |            1797 |
+| candle black up trend              |           1            |            1226 |
+| candle short black                 |           1            |            2625 |
+| candle short black down trend      |           1            |             304 |
+| candle short black up trend        |           1            |             216 |
+| candle short white                 |           1            |            2729 |
+| candle short white down trend      |           1            |             178 |
+| candle short white up trend        |           1            |             386 |
+| candle white                       |           1            |           15192 |
+| candle white down trend            |           1            |            1050 |
+| candle white up trend              |           1            |            2120 |
+| doji dragonfly                     |           1            |           12972 |
+| doji dragonfly down trend          |           1            |            1209 |
+| doji dragonfly up trend            |           1            |            1597 |
+| doji gravestone                    |           1            |           12826 |
+| doji gravestone down trend         |           1            |            1228 |
+| doji gravestone up trend           |           1            |            1521 |
+| doji long legged                   |           1            |           72385 |
+| doji long legged down trend        |           1            |            4892 |
+| doji long legged up trend          |           1            |            5717 |
+| doji nothern                       |           1            |           84412 |
+| doji nothern no trend              |           1            |         1539860 |
+| doji nothern opp trend             |           1            |           73900 |
+| doji southern                      |           1            |           73900 |
+| doji southern no trend             |           1            |         1539860 |
+| doji southern opp trend            |           1            |           84412 |
+| hammer                             |           1            |              83 |
+| hammer no trend                    |           1            |             645 |
+| hammer opp trend                   |           1            |              70 |
+| hanging man                        |           1            |            1522 |
+| hanging man no trend               |           1            |           15269 |
+| hanging man opp trend              |           1            |            1540 |
+| high wave                          |           1            |            5419 |
+| high wave down trend               |           1            |             789 |
+| high wave up trend                 |           1            |             560 |
+| marubozu black                     |           1            |          160607 |
+| marubozu black down trend          |           1            |            9666 |
+| marubozu black up trend            |           1            |            4960 |
+| marubozu closing black             |           1            |           79940 |
+| marubozu closing black down trend  |           1            |            7717 |
+| marubozu closing black up trend    |           1            |            4844 |
+| marubozu closing white             |           1            |           81500 |
+| marubozu closing white down trend  |           1            |            4663 |
+| marubozu closing white up trend    |           1            |            8588 |
+| marubozu opening black             |           1            |           93832 |
+| marubozu opening black down trend  |           1            |           10156 |
+| marubozu opening black up trend    |           1            |            5418 |
+| marubozu opening white             |           1            |           95005 |
+| marubozu opening white down trend  |           1            |            4996 |
+| marubozu opening white up trend    |           1            |           11134 |
+| marubozu white                     |           1            |          162906 |
+| marubozu white down trend          |           1            |            4553 |
+| marubozu white up trend            |           1            |           10848 |
+| shooting star one candle           |           1            |             926 |
+| shooting star one candle no trend  |           1            |            7748 |
+| shooting star one candle opp trend |           1            |             725 |
+| spinning top black                 |           1            |           22970 |
+| spinning top black down trend      |           1            |            3179 |
+| spinning top black up trend        |           1            |            2548 |
+| spinning top white                 |           1            |           22571 |
+| spinning top white down trend      |           1            |            2721 |
+| spinning top white up trend        |           1            |            2934 |
+| kuri line                          |           1            |             901 |
+| kuri line no trend                 |           1            |            7373 |
+| kuri line opp trend                |           1            |             764 |
++------------------------------------+------------------------+-----------------+
+| doji star bearish                  |           2            |             217 |
+| doji star bearish down trend       |           2            |              44 |
+| doji star bearish no trend         |           2            |            2332 |
++------------------------------------+------------------------+-----------------+
