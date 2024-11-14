@@ -22,9 +22,9 @@
 | doji dragonfly                     |           1            |           12972 |
 | doji dragonfly down trend          |           1            |            1209 |
 | doji dragonfly up trend            |           1            |            1597 |
-| doji gravestone                    |           1            |           12826 |
-| doji gravestone down trend         |           1            |            1228 |
-| doji gravestone up trend           |           1            |            1521 |
+| doji gravestone                    |           1            |          100930 |
+| doji gravestone down trend         |           1            |            4799 |
+| doji gravestone up trend           |           1            |            4853 |
 | doji long legged                   |           1            |           72385 |
 | doji long legged down trend        |           1            |            4892 |
 | doji long legged up trend          |           1            |            5717 |
@@ -70,11 +70,29 @@
 | spinning top white                 |           1            |           22571 |
 | spinning top white down trend      |           1            |            2721 |
 | spinning top white up trend        |           1            |            2934 |
-| kuri line                          |           1            |             901 |
-| kuri line no trend                 |           1            |            7373 |
-| kuri line opp trend                |           1            |             764 |
+| takuri line                        |           1            |             901 |
+| takuri line no trend               |           1            |            7373 |
+| takuri line opp trend              |           1            |             764 |
 +------------------------------------+------------------------+-----------------+
+| above the stomach                  |           2            |            3771 |
+| above the stomach no trend         |           2            |           82144 |
+| above the stomach opp trend        |           2            |            8017 |
+| below the stomach                  |           2            |            2836 |
+| below the stomach no trend         |           2            |           53320 |
+| below the stomach opp trend        |           2            |            2792 |
+| dark cloud cover                   |           2            |             338 |
+| dark cloud cover no trend          |           2            |            4235 |
+| dark cloud cover opp trend         |           2            |             148 |
 | doji star bearish                  |           2            |             217 |
-| doji star bearish down trend       |           2            |              44 |
 | doji star bearish no trend         |           2            |            2332 |
+| doji star bearish opp trend        |           2            |              44 |
+| doji star bullish                  |           2            |            1113 |
+| doji star bullish no trend         |           2            |            9903 |
+| doji star bullish opp trend        |           2            |             296 |
+| engulfing bearish                  |           2            |            1721 |
+| engulfing bearish no trend         |           2            |           22818 |
+| engulfing bearish opp trend        |           2            |            2866 |
+| engulfing bullish                  |           2            |            1849 |
+| engulfing bullish no trend         |           2            |           23022 |
+| engulfing bullish opp trend        |           2            |            2808 |
 +------------------------------------+------------------------+-----------------+

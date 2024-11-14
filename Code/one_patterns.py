@@ -382,7 +382,7 @@ def doji_gravestone_(candle: np.ndarray, T: np.ndarray) -> bool:
     """
     O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
-        (cf.doji(O, C), cf.small_ls(O, L, C), cf.long_us(O, H, C))
+        (cf.doji(O, C), cf.no_ls(O, L, C), cf.long_us(O, H, C))
     )
 
 
@@ -395,7 +395,7 @@ def doji_gravestone_down_trend(candle: np.ndarray, T: np.ndarray) -> bool:
     """
     O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
-        (T == -1, cf.doji(O, C), cf.small_ls(O, L, C), cf.long_us(O, H, C))
+        (T == -1, cf.doji(O, C), cf.no_ls(O, L, C), cf.long_us(O, H, C))
     )
 
 
@@ -408,7 +408,7 @@ def doji_gravestone_up_trend(candle: np.ndarray, T: np.ndarray) -> bool:
     """
     O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
-        (T == 1, cf.doji(O, C), cf.small_ls(O, L, C), cf.long_us(O, H, C))
+        (T == 1, cf.doji(O, C), cf.no_ls(O, L, C), cf.long_us(O, H, C))
     )
 
 

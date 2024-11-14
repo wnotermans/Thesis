@@ -35,7 +35,7 @@ def run():
             engine="numba",
         )
     )
-    print(f"Calculating trend done in {round(time.time()-t,2):<3.2f}s")
+    print(f"Calculating trend done in {round(time.time()-t,2):<3.2f}s", end="\n\n")
 
     column_dict = {
         f"{col}_{shift}": df[col].shift(shift).values
@@ -93,9 +93,13 @@ def run():
         print()
         print(
             f"Detecting patterns with {number} candlestick(s): "
-            + f"Done in {round(time.time()-t,2):<3.2f}s."
+            + f"Done in {round(time.time()-t,2):<3.2f}s.",
+            end="\n\n",
         )
-    print(f"All done. Total detection time: {round(time.time()-total_time,2)}s")
+    print(
+        f"All done. Total detection time: {round(time.time()-total_time,2)}s",
+        end="\n\n",
+    )
 
     if __name__ == "__main__":
         run()
