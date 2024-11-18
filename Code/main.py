@@ -41,7 +41,6 @@ def main():
     pattern_detection.run()
     print(" Summary table ".center(127, "#"), end="\n\n")
     summary_table.run()
-    print()
     print(f" All done in {round(time.time()-t,2):>3.2f}s ".center(127, "#"))
 
 

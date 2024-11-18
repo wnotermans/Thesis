@@ -130,6 +130,17 @@ def near(x: float, y: float) -> bool:
 
 
 @numba.jit
+def near_up(x: float, y: float) -> bool:
+    """Inputs: x and y, floats.
+
+    Outputs: true if x and y are near, with x < y.
+
+    NOTE: Normalization: y
+    """
+    return (y - x) / y < 0.00017857
+
+
+@numba.jit
 def doji(O: float, C: float) -> bool:
     """Inputs: open and close.
 

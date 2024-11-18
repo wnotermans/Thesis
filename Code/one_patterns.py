@@ -950,6 +950,65 @@ def marubozu_white_up_trend(candle: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
+def rickshaw_man_(candle: np.ndarray, T: np.ndarray) -> bool:
+    """Definition: doji with midpoint of the body near the midpoint of the shadows,
+    those shadows being exceedingly long.
+
+    Trend: either.
+
+    Prediction: either.
+    """
+    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    return np.logical_and.reduce(
+        (
+            cf.doji(O, C),
+            cf.exlong_us(O, H, C),
+            cf.exlong_ls(O, L, C),
+            cf.near(0.5 * (O + C), 0.5 * (H + L)),
+        )
+    )
+
+
+def rickshaw_man_down_trend(candle: np.ndarray, T: np.ndarray) -> bool:
+    """Definition: doji with midpoint of the body near the midpoint of the shadows,
+    those shadows being exceedingly long.
+
+    Trend: either.
+
+    Prediction: either.
+    """
+    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    return np.logical_and.reduce(
+        (
+            T == -1,
+            cf.doji(O, C),
+            cf.exlong_us(O, H, C),
+            cf.exlong_ls(O, L, C),
+            cf.near(0.5 * (O + C), 0.5 * (H + L)),
+        )
+    )
+
+
+def rickshaw_man_up_trend(candle: np.ndarray, T: np.ndarray) -> bool:
+    """Definition: doji with midpoint of the body near the midpoint of the shadows,
+    those shadows being exceedingly long.
+
+    Trend: either.
+
+    Prediction: either.
+    """
+    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    return np.logical_and.reduce(
+        (
+            T == 1,
+            cf.doji(O, C),
+            cf.exlong_us(O, H, C),
+            cf.exlong_ls(O, L, C),
+            cf.near(0.5 * (O + C), 0.5 * (H + L)),
+        )
+    )
+
+
 def shooting_star_one_candle_(candle: np.ndarray, T: np.ndarray) -> bool:
     """Definition: small candle of either color with long upper shadow at least twice
     the height of the body, no lower shadow.
