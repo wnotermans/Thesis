@@ -43,7 +43,3 @@ def run():
         f.write(str(table))
 
     print(f"Making summary table done in {round(time.time()-t,2):>3.2f}s", end="\n\n")
-
-
-if __name__ == "__main__":
-    run()

@@ -15,35 +15,9 @@ from detection.patterns.functions import candlestick_functions as cf
 import time
 
 
-def run():
+def run(df):
 
     total_time = time.time()
-
-    print("Reading and handling data", end="\r")
-    t = time.time()
-    df = pd.read_parquet("../Data/ESCC.parquet")
-    df["datetime"] = pd.to_datetime(df["datetime"])
-    df = df.set_index("datetime")  # set datetime as index for mplfinance
-    print(f"Reading and handling data done in {round(time.time()-t,2):<3.2f}s")
-
-    print("Calculating moving average", end="\r")
-    t = time.time()
-    df["5_MA"] = df["close"].rolling(5).mean()
-    print(f"Calculating moving average done in {round(time.time()-t,2):<3.2f}s")
-
-    print("Calculating trend", end="\r")
-    t = time.time()
-    # 7 consecutive increases/decreases in moving average for trend to be defined
-    df["5_MA_trend"] = (
-        df["5_MA"]
-        .rolling(7)
-        .apply(
-            cf.trend,
-            raw=True,
-            engine="numba",
-        )
-    )
-    print(f"Calculating trend done in {round(time.time()-t,2):<3.2f}s", end="\n\n")
 
     column_dict = {
         f"{col}_{shift}": df[col].shift(shift).values
@@ -64,7 +38,7 @@ def run():
         for n in range(13)
     }
 
-    T = np.array(df["5_MA_trend"].values)
+    T = np.array(df["trend"].values)
 
     one_candle = candle_dict["candle_minus_0"]
     two_candle = [candle_dict[f"candle_minus_{n}"] for n in range(1, -1, -1)]
@@ -131,6 +105,3 @@ def run():
         f"All done. Total detection time: {round(time.time()-total_time,2)}s",
         end="\n\n",
     )
-
-    if __name__ == "__main__":
-        run()

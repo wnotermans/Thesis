@@ -1,3 +1,4 @@
+from reading import read_data
 from detection import pattern_detection
 from summary import summary_table
 import time
@@ -36,8 +37,10 @@ def main():
 (_____)                                                                                                                 (_____)
 """
     )
+    print(" Reading data ".center(127, "#"), end="\n\n")
+    df = read_data.run("ESCC")
     print(" Pattern detection ".center(127, "#"), end="\n\n")
-    pattern_detection.run()
+    pattern_detection.run(df)
     print(" Summary table ".center(127, "#"), end="\n\n")
     summary_table.run()
     print(f" All done in {round(time.time()-t,2):>3.2f}s ".center(127, "#"))
