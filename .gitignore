@@ -161,4 +161,4 @@ cython_debug/
 
 Data/
 Papers and Books/
-Code/test.*
+candlestick_patterns/test.*

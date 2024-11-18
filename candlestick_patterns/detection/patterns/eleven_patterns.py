@@ -1,4 +1,4 @@
-import candlestick_functions as cf
+from detection.patterns.functions import candlestick_functions as cf
 import numpy as np
 
 

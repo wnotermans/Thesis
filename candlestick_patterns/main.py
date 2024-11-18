@@ -1,9 +1,8 @@
-import pattern_detection
-import summary_table
+from detection import pattern_detection
+from summary import summary_table
 import time
 
 
-# Should be run with "Code" as the working directory.
 def main():
     t = time.time()
     print(

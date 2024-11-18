@@ -1,9 +1,9 @@
-import candlestick_functions as cf
+from detection.patterns.functions import candlestick_functions as cf
 import numpy as np
 
 
-def twelve_new_price_lines_(candles: np.ndarray, T: np.ndarray) -> bool:
-    """Definition: twelve candles of either color reaching a new high.
+def ten_new_price_lines_(candles: np.ndarray, T: np.ndarray) -> bool:
+    """Definition: ten candles of either color reaching a new high.
 
     Trend: up.
 
@@ -20,8 +20,6 @@ def twelve_new_price_lines_(candles: np.ndarray, T: np.ndarray) -> bool:
         candle_8,
         candle_9,
         candle_10,
-        candle_11,
-        candle_12,
     ) = (
         candles[0],
         candles[1],
@@ -33,8 +31,6 @@ def twelve_new_price_lines_(candles: np.ndarray, T: np.ndarray) -> bool:
         candles[7],
         candles[8],
         candles[9],
-        candles[10],
-        candles[11],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
@@ -50,18 +46,6 @@ def twelve_new_price_lines_(candles: np.ndarray, T: np.ndarray) -> bool:
         candle_10[:, 1],
         candle_10[:, 2],
         candle_10[:, 3],
-    )
-    O_11, H_11, L_11, C_11 = (
-        candle_11[:, 0],
-        candle_11[:, 1],
-        candle_11[:, 2],
-        candle_11[:, 3],
-    )
-    O_12, H_12, L_12, C_12 = (
-        candle_12[:, 0],
-        candle_12[:, 1],
-        candle_12[:, 2],
-        candle_12[:, 3],
     )
     return np.logical_and.reduce(
         (
@@ -75,14 +59,12 @@ def twelve_new_price_lines_(candles: np.ndarray, T: np.ndarray) -> bool:
             H_7 < H_8,
             H_8 < H_9,
             H_9 < H_10,
-            H_10 < H_11,
-            H_11 < H_12,
         )
     )
 
 
-def twelve_new_price_lines_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
-    """Definition: twelve candles of either color reaching a new high.
+def ten_new_price_lines_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+    """Definition: ten candles of either color reaching a new high.
 
     Trend: up.
 
@@ -99,8 +81,6 @@ def twelve_new_price_lines_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
         candle_8,
         candle_9,
         candle_10,
-        candle_11,
-        candle_12,
     ) = (
         candles[0],
         candles[1],
@@ -112,8 +92,6 @@ def twelve_new_price_lines_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
         candles[7],
         candles[8],
         candles[9],
-        candles[10],
-        candles[11],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
@@ -129,18 +107,6 @@ def twelve_new_price_lines_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
         candle_10[:, 1],
         candle_10[:, 2],
         candle_10[:, 3],
-    )
-    O_11, H_11, L_11, C_11 = (
-        candle_11[:, 0],
-        candle_11[:, 1],
-        candle_11[:, 2],
-        candle_11[:, 3],
-    )
-    O_12, H_12, L_12, C_12 = (
-        candle_12[:, 0],
-        candle_12[:, 1],
-        candle_12[:, 2],
-        candle_12[:, 3],
     )
     return np.logical_and.reduce(
         (
@@ -153,14 +119,12 @@ def twelve_new_price_lines_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
             H_7 < H_8,
             H_8 < H_9,
             H_9 < H_10,
-            H_10 < H_11,
-            H_11 < H_12,
         )
     )
 
 
-def twelve_new_price_lines_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
-    """Definition: twelve candles of either color reaching a new high.
+def ten_new_price_lines_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+    """Definition: ten candles of either color reaching a new high.
 
     Trend: up.
 
@@ -177,8 +141,6 @@ def twelve_new_price_lines_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool
         candle_8,
         candle_9,
         candle_10,
-        candle_11,
-        candle_12,
     ) = (
         candles[0],
         candles[1],
@@ -190,8 +152,6 @@ def twelve_new_price_lines_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool
         candles[7],
         candles[8],
         candles[9],
-        candles[10],
-        candles[11],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
@@ -207,18 +167,6 @@ def twelve_new_price_lines_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool
         candle_10[:, 1],
         candle_10[:, 2],
         candle_10[:, 3],
-    )
-    O_11, H_11, L_11, C_11 = (
-        candle_11[:, 0],
-        candle_11[:, 1],
-        candle_11[:, 2],
-        candle_11[:, 3],
-    )
-    O_12, H_12, L_12, C_12 = (
-        candle_12[:, 0],
-        candle_12[:, 1],
-        candle_12[:, 2],
-        candle_12[:, 3],
     )
     return np.logical_and.reduce(
         (
@@ -232,7 +180,5 @@ def twelve_new_price_lines_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool
             H_7 < H_8,
             H_8 < H_9,
             H_9 < H_10,
-            H_10 < H_11,
-            H_11 < H_12,
         )
     )

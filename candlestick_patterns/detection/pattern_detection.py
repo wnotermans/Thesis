@@ -1,17 +1,17 @@
 import pandas as pd
 import numpy as np
 import pyarrow as pa
-import candlestick_functions as cf
-import one_patterns
-import two_patterns
-import three_patterns
-import four_patterns
-import five_patterns
-import eight_patterns
-import ten_patterns
-import eleven_patterns
-import twelve_patterns
-import thirteen_patterns
+from detection.patterns import one_patterns
+from detection.patterns import two_patterns
+from detection.patterns import three_patterns
+from detection.patterns import four_patterns
+from detection.patterns import five_patterns
+from detection.patterns import eight_patterns
+from detection.patterns import ten_patterns
+from detection.patterns import eleven_patterns
+from detection.patterns import twelve_patterns
+from detection.patterns import thirteen_patterns
+from detection.patterns.functions import candlestick_functions as cf
 import time
 
 
@@ -48,7 +48,7 @@ def run():
     column_dict = {
         f"{col}_{shift}": df[col].shift(shift).values
         for col in ["open", "high", "low", "close", "volume"]
-        for shift in range(14)
+        for shift in range(13)
     }
 
     candle_dict = {
@@ -61,7 +61,7 @@ def run():
                 column_dict[f"volume_{n}"],
             ]
         ).T
-        for n in range(14)
+        for n in range(13)
     }
 
     T = np.array(df["5_MA_trend"].values)
