@@ -1,5 +1,6 @@
-from detection.patterns.functions import candlestick_functions as cf
 import numpy as np
+
+from detection.patterns.functions import candlestick_functions as cf
 
 
 def abandoned_baby_bearish_(candles: np.ndarray, T: np.ndarray) -> bool:

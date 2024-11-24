@@ -1,8 +1,8 @@
 """Functions related to candlestick parameters, such as height of the body, shadows...
 """
 
-import numpy as np
 import numba
+import numpy as np
 
 
 @numba.jit

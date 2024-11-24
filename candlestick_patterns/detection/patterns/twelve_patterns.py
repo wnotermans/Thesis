@@ -1,5 +1,6 @@
-from detection.patterns.functions import candlestick_functions as cf
 import numpy as np
+
+from detection.patterns.functions import candlestick_functions as cf
 
 
 def twelve_new_price_lines_(candles: np.ndarray, T: np.ndarray) -> bool:

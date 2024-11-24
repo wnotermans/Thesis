@@ -1,5 +1,6 @@
-from detection.patterns.functions import candlestick_functions as cf
 import numpy as np
+
+from detection.patterns.functions import candlestick_functions as cf
 
 
 def belt_hold_bearish_(candle: np.ndarray, T: np.ndarray) -> bool:

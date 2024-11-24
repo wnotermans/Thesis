@@ -1,5 +1,6 @@
-from detection.patterns.functions import candlestick_functions as cf
 import numpy as np
+
+from detection.patterns.functions import candlestick_functions as cf
 
 
 def long_black_day_(candles: np.ndarray, T: np.ndarray) -> bool:

@@ -1,5 +1,6 @@
-from detection.patterns.functions import candlestick_functions as cf
 import numpy as np
+
+from detection.patterns.functions import candlestick_functions as cf
 
 
 def concealing_baby_swallow_(candles: np.ndarray, T: np.ndarray) -> bool:

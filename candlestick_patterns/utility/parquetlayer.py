@@ -3,12 +3,12 @@ Performs some elementary operations and outputs a `.parquet` file,
 much smaller than the input.
 """
 
-import pandas as pd
 import chrono
+import pandas as pd
 
 # Read data
 FILE = "ES Continuous Contract"
-df = pd.read_csv(f"Data/{FILE}.txt")
+df = pd.read_csv(f"data/{FILE}.txt")
 for col in df:
     df[col] = df[col].astype("category")
 
@@ -21,4 +21,4 @@ df = df.drop(columns=["date", "time"])
 # Output to .parquet
 # lz4 is benchmarked to have the fastest (de)compression speeds, if the files take up
 # too much space, brotli provides a better compression ratio at the cost of speed
-df.to_parquet("Data/ESCC.parquet", compression="lz4")
+df.to_parquet(f"data/{FILE}.parquet", compression="lz4")

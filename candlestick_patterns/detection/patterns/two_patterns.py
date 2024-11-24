@@ -1,5 +1,6 @@
-from detection.patterns.functions import candlestick_functions as cf
 import numpy as np
+
+from detection.patterns.functions import candlestick_functions as cf
 
 
 def above_the_stomach_(candles: np.ndarray, T: np.ndarray) -> bool:
@@ -686,7 +687,7 @@ def harami_bullish_(candles: np.ndarray, T: np.ndarray) -> bool:
     close of the second candle lies within the body of the first candle. The tops and
     bottoms can be equal, but not both at the same time.
 
-    Trend: up.
+    Trend: down.
 
     Prediction: reversal.
     """
@@ -695,7 +696,7 @@ def harami_bullish_(candles: np.ndarray, T: np.ndarray) -> bool:
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
-            T == 1,
+            T == -1,
             cf.tall_black_body(O_1, C_1),
             cf.short_white_body(O_2, C_2),
             np.logical_or(
@@ -711,7 +712,7 @@ def harami_bullish_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     close of the second candle lies within the body of the first candle. The tops and
     bottoms can be equal, but not both at the same time.
 
-    Trend: up.
+    Trend: down.
 
     Prediction: reversal.
     """
@@ -735,7 +736,7 @@ def harami_bullish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     close of the second candle lies within the body of the first candle. The tops and
     bottoms can be equal, but not both at the same time.
 
-    Trend: up.
+    Trend: down.
 
     Prediction: reversal.
     """
@@ -744,7 +745,7 @@ def harami_bullish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
-            T == -1,
+            T == 1,
             cf.tall_black_body(O_1, C_1),
             cf.short_white_body(O_2, C_2),
             np.logical_or(

@@ -1,18 +1,22 @@
-import pandas as pd
-import numpy as np
-import pyarrow as pa
-from detection.patterns import one_patterns
-from detection.patterns import two_patterns
-from detection.patterns import three_patterns
-from detection.patterns import four_patterns
-from detection.patterns import five_patterns
-from detection.patterns import eight_patterns
-from detection.patterns import ten_patterns
-from detection.patterns import eleven_patterns
-from detection.patterns import twelve_patterns
-from detection.patterns import thirteen_patterns
-from detection.patterns.functions import candlestick_functions as cf
 import time
+
+import numpy as np
+import pandas as pd
+import pyarrow as pa
+
+from detection.patterns import (
+    eight_patterns,
+    eleven_patterns,
+    five_patterns,
+    four_patterns,
+    one_patterns,
+    ten_patterns,
+    thirteen_patterns,
+    three_patterns,
+    twelve_patterns,
+    two_patterns,
+)
+from detection.patterns.functions import candlestick_functions as cf
 
 
 def run(df):
@@ -77,7 +81,7 @@ def run(df):
         t = time.time()
         for func_name in pattern_funcs:
             print(
-                f"Detecting pattern {func_name:<47} | "
+                f"Detecting {func_name:<54} | "
                 + f"{'#'*(50*i//num_funcs):<50} "
                 + f"({i:>3}/{num_funcs})",
                 end="\r",
@@ -88,7 +92,7 @@ def run(df):
 
             pa.parquet.write_table(
                 pa.table({f"{func_name}": pat}),
-                f"../Data/Patterns/{number}/{func_name}.parquet",
+                f"../data/patterns/{number}/{func_name}.parquet",
                 compression="LZ4",
             )
 

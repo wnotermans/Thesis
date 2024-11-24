@@ -1,13 +1,15 @@
-import pandas as pd
-from trend import trend_calculation
-from aggregation import aggregate
 import time
+
+import pandas as pd
+
+from aggregation import aggregate
+from trend import trend_calculation
 
 
 def run(filename, agg_interval=1):
     print("Reading and handling data", end="\r")
     t = time.time()
-    df = pd.read_parquet(f"../Data/{filename}.parquet")
+    df = pd.read_parquet(f"../data/{filename}.parquet")
     df["datetime"] = pd.to_datetime(df["datetime"])
     df = df.set_index("datetime")  # set datetime as index for mplfinance
     print(f"Reading and handling data done in {round(time.time()-t,2):<3.2f}s")
