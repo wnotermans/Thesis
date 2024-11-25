@@ -42,6 +42,7 @@ def main():
     for interval in range(1, 6):
         print(" Reading data ".center(127, "#"), end="\n\n")
         df = read_data.run("ESCC", interval)
+        df = df.between_time("9:30", "16:00")
         print(" Pattern detection ".center(127, "#"), end="\n\n")
         pattern_detection.run(df)
         print(" Pattern evaluation ".center(127, "#"), end="\n\n")

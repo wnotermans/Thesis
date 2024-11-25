@@ -31,7 +31,13 @@ def run(df):
         i = 1
         n = len(os.listdir(f"../data/patterns/{number}"))
         t = time.time()
+
         for pattern in os.listdir(f"../data/patterns/{number}"):
+
+            try:
+                os.remove(f"../data/evaluation/{number}/{pattern}")
+            except FileNotFoundError:
+                pass
 
             print(
                 f"Evaluating {pattern:<54} | "
@@ -40,52 +46,66 @@ def run(df):
                 end="\r",
             )
 
-            df["pat"] = (
+            if (
                 pq.read_table(f"../data/patterns/{number}/{pattern}")
                 .to_pandas()
-                .set_index(df.index)
-                .shift(1)
-            )
+                .sum()
+                .values[0]
+                == 0
+            ):
+                buyeval = list(("/", "/") for _ in range(10))
+                selleval = list(("/", "/") for _ in range(10))
 
-            subset = df[df["pat"] == True]
-            if len(subset) == 0:
-                i += 1
-                continue
+            else:
 
-            mean_buy_profit = {
-                f"{n+1}_holding_periods": np.format_float_positional(
-                    (subset[f"close_{n}"] - subset["open"]).mean(), 2
+                df["pat"] = (
+                    pq.read_table(f"../data/patterns/{number}/{pattern}")
+                    .to_pandas()
+                    .set_index(df.index)
+                    .shift(1)
                 )
-                for n in range(10)
-            }
-            buy_winning_rate = {
-                f"{n+1}_holding_periods": np.format_float_positional(
-                    100 * (subset[f"close_{n}"] > subset["open"]).sum() / len(subset), 2
-                )
-                for n in range(10)
-            }
-            mean_sell_profit = {
-                f"{n+1}_holding_periods": np.format_float_positional(
-                    (subset["open"] - subset[f"close_{n}"]).mean(), 2
-                )
-                for n in range(10)
-            }
-            sell_winning_rate = {
-                f"{n+1}_holding_periods": np.format_float_positional(
-                    100 * (subset["open"] > subset[f"close_{n}"]).sum() / len(subset),
-                    2,
-                )
-                for n in range(10)
-            }
 
-            buyeval = list(
-                (mean_buy_profit[key], buy_winning_rate[key])
-                for key in mean_buy_profit.keys()
-            )
-            selleval = list(
-                (mean_sell_profit[key], sell_winning_rate[key])
-                for key in mean_sell_profit.keys()
-            )
+                subset = df[df["pat"] == True]
+
+                mean_buy_profit = {
+                    f"{n+1}_holding_periods": np.format_float_positional(
+                        (subset[f"close_{n}"] - subset["open"]).mean(), 2
+                    )
+                    for n in range(10)
+                }
+                buy_winning_rate = {
+                    f"{n+1}_holding_periods": np.format_float_positional(
+                        100
+                        * (subset[f"close_{n}"] > subset["open"]).sum()
+                        / len(subset),
+                        2,
+                    )
+                    for n in range(10)
+                }
+                mean_sell_profit = {
+                    f"{n+1}_holding_periods": np.format_float_positional(
+                        (subset["open"] - subset[f"close_{n}"]).mean(), 2
+                    )
+                    for n in range(10)
+                }
+                sell_winning_rate = {
+                    f"{n+1}_holding_periods": np.format_float_positional(
+                        100
+                        * (subset["open"] > subset[f"close_{n}"]).sum()
+                        / len(subset),
+                        2,
+                    )
+                    for n in range(10)
+                }
+
+                buyeval = list(
+                    (mean_buy_profit[key], buy_winning_rate[key])
+                    for key in mean_buy_profit.keys()
+                )
+                selleval = list(
+                    (mean_sell_profit[key], sell_winning_rate[key])
+                    for key in mean_sell_profit.keys()
+                )
 
             pa.parquet.write_table(
                 pa.table({"buy": buyeval, "sell": selleval}),

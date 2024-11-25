@@ -48,11 +48,11 @@ def run(filename):
             name = (
                 pattern.removesuffix(".parquet")
                 .replace("_", " ")
-                .rstrip(" trend")
-                .rstrip(" no")
-                .rstrip(" opp")
-                .rstrip(" up")
-                .rstrip(" down")
+                .removesuffix(" no trend")
+                .removesuffix(" opp trend")
+                .removesuffix(" up trend")
+                .removesuffix(" down trend")
+                .rstrip()
             )
             if name in [
                 "belt hold bullish",

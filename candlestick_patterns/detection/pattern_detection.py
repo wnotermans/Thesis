@@ -1,3 +1,4 @@
+import os
 import time
 
 import numpy as np
@@ -80,6 +81,12 @@ def run(df):
 
         t = time.time()
         for func_name in pattern_funcs:
+
+            try:
+                os.remove(f"../data/patterns/{number}/{func_name}.parquet")
+            except FileNotFoundError:
+                pass
+
             print(
                 f"Detecting {func_name:<54} | "
                 + f"{'#'*(50*i//num_funcs):<50} "
