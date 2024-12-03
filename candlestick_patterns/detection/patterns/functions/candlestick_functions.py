@@ -1,11 +1,9 @@
 """Functions related to candlestick parameters, such as height of the body, shadows...
 """
 
-import numba
 import numpy as np
 
 
-@numba.jit
 def hb(O: float, C: float) -> float:
     """Inputs: open and close.
 
@@ -16,7 +14,6 @@ def hb(O: float, C: float) -> float:
     return np.abs(O - C)
 
 
-@numba.jit
 def sli_greater(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -27,7 +24,6 @@ def sli_greater(x: float, y: float) -> bool:
     return np.logical_and(0 < (x - y) / y, (x - y) / y < 0.0001148)
 
 
-@numba.jit
 def mod_greater(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -38,7 +34,6 @@ def mod_greater(x: float, y: float) -> bool:
     return np.logical_and(0.0001148 <= (x - y) / y, (x - y) / y < 0.00017857)
 
 
-@numba.jit
 def lar_greater(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -49,7 +44,6 @@ def lar_greater(x: float, y: float) -> bool:
     return np.logical_and(0.00017857 <= (x - y) / y, (x - y) / y < 0.00027445)
 
 
-@numba.jit
 def ext_greater(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -60,7 +54,6 @@ def ext_greater(x: float, y: float) -> bool:
     return (x - y) / y > 0.00027445
 
 
-@numba.jit
 def sli_less(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -71,7 +64,6 @@ def sli_less(x: float, y: float) -> bool:
     return np.logical_and(0 < (y - x) / x, (y - x) / x < 0.0001148)
 
 
-@numba.jit
 def mod_less(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -82,7 +74,6 @@ def mod_less(x: float, y: float) -> bool:
     return np.logical_and(0.0001148 <= (y - x) / x, (y - x) / x < 0.00017857)
 
 
-@numba.jit
 def lar_less(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -93,7 +84,6 @@ def lar_less(x: float, y: float) -> bool:
     return np.logical_and(0.00017857 <= (y - x) / x, (y - x) / x < 0.00027445)
 
 
-@numba.jit
 def ext_less(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -104,7 +94,6 @@ def ext_less(x: float, y: float) -> bool:
     return (y - x) / x > 0.00027445
 
 
-@numba.jit
 def mod_near(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -118,7 +107,6 @@ def mod_near(x: float, y: float) -> bool:
     )
 
 
-@numba.jit
 def near(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -129,7 +117,6 @@ def near(x: float, y: float) -> bool:
     return np.abs(x - y) / np.maximum(x, y) <= 0.00017857
 
 
-@numba.jit
 def near_up(x: float, y: float) -> bool:
     """Inputs: x and y, floats.
 
@@ -140,7 +127,6 @@ def near_up(x: float, y: float) -> bool:
     return (y - x) / y < 0.00017857
 
 
-@numba.jit
 def doji(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -149,7 +135,6 @@ def doji(O: float, C: float) -> bool:
     return O == C
 
 
-@numba.jit
 def short_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -158,7 +143,6 @@ def short_body(O: float, C: float) -> bool:
     return sli_less(bottom_body(O, C), top_body(O, C))
 
 
-@numba.jit
 def normal_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -167,7 +151,6 @@ def normal_body(O: float, C: float) -> bool:
     return mod_less(bottom_body(O, C), top_body(O, C))
 
 
-@numba.jit
 def tall_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -176,7 +159,6 @@ def tall_body(O: float, C: float) -> bool:
     return lar_less(bottom_body(O, C), top_body(O, C))
 
 
-@numba.jit
 def extall_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -185,7 +167,6 @@ def extall_body(O: float, C: float) -> bool:
     return ext_less(bottom_body(O, C), top_body(O, C))
 
 
-@numba.jit
 def no_us(O: float, H: float, C: float) -> bool:
     """Inputs: open, high and close.
 
@@ -194,7 +175,6 @@ def no_us(O: float, H: float, C: float) -> bool:
     return H == top_body(O, C)
 
 
-@numba.jit
 def small_us(O: float, H: float, C: float) -> bool:
     """Inputs: open, high and close.
 
@@ -203,7 +183,6 @@ def small_us(O: float, H: float, C: float) -> bool:
     return sli_greater(H, top_body(O, C))
 
 
-@numba.jit
 def normal_us(O: float, H: float, C: float) -> bool:
     """Inputs: open, high and close.
 
@@ -212,7 +191,6 @@ def normal_us(O: float, H: float, C: float) -> bool:
     return mod_greater(H, top_body(O, C))
 
 
-@numba.jit
 def long_us(O: float, H: float, C: float) -> bool:
     """Inputs: open, high and close.
 
@@ -221,7 +199,6 @@ def long_us(O: float, H: float, C: float) -> bool:
     return lar_greater(H, top_body(O, C))
 
 
-@numba.jit
 def exlong_us(O: float, H: float, C: float) -> bool:
     """Inputs: open, high and close.
 
@@ -230,7 +207,6 @@ def exlong_us(O: float, H: float, C: float) -> bool:
     return ext_greater(H, top_body(O, C))
 
 
-@numba.jit
 def no_ls(O: float, L: float, C: float) -> bool:
     """Inputs: open, low and close.
 
@@ -239,7 +215,6 @@ def no_ls(O: float, L: float, C: float) -> bool:
     return L == bottom_body(O, C)
 
 
-@numba.jit
 def small_ls(O: float, L: float, C: float) -> bool:
     """Inputs: open, low and close.
 
@@ -248,7 +223,6 @@ def small_ls(O: float, L: float, C: float) -> bool:
     return sli_less(L, bottom_body(O, C))
 
 
-@numba.jit
 def normal_ls(O: float, L: float, C: float) -> bool:
     """Inputs: open, low and close.
 
@@ -257,7 +231,6 @@ def normal_ls(O: float, L: float, C: float) -> bool:
     return mod_less(L, bottom_body(O, C))
 
 
-@numba.jit
 def long_ls(O: float, L: float, C: float) -> bool:
     """Inputs: open, low and close.
 
@@ -266,7 +239,6 @@ def long_ls(O: float, L: float, C: float) -> bool:
     return lar_less(L, bottom_body(O, C))
 
 
-@numba.jit
 def exlong_ls(O: float, L: float, C: float) -> bool:
     """Inputs: open, low and close.
 
@@ -275,7 +247,6 @@ def exlong_ls(O: float, L: float, C: float) -> bool:
     return ext_less(L, bottom_body(O, C))
 
 
-@numba.jit
 def top_body(O: float, C: float) -> float:
     """Inputs: open and close.
 
@@ -284,7 +255,6 @@ def top_body(O: float, C: float) -> float:
     return np.maximum(O, C)
 
 
-@numba.jit
 def bottom_body(O: float, C: float) -> float:
     """Inputs: open and close.
 
@@ -293,7 +263,6 @@ def bottom_body(O: float, C: float) -> float:
     return np.minimum(O, C)
 
 
-@numba.jit
 def upper_shadow(O: float, H: float, C: float) -> float:
     """Inputs: open, high and close.
 
@@ -302,7 +271,6 @@ def upper_shadow(O: float, H: float, C: float) -> float:
     return H - top_body(O, C)
 
 
-@numba.jit
 def lower_shadow(O: float, L: float, C: float) -> float:
     """Inputs: open, low and close.
 
@@ -311,7 +279,6 @@ def lower_shadow(O: float, L: float, C: float) -> float:
     return bottom_body(O, C) - L
 
 
-@numba.jit
 def shadow_length(O: float, H: float, L: float, C: float) -> float:
     """Inputs: open, high, low and close.
 
@@ -320,7 +287,6 @@ def shadow_length(O: float, H: float, L: float, C: float) -> float:
     return upper_shadow(O, H, C) + lower_shadow(O, L, C)
 
 
-@numba.jit
 def black_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -329,7 +295,6 @@ def black_body(O: float, C: float) -> bool:
     return O > C
 
 
-@numba.jit
 def short_black_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -338,7 +303,6 @@ def short_black_body(O: float, C: float) -> bool:
     return np.logical_and(O > C, short_body(O, C))
 
 
-@numba.jit
 def normal_black_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -347,7 +311,6 @@ def normal_black_body(O: float, C: float) -> bool:
     return np.logical_and(O > C, normal_body(O, C))
 
 
-@numba.jit
 def tall_black_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -356,7 +319,6 @@ def tall_black_body(O: float, C: float) -> bool:
     return np.logical_and(O > C, tall_body(O, C))
 
 
-@numba.jit
 def extall_black_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -365,7 +327,6 @@ def extall_black_body(O: float, C: float) -> bool:
     return np.logical_and(O > C, extall_body(O, C))
 
 
-@numba.jit
 def white_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -374,7 +335,6 @@ def white_body(O: float, C: float) -> bool:
     return O < C
 
 
-@numba.jit
 def short_white_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -383,7 +343,6 @@ def short_white_body(O: float, C: float) -> bool:
     return np.logical_and(O < C, short_body(O, C))
 
 
-@numba.jit
 def normal_white_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -392,7 +351,6 @@ def normal_white_body(O: float, C: float) -> bool:
     return np.logical_and(O < C, normal_body(O, C))
 
 
-@numba.jit
 def tall_white_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -401,7 +359,6 @@ def tall_white_body(O: float, C: float) -> bool:
     return np.logical_and(O < C, tall_body(O, C))
 
 
-@numba.jit
 def extall_white_body(O: float, C: float) -> bool:
     """Inputs: open and close.
 
@@ -410,7 +367,6 @@ def extall_white_body(O: float, C: float) -> bool:
     return np.logical_and(O < C, extall_body(O, C))
 
 
-@numba.jit
 def down_shadow_gap(first_L: float, second_H: float) -> bool:
     """Inputs: first candles low, second candles high.
 
@@ -419,7 +375,6 @@ def down_shadow_gap(first_L: float, second_H: float) -> bool:
     return first_L > second_H
 
 
-@numba.jit
 def up_shadow_gap(first_H: float, second_L: float) -> bool:
     """Inputs: first candles high, second candles low.
 
@@ -428,7 +383,6 @@ def up_shadow_gap(first_H: float, second_L: float) -> bool:
     return first_H < second_L
 
 
-@numba.jit
 def down_body_gap(
     first_O: float, first_C: float, second_O: float, second_C: float
 ) -> bool:
@@ -439,7 +393,6 @@ def down_body_gap(
     return bottom_body(first_O, first_C) > top_body(second_O, second_C)
 
 
-@numba.jit
 def up_body_gap(
     first_O: float, first_C: float, second_O: float, second_C: float
 ) -> bool:

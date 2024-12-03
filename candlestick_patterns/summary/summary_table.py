@@ -17,8 +17,7 @@ def run(filename):
         "Number detected",
         "Signal type",
     ]
-    field_names.extend([f"{n}-period buy eval" for n in range(1, 11)])
-    field_names.extend([f"{n}-period sell eval" for n in range(1, 11)])
+    field_names.extend(["Buy evaluation", "Binomial test >", "Binomial test <"])
     table.field_names = field_names
     table.align["Pattern"] = "l"
     table.align["Number detected"] = "r"
@@ -158,17 +157,10 @@ def run(filename):
             row.extend(
                 [
                     x
-                    for x in pq.read_table(
-                        f"../data/evaluation/{number}/{pattern}"
-                    ).to_pandas()["buy"]
-                ]
-            )
-            row.extend(
-                [
-                    x
-                    for x in pq.read_table(
-                        f"../data/evaluation/{number}/{pattern}"
-                    ).to_pandas()["sell"]
+                    for x in pq.read_table(f"../data/evaluation/{number}/{pattern}")
+                    .to_pandas()[["evaluation", "uptest", "downtest"]]
+                    .iloc[0]
+                    .values
                 ]
             )
             table.add_row(
