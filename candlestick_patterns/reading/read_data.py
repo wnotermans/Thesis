@@ -3,6 +3,7 @@ import time
 import pandas as pd
 
 from aggregation import aggregate
+from calibration import calibration
 from trend import trend_calculation
 
 
@@ -30,6 +31,11 @@ def run(filename: str, agg_interval=1) -> pd.DataFrame:
     print(f"Reading and handling data done in {round(time.time()-t,2):<3.2f}s")
 
     df = aggregate.aggregate(df, agg_interval)
+
+    print("Calibrating percentiles", end="\r")
+    t = time.time()
+    percentiles = calibration.percentiles(df.to_numpy())
+    print(f"Calibrating percentiles done in {round(time.time()-t,2):<3.2f}s")
 
     print("Calculating moving average", end="\r")
     t = time.time()
