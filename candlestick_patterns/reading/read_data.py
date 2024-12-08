@@ -6,7 +6,22 @@ from aggregation import aggregate
 from trend import trend_calculation
 
 
-def run(filename, agg_interval=1):
+def run(filename: str, agg_interval=1) -> pd.DataFrame:
+    """Function that reads data and sets a datetimeindex. Next, if the parameter for
+    aggregation is passed, aggregates the data. Finally, calculates moving averages and
+    trend.
+
+    Inputs
+    ------
+    filename: filename of the data to read on disk.
+    agg_interval, default 1: interval to which the data will be aggregated. The
+    default, 1, performs no aggregation.
+
+    Outputs
+    -------
+    A dataframe with datetime index, with an added "trend" column.
+    """
+
     print("Reading and handling data", end="\r")
     t = time.time()
     df = pd.read_parquet(f"../data/{filename}.parquet")

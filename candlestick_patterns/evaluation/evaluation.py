@@ -9,7 +9,17 @@ import pyarrow.parquet as pq
 from scipy.stats import binomtest
 
 
-def stop_loss_take_profit(df):
+def stop_loss_take_profit(df: pd.DataFrame) -> None:
+    """Stop loss/take profit-based evaluation. For every time a pattern is detected, checks which margin is triggered first: the stop loss or the take profit one.
+
+    Inputs
+    ------
+    df with OHLC data. Candlestick patterns are read from disk.
+
+    Outputs
+    -------
+    Win %, average profit, "less", "greater" and "two-sided" t-tests to disk.
+    """
     del df["close"], df["trend"], df["volume"]
 
     HL_array = df[["high", "low"]].to_numpy()

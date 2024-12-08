@@ -20,7 +20,17 @@ from detection.patterns import (
 from detection.patterns.functions import candlestick_functions as cf
 
 
-def run(df):
+def run(df: pd.DataFrame) -> None:
+    """Performs pattern detection.
+
+    Inputs
+    ------
+    df with OHLC data.
+
+    Outputs
+    -------
+    309 candlestick patterns to disk.
+    """
 
     total_time = time.time()
 
@@ -76,7 +86,7 @@ def run(df):
             if callable(attr):
                 pattern_funcs.append(name)
 
-        i = 1  # counter for total number of patterns
+        i = 1
         num_funcs = len(pattern_funcs)
 
         t = time.time()

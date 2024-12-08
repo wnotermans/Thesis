@@ -6,7 +6,23 @@ from prettytable import PrettyTable
 from word2number import w2n
 
 
-def run(filename):
+def run(filename: str) -> None:
+    """Aggregates data into a summary table. The following data is included:
+     - Pattern name
+     - Number of candlesticks
+     - Number of patterns detected
+     - Type of pattern signal (buy/sell/any/hold)
+     - Buy evaluation (win %, average profit), sell evaluation is the opposite
+     - t-tests: "greater", "less", "two-sided"
+
+    Inputs
+    ------
+    filename: filename of the output.
+
+    Outputs
+    -------
+    `filename`.txt to disk.
+    """
     t = time.time()
     print("Making summary table", end="\r")
 
