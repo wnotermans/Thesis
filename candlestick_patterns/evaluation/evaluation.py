@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
-from scipy.stats import binomtest
+from scipy.stats import binomtest, ttest_1samp
 
 
 def stop_loss_take_profit(df: pd.DataFrame) -> None:
@@ -58,15 +58,22 @@ def stop_loss_take_profit(df: pd.DataFrame) -> None:
                 end="\r",
             )
 
-            if (
+            n_detected = (
                 pq.read_table(f"../data/patterns/{number}/{pattern}")
                 .to_pandas()
                 .sum()
                 .values[0]
-                == 0
-            ):
+            )
+            if n_detected == 0 or n_detected == 1:
                 pa.parquet.write_table(
-                    pa.table({"evaluation": "/", "uptest": "/", "downtest": "/"}),
+                    pa.table(
+                        {
+                            "evaluation": "/",
+                            "uptest": "/",
+                            "downtest": "/",
+                            "bothtest": "/",
+                        }
+                    ),
                     f"../data/evaluation/{number}/{pattern}",
                     compression="LZ4",
                 )
@@ -109,17 +116,27 @@ def stop_loss_take_profit(df: pd.DataFrame) -> None:
                     )
                 ]
                 uptest = round(
-                    binomtest(evallist.sum(), len(evallist), 0.5, "greater").pvalue, 6
+                    ttest_1samp(evallist, popmean=0.5, alternative="greater").pvalue, 6
                 )
                 uptest = [f"{uptest} (*)" if uptest < 0.05 else str(uptest)]
                 downtest = round(
-                    binomtest(evallist.sum(), len(evallist), 0.5, "less").pvalue, 6
+                    ttest_1samp(evallist, popmean=0.5, alternative="less").pvalue, 6
                 )
                 downtest = [f"{downtest} (*)" if downtest < 0.05 else str(downtest)]
+                bothtest = round(
+                    ttest_1samp(evallist, popmean=0.5, alternative="two-sided").pvalue,
+                    6,
+                )
+                bothtest = [f"{bothtest} (*)" if bothtest < 0.05 else str(bothtest)]
 
                 pa.parquet.write_table(
                     pa.table(
-                        {"evaluation": evalstr, "uptest": uptest, "downtest": downtest}
+                        {
+                            "evaluation": evalstr,
+                            "uptest": uptest,
+                            "downtest": downtest,
+                            "bothtest": bothtest,
+                        }
                     ),
                     f"../data/evaluation/{number}/{pattern}",
                     compression="LZ4",
@@ -140,6 +157,7 @@ def stop_loss_take_profit(df: pd.DataFrame) -> None:
     )
 
 
+@numba.jit
 def find_first_breakthrough(HL_array, O, openidx, limit, nticks):
     for idx in range(openidx, limit):
         if HL_array[idx, 0] >= O + 0.25 * nticks:
