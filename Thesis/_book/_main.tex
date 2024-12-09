@@ -1,13 +1,12 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
+%
 \documentclass[
   12pt,
   a4paper,
   oneside]{book}
-\usepackage{xcolor}
 \usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
@@ -38,6 +37,7 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{xcolor}
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
@@ -50,24 +50,21 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\usepackage[]{natbib}
-\bibliographystyle{plainnat}
+\setcounter{secnumdepth}{5}
 % ----------- Cover Master Thesis Faculty of Sciences ---------------
 % This document should be compiled with pdflatex.  If you want to use
 % latex to compile to dvi/ps, you have to convert the images to (e)ps
@@ -106,6 +103,11 @@
 % --------------------------------------------------------------------
 \frontmatter
 \rmfamily
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage[]{natbib}
+\bibliographystyle{plainnat}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -332,24 +334,9 @@ Definitions:
   interesting definition of small, medium, long length in (Goo, Chen, Chang) and (Fock, Klein, Zwergel)
 \end{itemize}
 
-\chapter{Baseline predictive power of candlestick patterns}\label{baseline-predictive-power-of-candlestick-patterns}
+\chapter{Literature study}\label{literature-study}
 
-\chapter{Improving predictive power through additional filters}\label{improving-predictive-power-through-additional-filters}
-
-\chapter{Machine learning}\label{machine-learning}
-
-\chapter{Conclusion}\label{conclusion}
-
-\chapter{References}\label{references}
-
-\appendix
-
-
-\chapter{Candlestick pattern definitions}\label{candlestick-pattern-definitions}
-
-here
-
-\bibliography{bib.bib}
+  \bibliography{bib.bib}
 
 % ----------------------- Back cover ------------------------------
 % Please fill in:
