@@ -9,10 +9,9 @@ bibliography: bib.bib
 link-citations: yes
 ---
 
+\newpage\phantom{}
 
-# Foreword {-}
-
-\vfill
+\newpage\phantom{}\vfill
 
 © Copyright by KU Leuven
 
@@ -20,7 +19,19 @@ Without prior written permission from both the supervisor(s) and the author(s), 
 
 Prior written permission from the supervisor(s) is also required for using the (original) methods, products, circuits, and programs described in this work for industrial or commercial purposes, and for submitting this publication for scientific awards or contests.
 
+\newpage\phantom{}
+
+# Foreword {.unnumbered}
+
+\pagenumbering{Roman}
+
+In this intermediate report, I would like to thank Prof. Dr. P. Leoni, Prof. Dr. W. Schoutens and KU Leuven for purchasing and providing me with the financial data necessary for this work.
+
+\vfill
+
 # Popularising Summary
+
+To be added.
 
 \vfill
 
@@ -28,7 +39,13 @@ Copyright Information: student paper as part of an academic education and examin
 
 # Summary
 
+To be added.
+
 # List of Abbreviations
+
+\begin{tabular}{l l}
+OHLC & Open, High, Low and Close
+\end{tabular}
 
 # List of Symbols
 

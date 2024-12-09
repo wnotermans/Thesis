@@ -1,12 +1,13 @@
 % Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
-%
 \documentclass[
   12pt,
   a4paper,
   oneside]{book}
+\usepackage{xcolor}
 \usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
@@ -37,7 +38,6 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
 \usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
@@ -66,7 +66,8 @@
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{5}
+\usepackage[]{natbib}
+\bibliographystyle{plainnat}
 % ----------- Cover Master Thesis Faculty of Sciences ---------------
 % This document should be compiled with pdflatex.  If you want to use
 % latex to compile to dvi/ps, you have to convert the images to (e)ps
@@ -105,9 +106,6 @@
 % --------------------------------------------------------------------
 \frontmatter
 \rmfamily
-\pagenumbering{Roman}
-\usepackage[]{natbib}
-\bibliographystyle{plainnat}
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
@@ -131,6 +129,7 @@
 % - The academic year
 % --------------------------------------------------------------------
 \thispagestyle{empty}
+\pagenumbering{gobble}
 \newcommand{\form}[1]{\scalebox{1.087}{\boldmath{#1}}}
 \sffamily
 %
@@ -148,7 +147,7 @@
 \vspace{-\parskip}
 \flushleft
 \fontsize{40}{42}\selectfont \textcolor{bluetitle}{Candlestick Patterns}\\[1.5mm]
-\fontsize{20}{22}\selectfont Analysis of their predictive power on intraday stock market data
+\fontsize{20}{22}\selectfont Analysis of their predictive power on intraday market data\\(preliminary title)
 \end{textblock}
 %
 \begin{textblock}{82}(50,103)
@@ -170,9 +169,9 @@
 \vspace{-\parskip}
 \flushleft
 Supervisor: Prof.~Dr.~P.~Leoni\\[-2pt]
-\textcolor{blueaff}{Affiliation \textsl{(optional)}}\\[5pt]
-Co-supervisor: Prof.~Dr.~W.~Schoutens\\[-2pt]
-\textcolor{blueaff}{Affiliation \textsl{(optional)}}\\[5pt]
+% \textcolor{blueaff}{Affiliation \textsl{(optional)}\\[5pt]
+% Co-supervisor: Prof.~Dr.~W.~Schoutens\\[-2pt]
+% \textcolor{blueaff}{Affiliation \textsl{(optional)}\\[5pt]
 % Mentor: \textsl{(optional)}\\[-2pt]
 % \textcolor{blueaff}{Affiliation \textsl{(optional)}}\\
 \end{textblock}
@@ -201,10 +200,9 @@ Academic year 2024-2025
 \vfill
 \newpage
 
-\chapter*{Foreword}\label{foreword}
-\addcontentsline{toc}{chapter}{Foreword}
+\newpage\phantom{}
 
-\vfill
+\newpage\phantom{}\vfill
 
 © Copyright by KU Leuven
 
@@ -212,7 +210,20 @@ Without prior written permission from both the supervisor(s) and the author(s), 
 
 Prior written permission from the supervisor(s) is also required for using the (original) methods, products, circuits, and programs described in this work for industrial or commercial purposes, and for submitting this publication for scientific awards or contests.
 
+\newpage\phantom{}
+
+\chapter*{Foreword}\label{foreword}
+\addcontentsline{toc}{chapter}{Foreword}
+
+\pagenumbering{Roman}
+
+In this intermediate report, I would like to thank Prof.~Dr.~P.~Leoni, Prof.~Dr.~W.~Schoutens and KU~Leuven for purchasing and providing me with the financial data necessary for this work.
+
+\vfill
+
 \chapter{Popularising Summary}\label{popularising-summary}
+
+To be added.
 
 \vfill
 
@@ -220,7 +231,13 @@ Copyright Information: student paper as part of an academic education and examin
 
 \chapter{Summary}\label{summary}
 
+To be added.
+
 \chapter{List of Abbreviations}\label{list-of-abbreviations}
+
+\begin{tabular}{l l}
+OHLC & Open, High, Low and Close
+\end{tabular}
 
 \chapter{List of Symbols}\label{list-of-symbols}
 
@@ -332,7 +349,7 @@ Definitions:
 
 here
 
-  \bibliography{bib.bib}
+\bibliography{bib.bib}
 
 % ----------------------- Back cover ------------------------------
 % Please fill in:
@@ -345,31 +362,32 @@ here
 \thispagestyle{empty}
 \sffamily
 %
-\begin{textblock}{191}(119,-13)
+\begin{textblock}{191}(118,-14)
 {\color{blueline}\rule{160pt}{5.5pt}}
 \end{textblock}
 %
-\begin{textblock}{191}(174,-13)
+\begin{textblock}{191}(173,-14)
 {\color{blueline}\rule{5.5pt}{59pt}}
 \end{textblock}
 %
-\begin{textblock}{183}(-24,-11)
+\begin{textblock}{183}(-24,-10)
 \textblockcolour{}
 \flushright
 \fontsize{7}{7.5}\selectfont
-\textbf{Faculty of Science}\\
-Celestijnen 200H - box 2100\\
+\textbf{Department of Mathematics}\\
+Celestijnenlaan 200B\\
 3001 Leuven (Heverlee), BELGIUM\\
-Tel. + 32 16 32 14 01\\
+Tel. +32 16 32 70 07\\
+Fax +32 16 32 79 98\\
 www.kuleuven.be\\
 \end{textblock}
 %
-\begin{textblock}{191}(161,-6)
+\begin{textblock}{191}(161,-8)
 \textblockcolour{}
 \includegraphics*[height=16.5truemm]{Images/sedes}
 \end{textblock}
 %
-\begin{textblock}{191}(-14,233)
+\begin{textblock}{191}(-15,232)
 {\color{bluetitle}\rule{544pt}{55pt}}
 \end{textblock}
 
