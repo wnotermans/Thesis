@@ -21,15 +21,18 @@ from detection.patterns.functions import candlestick_functions as cf
 
 
 def run(df: pd.DataFrame) -> None:
-    """Performs pattern detection.
+    """
+    Performs pattern detection.
 
-    Inputs
-    ------
-    df with OHLC data.
+    Parameters
+    ----------
+    df : pd.DataFrame
+        A Dataframe with OHLC data.
 
-    Outputs
+    Returns
     -------
-    309 candlestick patterns to disk.
+    None
+        Outputs the 309 candlestick patterns to disk in `.parquet` format.
     """
 
     total_time = time.time()

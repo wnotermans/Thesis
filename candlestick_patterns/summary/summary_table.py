@@ -7,7 +7,8 @@ from word2number import w2n
 
 
 def run(filename: str) -> None:
-    """Aggregates data into a summary table. The following data is included:
+    """
+    Aggregates data into a summary table. The following data is included:
      - Pattern name
      - Number of candlesticks
      - Number of patterns detected
@@ -15,13 +16,15 @@ def run(filename: str) -> None:
      - Buy evaluation (win %, average profit), sell evaluation is the opposite
      - t-tests: "greater", "less", "two-sided"
 
-    Inputs
-    ------
-    filename: filename of the output.
+    Parameters
+    ----------
+    filename : str
+        Filename of the output `txt` file.
 
-    Outputs
+    Returns
     -------
-    `filename`.txt to disk.
+    None
+        `filename`.txt to disk.
     """
     t = time.time()
     print("Making summary table", end="\r")

@@ -41,12 +41,12 @@ def main():
     )
     for interval in list(range(1, 6)) + [10]:
         print(" Reading data ".center(127, "#"), end="\n\n")
-        df = read_data.run("ESCC", interval)
+        df, percentiles = read_data.run("ESCC", interval)
         df = df.between_time("9:30", "16:00")  # Filter to US time
         print(" Pattern detection ".center(127, "#"), end="\n\n")
         pattern_detection.run(df)
         print(" Pattern evaluation ".center(127, "#"), end="\n\n")
-        evaluation.stop_loss_take_profit(df)
+        evaluation.stop_loss_take_profit_evaluation(df)
         print(" Summary table ".center(127, "#"), end="\n\n")
         summary_table.run(f"summary_{interval}_minutes_US.txt")
     print(f" All done in {round(time.time()-t,2):>3.2f}s ".center(127, "#"))

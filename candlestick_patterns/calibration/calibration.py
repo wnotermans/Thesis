@@ -1,21 +1,28 @@
 import numpy as np
 
 
-def percentiles(df: np.ndarray) -> tuple:
-    """Calculates percentiles of the data for calibration.
+def calculate_percentiles(df: np.ndarray) -> tuple:
+    """
+    Calculates the percentiles of the data for calibration.
 
-    Inputs
-    ------
-    df with OHLC data.
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        A DataFrame containing OHLC (Open, High, Low, Close) data.
 
-    Outputs
+    Returns
     -------
-    A tuple with 25/50/75-percentiles of the body length, upper shadow length and lower
-    shadow length, respectively.
+    tuple
+        A tuple containing the 10th, 30th, and 70th percentiles
+        for the following: body length, upper shadow length,
+        and lower shadow length, respectively. These percentiles
+        correspond to the ones given in "The Classification
+        of Candlestick Charts: Laying the Foundation for Further
+        Empirical Research" by Etschberger et al.
     """
 
     def hb(O: float, C: float) -> float:
-        return np.abs(O - C) / C
+        return np.abs(O / C - 1)
 
     def top_body(O: float, C: float) -> float:
         return np.maximum(O, C)
@@ -34,7 +41,7 @@ def percentiles(df: np.ndarray) -> tuple:
     L = df[:, 2]
     C = df[:, 3]
     return (
-        np.nanpercentile(hb(O, C), [25, 50, 75]),
-        np.nanpercentile(upper_shadow(O, H, C), [25, 50, 75]),
-        np.nanpercentile(lower_shadow(O, L, C), [25, 50, 75]),
+        np.nanpercentile(hb(O, C), [10, 30, 70]),
+        np.nanpercentile(upper_shadow(O, H, C), [10, 30, 70]),
+        np.nanpercentile(lower_shadow(O, L, C), [10, 30, 70]),
     )

@@ -9,16 +9,22 @@ import pyarrow.parquet as pq
 from scipy.stats import binomtest, ttest_1samp
 
 
-def stop_loss_take_profit(df: pd.DataFrame) -> None:
-    """Stop loss/take profit-based evaluation. For every time a pattern is detected, checks which margin is triggered first: the stop loss or the take profit one.
+def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
+    """
+    Stop loss/take profit-based candlestick pattern evaluation.
 
-    Inputs
-    ------
-    df with OHLC data. Candlestick patterns are read from disk.
+    For every time a pattern is detected, checks which margin is triggered first:
+    the stop loss or the take profit one.
 
-    Outputs
+    Parameters
+    ----------
+    df : pd.DataFrame
+        A DataFrame with OHLC data. Candlestick patterns are read from disk.
+
+    Returns
     -------
-    Win %, average profit, "less", "greater" and "two-sided" t-tests to disk.
+    None
+        Win %, average profit, "less", "greater" and "two-sided" binomial tests to disk.
     """
     del df["close"], df["trend"], df["volume"]
 
@@ -116,15 +122,23 @@ def stop_loss_take_profit(df: pd.DataFrame) -> None:
                     )
                 ]
                 uptest = round(
-                    ttest_1samp(evallist, popmean=0.5, alternative="greater").pvalue, 6
+                    binomtest(
+                        evallist.sum(), len(evallist), p=0.5, alternative="greater"
+                    ).pvalue,
+                    6,
                 )
                 uptest = [f"{uptest} (*)" if uptest < 0.05 else str(uptest)]
                 downtest = round(
-                    ttest_1samp(evallist, popmean=0.5, alternative="less").pvalue, 6
+                    binomtest(
+                        evallist.sum(), len(evallist), p=0.5, alternative="less"
+                    ).pvalue,
+                    6,
                 )
                 downtest = [f"{downtest} (*)" if downtest < 0.05 else str(downtest)]
                 bothtest = round(
-                    ttest_1samp(evallist, popmean=0.5, alternative="two-sided").pvalue,
+                    binomtest(
+                        evallist.sum(), len(evallist), p=0.5, alternative="two-sided"
+                    ).pvalue,
                     6,
                 )
                 bothtest = [f"{bothtest} (*)" if bothtest < 0.05 else str(bothtest)]

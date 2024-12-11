@@ -2,15 +2,24 @@ import pandas as pd
 
 
 def aggregate(df: pd.DataFrame, interval: int = 5) -> pd.DataFrame:
-    """Aggregate data in df over `interval` minutes, defaults to 5.
+    """
+    Aggregate data in the DataFrame over the specified interval in minutes.
 
-    Inputs
-    ------
-    Dataframe with columns `open`,`high`,`low`,`close`,`volume`; `interval`.
+    The function aggregates the data in the given DataFrame (`df`) over a specified
+    time interval (in minutes). The default interval is 5 minutes. The aggregation
+    is applied to the `open`, `high`, `low`, `close`, and `volume` columns.
 
-    Outputs
+    Parameters
+    ----------
+    df : pd.DataFrame
+        A DataFrame containing the columns `open`, `high`, `low`, `close`, and `volume`.
+    interval : int, optional, default 5
+        The time interval (in minutes) over which the data should be aggregated.
+
+    Returns
     -------
-    New dataframe with columns aggregated over `interval` minutes.
+    pd.DataFrame
+        A new DataFrame with the data aggregated over the specified interval.
     """
     if interval == 1:
         return df
