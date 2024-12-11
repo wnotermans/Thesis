@@ -110,11 +110,11 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                 evalstr = [
                     str(
                         [
-                            f"{round(100*evallist.sum()/len(evallist),2):>2.2f}%",
+                            f"{round(100*np.nansum(evallist)/len(evallist),2):>2.2f}%",
                             f"${round(
                             0.25
                             * nticks
-                            * (2 * evallist.sum() - len(evallist))
+                            * (2 * np.nansum(evallist) - len(evallist))
                             / len(evallist),
                             2,
                         ):>2.2f}",
@@ -123,21 +123,30 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                 ]
                 uptest = round(
                     binomtest(
-                        evallist.sum(), len(evallist), p=0.5, alternative="greater"
+                        int(np.nansum(evallist)),
+                        len(evallist),
+                        p=0.5,
+                        alternative="greater",
                     ).pvalue,
                     6,
                 )
                 uptest = [f"{uptest} (*)" if uptest < 0.05 else str(uptest)]
                 downtest = round(
                     binomtest(
-                        evallist.sum(), len(evallist), p=0.5, alternative="less"
+                        int(np.nansum(evallist)),
+                        len(evallist),
+                        p=0.5,
+                        alternative="less",
                     ).pvalue,
                     6,
                 )
                 downtest = [f"{downtest} (*)" if downtest < 0.05 else str(downtest)]
                 bothtest = round(
                     binomtest(
-                        evallist.sum(), len(evallist), p=0.5, alternative="two-sided"
+                        int(np.nansum(evallist)),
+                        len(evallist),
+                        p=0.5,
+                        alternative="two-sided",
                     ).pvalue,
                     6,
                 )
@@ -174,11 +183,16 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
 @numba.jit
 def find_first_breakthrough(HL_array, O, openidx, limit, nticks):
     for idx in range(openidx, limit):
+        if (
+            HL_array[idx, 0] >= O + 0.25 * nticks
+            and HL_array[idx, 1] <= O - 0.25 * nticks
+        ):
+            return np.nan
         if HL_array[idx, 0] >= O + 0.25 * nticks:
             return 1
         if HL_array[idx, 1] <= O - 0.25 * nticks:
             return 0
-    return 0
+    return np.nan
 
 
 def n_holding_periods(df):

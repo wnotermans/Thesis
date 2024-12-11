@@ -36,7 +36,9 @@ def run(filename: str) -> None:
         "Number detected",
         "Signal type",
     ]
-    field_names.extend(["Buy evaluation", "t-test >", "t-test <", "t-test < >"])
+    field_names.extend(
+        ["Buy evaluation", "Binomial test >", "Binomial test <", "Binomial test < >"]
+    )
     table.field_names = field_names
     table.align["Pattern"] = "l"
     table.align["Number detected"] = "r"
