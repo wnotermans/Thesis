@@ -1,0 +1,5 @@
+ - normaliseren op tijd v/d dag of volume
+ - ATR
+ - trend: rico (E)MA
+ - Bollinger band
+ - machine learning
