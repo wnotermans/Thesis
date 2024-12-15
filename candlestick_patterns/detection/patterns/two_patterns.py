@@ -301,7 +301,7 @@ def doji_star_bearish_(candles: np.ndarray, T: np.ndarray) -> bool:
             cf.doji(O_2, C_2),
             np.logical_not(cf.exlong_ls(O_2, L_2, C_2)),
             np.logical_not(cf.exlong_us(O_2, L_2, C_2)),
-            cf.shadow_length(O_2, H_2, L_2, C_2) < cf.hb(O_1, C_1),
+            cf.total_shadow_length(O_2, H_2, L_2, C_2) < cf.body_height(O_1, C_1),
         )
     )
 
@@ -325,7 +325,7 @@ def doji_star_bearish_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
             cf.doji(O_2, C_2),
             np.logical_not(cf.exlong_ls(O_2, L_2, C_2)),
             np.logical_not(cf.exlong_us(O_2, L_2, C_2)),
-            cf.shadow_length(O_2, H_2, L_2, C_2) < cf.hb(O_1, C_1),
+            cf.total_shadow_length(O_2, H_2, L_2, C_2) < cf.body_height(O_1, C_1),
         )
     )
 
@@ -350,7 +350,7 @@ def doji_star_bearish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
             cf.doji(O_2, C_2),
             np.logical_not(cf.exlong_ls(O_2, L_2, C_2)),
             np.logical_not(cf.exlong_us(O_2, L_2, C_2)),
-            cf.shadow_length(O_2, H_2, L_2, C_2) < cf.hb(O_1, C_1),
+            cf.total_shadow_length(O_2, H_2, L_2, C_2) < cf.body_height(O_1, C_1),
         )
     )
 
@@ -1675,7 +1675,7 @@ def shooting_star_two_candle_(candles: np.ndarray, T: np.ndarray) -> bool:
             T == 1,
             cf.white_body(O_1, C_1),
             np.logical_not(cf.no_us(O_1, H_1, C_1)),
-            cf.upper_shadow(O_2, H_2, C_2) > 3 * cf.hb(O_1, C_1),
+            cf.upper_shadow_length(O_2, H_2, C_2) > 3 * cf.body_height(O_1, C_1),
             cf.short_body(O_2, C_2),
             cf.no_ls(O_2, L_2, C_2),
             cf.up_body_gap(O_1, C_1, O_2, C_2),
@@ -1700,7 +1700,7 @@ def shooting_star_two_candle_no_trend(candles: np.ndarray, T: np.ndarray) -> boo
         (
             cf.white_body(O_1, C_1),
             np.logical_not(cf.no_us(O_1, H_1, C_1)),
-            cf.upper_shadow(O_2, H_2, C_2) > 3 * cf.hb(O_1, C_1),
+            cf.upper_shadow_length(O_2, H_2, C_2) > 3 * cf.body_height(O_1, C_1),
             cf.short_body(O_2, C_2),
             cf.no_ls(O_2, L_2, C_2),
             cf.up_body_gap(O_1, C_1, O_2, C_2),
@@ -1726,7 +1726,7 @@ def shooting_star_two_candle_opp_trend(candles: np.ndarray, T: np.ndarray) -> bo
             T == -1,
             cf.white_body(O_1, C_1),
             np.logical_not(cf.no_us(O_1, H_1, C_1)),
-            cf.upper_shadow(O_2, H_2, C_2) > 3 * cf.hb(O_1, C_1),
+            cf.upper_shadow_length(O_2, H_2, C_2) > 3 * cf.body_height(O_1, C_1),
             cf.short_body(O_2, C_2),
             cf.no_ls(O_2, L_2, C_2),
             cf.up_body_gap(O_1, C_1, O_2, C_2),

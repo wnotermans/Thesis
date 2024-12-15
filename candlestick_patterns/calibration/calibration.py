@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def calculate_percentiles(df: np.ndarray) -> tuple:
+def calculate_percentiles(df: np.ndarray) -> tuple[list, list, list]:
     """
     Calculates the percentiles of the data for calibration.
 
@@ -13,11 +13,10 @@ def calculate_percentiles(df: np.ndarray) -> tuple:
     Returns
     -------
     tuple
-        A tuple containing the 10th, 30th, and 70th percentiles
-        for the following: body length, upper shadow length,
-        and lower shadow length, respectively. These percentiles
-        correspond to the ones given in "The Classification
-        of Candlestick Charts: Laying the Foundation for Further
+        A tuple containing a list of the 10th, 30th, and 70th percentiles for the
+        following: body length, upper shadow length, and lower shadow length,
+        respectively. These percentiles correspond to the ones given in
+        "The Classification of Candlestick Charts: Laying the Foundation for Further
         Empirical Research" by Etschberger et al.
     """
 

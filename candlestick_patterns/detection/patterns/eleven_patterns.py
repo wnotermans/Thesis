@@ -60,34 +60,34 @@ def long_black_day_(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             cf.tall_black_body(O_11, C_11),
-            cf.upper_shadow(O_11, H_11, C_11) < cf.hb(O_11, C_11),
-            cf.lower_shadow(O_11, L_11, C_11) < cf.hb(O_11, C_11),
+            cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
+            cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
                     ]
                 ),
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
-                        cf.hb(O_5, C_5),
-                        cf.hb(O_4, C_4),
-                        cf.hb(O_3, C_3),
-                        cf.hb(O_2, C_2),
-                        cf.hb(O_1, C_1),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
+                        cf.body_height(O_5, C_5),
+                        cf.body_height(O_4, C_4),
+                        cf.body_height(O_3, C_3),
+                        cf.body_height(O_2, C_2),
+                        cf.body_height(O_1, C_1),
                     ]
                 ),
             ),
@@ -153,34 +153,34 @@ def long_black_day_down_trend(candles: np.ndarray, T: np.ndarray) -> bool:
         (
             T == -1,
             cf.tall_black_body(O_11, C_11),
-            cf.upper_shadow(O_11, H_11, C_11) < cf.hb(O_11, C_11),
-            cf.lower_shadow(O_11, L_11, C_11) < cf.hb(O_11, C_11),
+            cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
+            cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
                     ]
                 ),
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
-                        cf.hb(O_5, C_5),
-                        cf.hb(O_4, C_4),
-                        cf.hb(O_3, C_3),
-                        cf.hb(O_2, C_2),
-                        cf.hb(O_1, C_1),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
+                        cf.body_height(O_5, C_5),
+                        cf.body_height(O_4, C_4),
+                        cf.body_height(O_3, C_3),
+                        cf.body_height(O_2, C_2),
+                        cf.body_height(O_1, C_1),
                     ]
                 ),
             ),
@@ -246,34 +246,34 @@ def long_black_day_up_trend(candles: np.ndarray, T: np.ndarray) -> bool:
         (
             T == 1,
             cf.tall_black_body(O_11, C_11),
-            cf.upper_shadow(O_11, H_11, C_11) < cf.hb(O_11, C_11),
-            cf.lower_shadow(O_11, L_11, C_11) < cf.hb(O_11, C_11),
+            cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
+            cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
                     ]
                 ),
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
-                        cf.hb(O_5, C_5),
-                        cf.hb(O_4, C_4),
-                        cf.hb(O_3, C_3),
-                        cf.hb(O_2, C_2),
-                        cf.hb(O_1, C_1),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
+                        cf.body_height(O_5, C_5),
+                        cf.body_height(O_4, C_4),
+                        cf.body_height(O_3, C_3),
+                        cf.body_height(O_2, C_2),
+                        cf.body_height(O_1, C_1),
                     ]
                 ),
             ),
@@ -338,34 +338,34 @@ def long_white_day_(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             cf.tall_white_body(O_11, C_11),
-            cf.upper_shadow(O_11, H_11, C_11) < cf.hb(O_11, C_11),
-            cf.lower_shadow(O_11, L_11, C_11) < cf.hb(O_11, C_11),
+            cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
+            cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
                     ]
                 ),
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
-                        cf.hb(O_5, C_5),
-                        cf.hb(O_4, C_4),
-                        cf.hb(O_3, C_3),
-                        cf.hb(O_2, C_2),
-                        cf.hb(O_1, C_1),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
+                        cf.body_height(O_5, C_5),
+                        cf.body_height(O_4, C_4),
+                        cf.body_height(O_3, C_3),
+                        cf.body_height(O_2, C_2),
+                        cf.body_height(O_1, C_1),
                     ]
                 ),
             ),
@@ -431,34 +431,34 @@ def long_white_day_down_trend(candles: np.ndarray, T: np.ndarray) -> bool:
         (
             T == -1,
             cf.tall_white_body(O_11, C_11),
-            cf.upper_shadow(O_11, H_11, C_11) < cf.hb(O_11, C_11),
-            cf.lower_shadow(O_11, L_11, C_11) < cf.hb(O_11, C_11),
+            cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
+            cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
                     ]
                 ),
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
-                        cf.hb(O_5, C_5),
-                        cf.hb(O_4, C_4),
-                        cf.hb(O_3, C_3),
-                        cf.hb(O_2, C_2),
-                        cf.hb(O_1, C_1),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
+                        cf.body_height(O_5, C_5),
+                        cf.body_height(O_4, C_4),
+                        cf.body_height(O_3, C_3),
+                        cf.body_height(O_2, C_2),
+                        cf.body_height(O_1, C_1),
                     ]
                 ),
             ),
@@ -524,34 +524,34 @@ def long_white_day_up_trend(candles: np.ndarray, T: np.ndarray) -> bool:
         (
             T == 1,
             cf.tall_white_body(O_11, C_11),
-            cf.upper_shadow(O_11, H_11, C_11) < cf.hb(O_11, C_11),
-            cf.lower_shadow(O_11, L_11, C_11) < cf.hb(O_11, C_11),
+            cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
+            cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
                     ]
                 ),
-                cf.hb(O_11, C_11)
+                cf.body_height(O_11, C_11)
                 > 3
                 * np.mean(
                     [
-                        cf.hb(O_10, C_10),
-                        cf.hb(O_9, C_9),
-                        cf.hb(O_8, C_8),
-                        cf.hb(O_7, C_7),
-                        cf.hb(O_6, C_6),
-                        cf.hb(O_5, C_5),
-                        cf.hb(O_4, C_4),
-                        cf.hb(O_3, C_3),
-                        cf.hb(O_2, C_2),
-                        cf.hb(O_1, C_1),
+                        cf.body_height(O_10, C_10),
+                        cf.body_height(O_9, C_9),
+                        cf.body_height(O_8, C_8),
+                        cf.body_height(O_7, C_7),
+                        cf.body_height(O_6, C_6),
+                        cf.body_height(O_5, C_5),
+                        cf.body_height(O_4, C_4),
+                        cf.body_height(O_3, C_3),
+                        cf.body_height(O_2, C_2),
+                        cf.body_height(O_1, C_1),
                     ]
                 ),
             ),

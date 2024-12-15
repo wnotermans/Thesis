@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def aggregate(df: pd.DataFrame, interval: int = 5) -> pd.DataFrame:
+def aggregate(df: pd.DataFrame, interval_minutes: int = 5) -> pd.DataFrame:
     """
     Aggregate data in the DataFrame over the specified interval in minutes.
 
@@ -13,7 +13,7 @@ def aggregate(df: pd.DataFrame, interval: int = 5) -> pd.DataFrame:
     ----------
     df : pd.DataFrame
         A DataFrame containing the columns `open`, `high`, `low`, `close`, and `volume`.
-    interval : int, optional, default 5
+    interval_minutes : int, optional, default 5
         The time interval (in minutes) over which the data should be aggregated.
 
     Returns
@@ -21,9 +21,9 @@ def aggregate(df: pd.DataFrame, interval: int = 5) -> pd.DataFrame:
     pd.DataFrame
         A new DataFrame with the data aggregated over the specified interval.
     """
-    if interval == 1:
+    if interval_minutes == 1:
         return df
-    return df.resample(f"{interval}min", label="right").agg(
+    return df.resample(f"{interval_minutes}min", label="right").agg(
         {
             "open": "first",
             "high": "max",

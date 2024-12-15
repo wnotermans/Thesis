@@ -1,105 +1,183 @@
-"""Functions related to candlestick parameters, such as height of the body, shadows...
-"""
-
 import numpy as np
 
 
-def hb(O: float, C: float) -> float:
-    """Inputs: open and close.
+def body_height(O: float, C: float) -> float:
+    """
+    Calculates the height of the real body without normalization.
 
-    Outputs: the height of the real body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
 
-    NOTE: Normalization: none.
+    Returns
+    -------
+    float
+        The height of the real body without normalization.
     """
     return np.abs(O - C)
 
 
 def sli_greater(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x is slightly greater than y.
 
-    Outputs: true if x is slightly greater then y.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: y.
+    Returns
+    -------
+    bool
+        True if x is slightly greater than y, which is defined through a percentile.
+        False otherwise.
     """
     return np.logical_and(0 < (x - y) / y, (x - y) / y < 0.0001148)
 
 
 def mod_greater(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x is moderately greater than y.
 
-    Outputs: true if x is moderately greater then y.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: y.
+    Returns
+    -------
+    bool
+        True if x is moderately greater than y, which is defined through a percentile.
+        False otherwise.
     """
     return np.logical_and(0.0001148 <= (x - y) / y, (x - y) / y < 0.00017857)
 
 
 def lar_greater(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x is largely greater than y.
 
-    Outputs: true if x is largely greater then y.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: y.
+    Returns
+    -------
+    bool
+        True if x is largely greater than y, which is defined through a percentile.
+        False otherwise.
     """
     return np.logical_and(0.00017857 <= (x - y) / y, (x - y) / y < 0.00027445)
 
 
 def ext_greater(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x is extremely greater than y.
 
-    Outputs: true if x is extremely greater then y.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: y.
+    Returns
+    -------
+    bool
+        True if x is extremely greater than y, which is defined through a percentile.
+        False otherwise.
     """
     return (x - y) / y > 0.00027445
 
 
 def sli_less(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x is slightly less than y.
 
-    Outputs: true if x is slightly less then y.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: x.
+    Returns
+    -------
+    bool
+        True if x is slightly less than y, which is defined through a percentile.
+        False otherwise.
     """
     return np.logical_and(0 < (y - x) / x, (y - x) / x < 0.0001148)
 
 
 def mod_less(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x is moderately less than y.
 
-    Outputs: true if x is moderately less then y.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: x.
+    Returns
+    -------
+    bool
+        True if x is moderately less than y, which is defined through a percentile.
+        False otherwise.
     """
     return np.logical_and(0.0001148 <= (y - x) / x, (y - x) / x < 0.00017857)
 
 
 def lar_less(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x is largely less than y.
 
-    Outputs: true if x is largely less then y.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: x.
+    Returns
+    -------
+    bool
+        True if x is largely less than y, which is defined through a percentile.
+        False otherwise.
     """
     return np.logical_and(0.00017857 <= (y - x) / x, (y - x) / x < 0.00027445)
 
 
 def ext_less(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x is extremely less than y.
 
-    Outputs: true if x is extremely less then y.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: x.
+    Returns
+    -------
+    bool
+        True if x is extremely less than y, which is defined through a percentile.
+        False otherwise.
     """
     return (y - x) / x > 0.00027445
 
 
 def mod_near(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x and y are moderately near to each other.
 
-    Outputs: true if x and y are moderately near.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: max(x,y)
+    Returns
+    -------
+    bool
+        True if x and y are moderately near, which is defined through a percentile.
+        False otherwise.
     """
     return np.logical_and(
         0 < np.abs(x - y) / np.maximum(x, y),
@@ -108,277 +186,678 @@ def mod_near(x: float, y: float) -> bool:
 
 
 def near(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x and y are near to each other.
 
-    Outputs: true if x and y are near.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: max(x,y)
+    Returns
+    -------
+    bool
+        True if x and y are near, which is defined through a percentile.
+        False otherwise.
     """
     return np.abs(x - y) / np.maximum(x, y) <= 0.00017857
 
 
 def near_up(x: float, y: float) -> bool:
-    """Inputs: x and y, floats.
+    """
+    Checks if x and y are near to each other, with x smaller than y.
 
-    Outputs: true if x and y are near, with x < y.
+    Parameters
+    ----------
+    x : float
+    y : float
 
-    NOTE: Normalization: y
+    Returns
+    -------
+    bool
+        True if x and y are near and x is smaller than y, which is defined through a
+        percentile. False otherwise.
     """
     return (y - x) / y < 0.00017857
 
 
 def doji(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is a doji.
 
-    Outputs: true if open == close.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open == close.
     """
     return O == C
 
 
 def short_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle has a short body.
 
-    Outputs: true if bottom of the body is slightly less than the top.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if bottom of the body is slightly less than the top. False otherwise.
     """
     return sli_less(bottom_body(O, C), top_body(O, C))
 
 
 def normal_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle has a normal body.
 
-    Outputs: true if bottom of the body is moderately less than the top.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if bottom of the body is moderately less than the top. False otherwise.
     """
     return mod_less(bottom_body(O, C), top_body(O, C))
 
 
 def tall_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle has a tall body.
 
-    Outputs: true if bottom of the body is largely less than the top.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if bottom of the body is largely less than the top. False otherwise.
     """
     return lar_less(bottom_body(O, C), top_body(O, C))
 
 
 def extall_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle has a extremely tall body.
 
-    Outputs: true if bottom of the body is extremely less than the top.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if bottom of the body is extremely less than the top. False otherwise.
     """
     return ext_less(bottom_body(O, C), top_body(O, C))
 
 
 def no_us(O: float, H: float, C: float) -> bool:
-    """Inputs: open, high and close.
+    """
+    Checks if the candle has no upper shadow.
 
-    Outputs: true if high == the top of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    H : float
+        High.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if high equals the top of the body. False otherwise.
     """
     return H == top_body(O, C)
 
 
 def small_us(O: float, H: float, C: float) -> bool:
-    """Inputs: open, high and close.
+    """
+    Checks if the upper shadow is small.
 
-    Outputs: true if high is slightly greater than the top of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    H : float
+        High.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if high is slightly greater than the top of the body. False otherwise.
     """
     return sli_greater(H, top_body(O, C))
 
 
 def normal_us(O: float, H: float, C: float) -> bool:
-    """Inputs: open, high and close.
+    """
+    Checks if the upper shadow is normal.
 
-    Outputs: true if high is moderately greater than the top of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    H : float
+        High.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if high is moderately greater than the top of the body. False otherwise.
     """
     return mod_greater(H, top_body(O, C))
 
 
 def long_us(O: float, H: float, C: float) -> bool:
-    """Inputs: open, high and close.
+    """
+    Checks if the upper shadow is long.
 
-    Outputs: true if high is largely greater than the top of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    H : float
+        High.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if high is largely greater than the top of the body. False otherwise.
     """
     return lar_greater(H, top_body(O, C))
 
 
 def exlong_us(O: float, H: float, C: float) -> bool:
-    """Inputs: open, high and close.
+    """
+    Checks if the upper shadow is extremely long.
 
-    Outputs: true if high is extremely greater than the top of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    H : float
+        High.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if high is extremely greater than the top of the body. False otherwise.
     """
     return ext_greater(H, top_body(O, C))
 
 
 def no_ls(O: float, L: float, C: float) -> bool:
-    """Inputs: open, low and close.
+    """
+    Checks if the candle has no lower shadow.
 
-    Outputs: true if low == the bottom of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    L : float
+        Low.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if low equals the bottom of the body. False otherwise
     """
     return L == bottom_body(O, C)
 
 
 def small_ls(O: float, L: float, C: float) -> bool:
-    """Inputs: open, low and close.
+    """
+    Checks if the lower shadow is small.
 
-    Outputs: true if low is slightly less than the bottom of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    L : float
+        Low.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if low is slightly less than the bottom of the body. False otherwise.
     """
     return sli_less(L, bottom_body(O, C))
 
 
 def normal_ls(O: float, L: float, C: float) -> bool:
-    """Inputs: open, low and close.
+    """
+    Checks if the lower shadow is normal.
 
-    Outputs: true if low is moderately less than the bottom of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    L : float
+        Low.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if low is moderately less than the bottom of the body. False otherwise.
     """
     return mod_less(L, bottom_body(O, C))
 
 
 def long_ls(O: float, L: float, C: float) -> bool:
-    """Inputs: open, low and close.
+    """
+    Checks if the lower shadow is long.
 
-    Outputs: true if low is largely less than the bottom of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    L : float
+        Low.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if low is largely less than the bottom of the body. False otherwise.
     """
     return lar_less(L, bottom_body(O, C))
 
 
 def exlong_ls(O: float, L: float, C: float) -> bool:
-    """Inputs: open, low and close.
+    """
+    Checks if the lower shadow is extremely long.
 
-    Outputs: true if low is extremely less than the bottom of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    L : float
+        Low.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if low is extremely less than the bottom of the body. False otherwise.
     """
     return ext_less(L, bottom_body(O, C))
 
 
 def top_body(O: float, C: float) -> float:
-    """Inputs: open and close.
+    """
+    Computes the top of the body.
 
-    Outputs: the top of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    float
+        The top of the body, which is the maximum of the open and close.
     """
     return np.maximum(O, C)
 
 
 def bottom_body(O: float, C: float) -> float:
-    """Inputs: open and close.
+    """
+    Computes the bottom of the body.
 
-    Outputs: the bottom of the body.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    float
+        The bottom of the body, which is the minimum of the open and close.
     """
     return np.minimum(O, C)
 
 
-def upper_shadow(O: float, H: float, C: float) -> float:
-    """Inputs: open, high and close.
+def upper_shadow_length(O: float, H: float, C: float) -> float:
+    """
+    Computes the length of the upper shadow.
 
-    Outputs: the length of the upper shadow.
+    Parameters
+    ----------
+    O : float
+        Open.
+    H : float
+        High.
+    C : float
+        Close.
+
+    Returns
+    -------
+    float
+        The length of the upper shadow.
     """
     return H - top_body(O, C)
 
 
-def lower_shadow(O: float, L: float, C: float) -> float:
-    """Inputs: open, low and close.
+def lower_shadow_length(O: float, L: float, C: float) -> float:
+    """
+    Computes the length of the lower shadow.
 
-    Outputs: the length of the lower shadow.
+    Parameters
+    ----------
+    O : float
+        Open.
+    L : float
+        Low.
+    C : float
+        Close.
+
+    Returns
+    -------
+    float
+        The length of the lower shadow.
     """
     return bottom_body(O, C) - L
 
 
-def shadow_length(O: float, H: float, L: float, C: float) -> float:
-    """Inputs: open, high, low and close.
-
-    Outputs: the total length of the shadows.
+def total_shadow_length(O: float, H: float, L: float, C: float) -> float:
     """
-    return upper_shadow(O, H, C) + lower_shadow(O, L, C)
+    Computes the length of both shadows added up.
+
+    Parameters
+    ----------
+    O : float
+        Open.
+    H : float
+        High.
+    L : float
+        Low.
+    C : float
+        Close.
+
+    Returns
+    -------
+    float
+        The total length of the shadows, which is the sum of the upper and lower
+        lengths.
+    """
+    return upper_shadow_length(O, H, C) + lower_shadow_length(O, L, C)
 
 
 def black_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is black.
 
-    Outputs: True if open > close.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open is strictly larger than close. False otherwise.
     """
     return O > C
 
 
 def short_black_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is black and has a short body.
 
-    Outputs: True if open > close and body is small.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open is strictly largar than close and body is short. False otherwise.
     """
     return np.logical_and(O > C, short_body(O, C))
 
 
 def normal_black_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is black and has a normal body.
 
-    Outputs: True if open > close and body is normal.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open is strictly largar than close and body is normal. False otherwise.
     """
     return np.logical_and(O > C, normal_body(O, C))
 
 
 def tall_black_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is black and has a tall body.
 
-    Outputs: True if open > close and body is tall.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open is strictly largar than close and body is tall. False otherwise.
     """
     return np.logical_and(O > C, tall_body(O, C))
 
 
 def extall_black_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is black and has an extremely tall body.
 
-    Outputs: True if open > close and body is extremely tall.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open is strictly largar than close and body is extremely tall.
+        False otherwise.
     """
     return np.logical_and(O > C, extall_body(O, C))
 
 
 def white_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is white.
 
-    Outputs: True if open < close.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open is strictly smaller than close. False otherwise.
     """
     return O < C
 
 
 def short_white_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is white and the body is short.
 
-    Outputs: True if open < close and body is small.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open is strictly smaller than close and body is short. False otherwise.
     """
     return np.logical_and(O < C, short_body(O, C))
 
 
 def normal_white_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is white and the body is normal.
 
-    Outputs: True if open < close and body is normal.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open is strictly smaller than close and body is normal. False otherwise.
     """
     return np.logical_and(O < C, normal_body(O, C))
 
 
 def tall_white_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is white and the body is tall.
 
-    Outputs: True if open < close and body is tall.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open is strictly smaller than close and body is tall. False otherwise.
     """
     return np.logical_and(O < C, tall_body(O, C))
 
 
 def extall_white_body(O: float, C: float) -> bool:
-    """Inputs: open and close.
+    """
+    Checks if the candle is white and the body is extremely tall.
 
-    Outputs: True if open < close and body is extremely tall.
+    Parameters
+    ----------
+    O : float
+        Open.
+    C : float
+        Close.
+
+    Returns
+    -------
+    bool
+        True if open is strictly smaller than close and body is extremely tall.
+        False otherwise.
     """
     return np.logical_and(O < C, extall_body(O, C))
 
 
 def down_shadow_gap(first_L: float, second_H: float) -> bool:
-    """Inputs: first candles low, second candles high.
+    """
+    Checks for a downwards shadow gap between two candles.
 
-    Outputs: True if first low > second high.
+    Parameters
+    ----------
+    first_L : float
+        Low of the first candle.
+    second_H : float
+        High of the second candle.
+
+    Returns
+    -------
+    bool
+        True if the low of the first candle is strictly greater than the high of the
+        second candle. False otherwise.
     """
     return first_L > second_H
 
 
 def up_shadow_gap(first_H: float, second_L: float) -> bool:
-    """Inputs: first candles high, second candles low.
+    """
+    Checks for a downwards shadow gap between two candles.
 
-    Outputs: True if first high < second low.
+    Parameters
+    ----------
+    first_H : float
+        High of the first candle.
+    second_L : float
+        Low of the second candle.
+
+    Returns
+    -------
+    bool
+        True if the high of the first candle is strictly less than the low of the
+        second candle. False otherwise.
     """
     return first_H < second_L
 
@@ -386,9 +865,25 @@ def up_shadow_gap(first_H: float, second_L: float) -> bool:
 def down_body_gap(
     first_O: float, first_C: float, second_O: float, second_C: float
 ) -> bool:
-    """Inputs: first and second open and close.
+    """
+    Checks for a downwards body gap between two candles.
 
-    Outputs: True if first bottom of body > second top of body.
+    Parameters
+    ----------
+    first_O : float
+        Open of the first candle.
+    first_C : float
+        Close of the first candle.
+    second_O : float
+        Open of the second candle.
+    second_C : float
+        Close of the second candle.
+
+    Returns
+    -------
+    bool
+        True if the bottom of the first candles body is strictly greater than the top
+        of the second candles body. False otherwise.
     """
     return bottom_body(first_O, first_C) > top_body(second_O, second_C)
 
@@ -396,8 +891,24 @@ def down_body_gap(
 def up_body_gap(
     first_O: float, first_C: float, second_O: float, second_C: float
 ) -> bool:
-    """Inputs: first and second open and close.
+    """
+    Checks for an upwards body gap between two candles.
 
-    Outputs: True if previous top of body < current bottom of body.
+    Parameters
+    ----------
+    first_O : float
+        Open of the first candle.
+    first_C : float
+        Close of the first candle.
+    second_O : float
+        Open of the second candle.
+    second_C : float
+        Close of the second candle.
+
+    Returns
+    -------
+    bool
+        True if the top of the first candles body is strictly less than the bottom
+        of the second candles body. False otherwise.
     """
     return top_body(first_O, first_C) < bottom_body(second_O, second_C)

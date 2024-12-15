@@ -206,10 +206,12 @@ def advance_block_(candles: np.ndarray, T: np.ndarray) -> bool:
             O_2 < C_1,
             O_2 < O_3,
             O_3 < C_2,
-            cf.shadow_length(O_2, H_2, L_2, C_2) > cf.hb(O_2, C_2),
-            cf.shadow_length(O_3, H_3, L_3, C_3) > cf.hb(O_3, C_3),
-            cf.shadow_length(O_2, H_2, L_2, C_2) > cf.shadow_length(O_1, H_1, L_1, C_1),
-            cf.shadow_length(O_3, H_3, L_3, C_3) > cf.shadow_length(O_1, H_1, L_1, C_1),
+            cf.total_shadow_length(O_2, H_2, L_2, C_2) > cf.body_height(O_2, C_2),
+            cf.total_shadow_length(O_3, H_3, L_3, C_3) > cf.body_height(O_3, C_3),
+            cf.total_shadow_length(O_2, H_2, L_2, C_2)
+            > cf.total_shadow_length(O_1, H_1, L_1, C_1),
+            cf.total_shadow_length(O_3, H_3, L_3, C_3)
+            > cf.total_shadow_length(O_1, H_1, L_1, C_1),
         )
     )
 
@@ -235,10 +237,12 @@ def advance_block_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
             O_2 < C_1,
             O_2 < O_3,
             O_3 < C_2,
-            cf.shadow_length(O_2, H_2, L_2, C_2) > cf.hb(O_2, C_2),
-            cf.shadow_length(O_3, H_3, L_3, C_3) > cf.hb(O_3, C_3),
-            cf.shadow_length(O_2, H_2, L_2, C_2) > cf.shadow_length(O_1, H_1, L_1, C_1),
-            cf.shadow_length(O_3, H_3, L_3, C_3) > cf.shadow_length(O_1, H_1, L_1, C_1),
+            cf.total_shadow_length(O_2, H_2, L_2, C_2) > cf.body_height(O_2, C_2),
+            cf.total_shadow_length(O_3, H_3, L_3, C_3) > cf.body_height(O_3, C_3),
+            cf.total_shadow_length(O_2, H_2, L_2, C_2)
+            > cf.total_shadow_length(O_1, H_1, L_1, C_1),
+            cf.total_shadow_length(O_3, H_3, L_3, C_3)
+            > cf.total_shadow_length(O_1, H_1, L_1, C_1),
         )
     )
 
@@ -265,10 +269,12 @@ def advance_block_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
             O_2 < C_1,
             O_2 < O_3,
             O_3 < C_2,
-            cf.shadow_length(O_2, H_2, L_2, C_2) > cf.hb(O_2, C_2),
-            cf.shadow_length(O_3, H_3, L_3, C_3) > cf.hb(O_3, C_3),
-            cf.shadow_length(O_2, H_2, L_2, C_2) > cf.shadow_length(O_1, H_1, L_1, C_1),
-            cf.shadow_length(O_3, H_3, L_3, C_3) > cf.shadow_length(O_1, H_1, L_1, C_1),
+            cf.total_shadow_length(O_2, H_2, L_2, C_2) > cf.body_height(O_2, C_2),
+            cf.total_shadow_length(O_3, H_3, L_3, C_3) > cf.body_height(O_3, C_3),
+            cf.total_shadow_length(O_2, H_2, L_2, C_2)
+            > cf.total_shadow_length(O_1, H_1, L_1, C_1),
+            cf.total_shadow_length(O_3, H_3, L_3, C_3)
+            > cf.total_shadow_length(O_1, H_1, L_1, C_1),
         )
     )
 
@@ -1656,7 +1662,7 @@ def three_stars_in_the_south_(candles: np.ndarray, T: np.ndarray) -> bool:
             cf.tall_black_body(O_3, C_3),
             cf.long_ls(O_1, L_1, C_1),
             L_1 < L_2,
-            cf.hb(O_1, C_1) > cf.hb(O_2, C_2),
+            cf.body_height(O_1, C_1) > cf.body_height(O_2, C_2),
             cf.no_us(O_3, H_3, C_3),
             cf.no_ls(O_3, L_3, C_3),
             H_2 > H_3,
@@ -1685,7 +1691,7 @@ def three_stars_in_the_south_no_trend(candles: np.ndarray, T: np.ndarray) -> boo
             cf.tall_black_body(O_3, C_3),
             cf.long_ls(O_1, L_1, C_1),
             L_1 < L_2,
-            cf.hb(O_1, C_1) > cf.hb(O_2, C_2),
+            cf.body_height(O_1, C_1) > cf.body_height(O_2, C_2),
             cf.no_us(O_3, H_3, C_3),
             cf.no_ls(O_3, L_3, C_3),
             H_2 > H_3,
@@ -1715,7 +1721,7 @@ def three_stars_in_the_south_opp_trend(candles: np.ndarray, T: np.ndarray) -> bo
             cf.tall_black_body(O_3, C_3),
             cf.long_ls(O_1, L_1, C_1),
             L_1 < L_2,
-            cf.hb(O_1, C_1) > cf.hb(O_2, C_2),
+            cf.body_height(O_1, C_1) > cf.body_height(O_2, C_2),
             cf.no_us(O_3, H_3, C_3),
             cf.no_ls(O_3, L_3, C_3),
             H_2 > H_3,
