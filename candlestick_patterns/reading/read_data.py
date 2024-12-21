@@ -7,6 +7,8 @@ from aggregation import aggregate
 from calibration import calibration
 from trend import trend_calculation
 
+pd.set_option("mode.copy_on_write", True)
+
 
 def read_and_preprocess(
     filename: str, interval_minutes: int = 1
