@@ -60,12 +60,15 @@ def read_and_preprocess(
     df["gap"] = df.index.astype(np.int64) // 10**9
     df["gap"] = (df["gap"] - df["gap"].shift(1)) // 60 > interval_minutes
 
-    percentiles = calibration.calculate_percentiles(df.to_numpy())
+    reference_set = df[df.index < "2007-01-01"]
+    main_set = df[df.index >= "2007-01-01"]
 
-    df["5_MA"] = df["close"].rolling(5).mean()
+    percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
+
+    main_set["5_MA"] = main_set["close"].rolling(5).mean()
     # 7 consecutive increases/decreases in moving average for trend to be defined
-    df["trend"] = (
-        df["5_MA"]
+    main_set["trend"] = (
+        main_set["5_MA"]
         .rolling(7)
         .apply(
             trend_calculation.monotonic,
@@ -73,10 +76,10 @@ def read_and_preprocess(
             engine="numba",
         )
     )
-    del df["5_MA"]
+    del main_set["5_MA"]
 
     print(
         f"Reading and handling data done in {round(time.perf_counter()-t,2):<3.2f}s",
         end="\n\n",
     )
-    return df, percentiles
+    return main_set, percentiles
