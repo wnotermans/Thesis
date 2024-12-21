@@ -165,3 +165,4 @@ candlestick_patterns/utility/test.*
 Thesis/.Rproj.user/
 Thesis/_book/
 .Rproj.user
+candlestick_patterns/*.txt
