@@ -23,12 +23,16 @@ def aggregate(df: pd.DataFrame, interval_minutes: int = 5) -> pd.DataFrame:
     """
     if interval_minutes == 1:
         return df
-    return df.resample(f"{interval_minutes}min", label="right").agg(
-        {
-            "open": "first",
-            "high": "max",
-            "low": "min",
-            "close": "last",
-            "volume": "sum",
-        }
+    return (
+        df.resample(f"{interval_minutes}min", label="right")
+        .agg(
+            {
+                "open": "first",
+                "high": "max",
+                "low": "min",
+                "close": "last",
+                "volume": "sum",
+            }
+        )
+        .dropna()  # .agg() fills in missing times with NaNs
     )
