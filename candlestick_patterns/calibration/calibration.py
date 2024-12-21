@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def calculate_percentiles(df: np.ndarray) -> tuple[list, list, list]:
+def calculate_percentiles(df: np.ndarray) -> tuple[list, list, list, list]:
     """
     Calculates the percentiles of the data for calibration.
 
@@ -13,14 +13,12 @@ def calculate_percentiles(df: np.ndarray) -> tuple[list, list, list]:
     Returns
     -------
     tuple
-        A tuple containing a list of the 10th, 30th, and 70th percentiles for the
-        following: body length, upper shadow length, and lower shadow length,
-        respectively. These percentiles correspond to the ones given in
-        "The Classification of Candlestick Charts: Laying the Foundation for Further
-        Empirical Research" by Etschberger et al.
+        A tuple containing lists of the 10th, 30th, and 70th percentiles for the
+        black and white candles, as well as lists of the 10th, 30th, 70th and 90th
+        percentiles of the upper and lower shadows.
     """
 
-    def hb(O: float, C: float) -> float:
+    def body_length(O: float, C: float) -> float:
         return np.abs(O / C - 1)
 
     def top_body(O: float, C: float) -> float:
@@ -29,18 +27,23 @@ def calculate_percentiles(df: np.ndarray) -> tuple[list, list, list]:
     def bottom_body(O: float, C: float) -> float:
         return np.minimum(O, C)
 
-    def upper_shadow(O: float, H: float, C: float) -> float:
+    def upper_shadow_length(O: float, H: float, C: float) -> float:
         return H - top_body(O, C)
 
-    def lower_shadow(O: float, L: float, C: float) -> float:
+    def lower_shadow_length(O: float, L: float, C: float) -> float:
         return bottom_body(O, C) - L
 
     O = df[:, 0]
     H = df[:, 1]
     L = df[:, 2]
     C = df[:, 3]
+
+    black_idx = O > C
+    white_idx = C > O
+
     return (
-        np.nanpercentile(hb(O, C), [10, 30, 70]),
-        np.nanpercentile(upper_shadow(O, H, C), [10, 30, 70]),
-        np.nanpercentile(lower_shadow(O, L, C), [10, 30, 70]),
+        np.percentile(body_length(O[black_idx], C[black_idx]), [10, 30, 70]),
+        np.percentile(body_length(O[white_idx], C[white_idx]), [10, 30, 70]),
+        np.percentile(upper_shadow_length(O, H, C), [10, 30, 70, 90]),
+        np.percentile(lower_shadow_length(O, L, C), [10, 30, 70, 90]),
     )
