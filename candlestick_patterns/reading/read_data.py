@@ -1,5 +1,6 @@
 import time
 
+import numpy as np
 import pandas as pd
 
 from aggregation import aggregate
@@ -21,7 +22,7 @@ def read_and_preprocess(
     ----------
     filename : str
         Filename of the data to read on disk.
-    agg_interval : int, optional, default 1:
+    interval_minutes : int, optional, default 1:
         Number of minutes over which the data will be aggregated. The default, 1,
         performs no aggregation.
 
@@ -33,29 +34,33 @@ def read_and_preprocess(
         A tuple with the 10th/30th/70th percentiles of the real body, upper and lower
         shadows, respectively.
     """
-
     print("Reading and handling data", end="\r")
     t = time.perf_counter()
 
     df = pd.read_parquet(f"../data/{filename}.parquet")
     df["datetime"] = pd.to_datetime(df["datetime"])
     df = df.set_index("datetime")  # set datetime as index for mplfinance and filtering
-    print(f"Reading and handling data done in {round(time.time()-t,2):<3.2f}s")
+    unique_dates = sorted(set(df.index.date))
+    time_idx = pd.concat(
+        [
+            pd.date_range(
+                start=f"{date} 09:30:00", end=f"{date} 16:00:00", freq="min"
+            ).to_series()
+            for date in unique_dates
+        ]
+    )
+    df = df.reindex(time_idx)
+    df = df.interpolate(method="linear")
+    df = df.round({"open": 3, "high": 3, "low": 3, "close": 3, "volume": 0})
 
-    df = aggregate.aggregate(df, agg_interval)
+    df = aggregate.aggregate(df, interval_minutes)
 
-    print("Calibrating percentiles", end="\r")
-    t = time.time()
+    df["gap"] = df.index.astype(np.int64) // 10**9
+    df["gap"] = (df["gap"] - df["gap"].shift(1)) // 60 > interval_minutes
+
     percentiles = calibration.calculate_percentiles(df.to_numpy())
-    print(f"Calibrating percentiles done in {round(time.time()-t,2):<3.2f}s")
 
-    print("Calculating moving average", end="\r")
-    t = time.time()
     df["5_MA"] = df["close"].rolling(5).mean()
-    print(f"Calculating moving average done in {round(time.time()-t,2):<3.2f}s")
-
-    print("Calculating trend", end="\r")
-    t = time.time()
     # 7 consecutive increases/decreases in moving average for trend to be defined
     df["trend"] = (
         df["5_MA"]
