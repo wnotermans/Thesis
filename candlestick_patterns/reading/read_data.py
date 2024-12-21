@@ -7,7 +7,9 @@ from calibration import calibration
 from trend import trend_calculation
 
 
-def run(filename: str, agg_interval: int = 1) -> pd.DataFrame | tuple:
+def read_and_preprocess(
+    filename: str, interval_minutes: int = 1
+) -> pd.DataFrame | tuple:
     """
     Read the data from disk and perform some basic operations on it.
 

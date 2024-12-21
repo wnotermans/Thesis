@@ -20,7 +20,7 @@ from detection.patterns import (
 from detection.patterns.functions import candlestick_functions as cf
 
 
-def run(df: pd.DataFrame) -> None:
+def detection(df: pd.DataFrame) -> None:
     """
     Performs pattern detection.
 
