@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
-from scipy.stats import binomtest, ttest_1samp
+from scipy.stats import binomtest
 
 
 def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
@@ -24,12 +24,12 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
     Returns
     -------
     None
-        Win %, average profit, "less", "greater" and "two-sided" binomial tests to disk.
+        Win %, "less" and "greater" binomial tests to disk.
     """
     del df["close"], df["trend"], df["volume"]
 
-    HL_array = df[["high", "low"]].to_numpy()
-    nticks = 40
+    HL_ARRAY = df[["high", "low"]].to_numpy()
+    percent = 1
 
     total_time = time.perf_counter()
 
@@ -102,7 +102,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                     O = df.loc[patidx, "open"]
 
                     evallist.append(
-                        find_first_breakthrough(HL_array, O, openidx, len(df), nticks)
+                        find_first_breakthrough(HL_ARRAY, O, openidx, len(df), percent)
                     )
 
                 evallist = np.array(evallist)
@@ -110,13 +110,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                     str(
                         [
                             f"{round(100*np.nansum(evallist)/len(evallist),2):>2.2f}%",
-                            f"${round(
-                            0.25
-                            * nticks
-                            * (2 * np.nansum(evallist) - len(evallist))
-                            / len(evallist),
-                            2,
-                        ):>2.2f}",
                         ]
                     )
                 ]
@@ -140,31 +133,14 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                     6,
                 )
                 downtest = [f"{downtest} (*)" if downtest < 0.05 else str(downtest)]
-                bothtest = round(
-                    binomtest(
-                        int(np.nansum(evallist)),
-                        len(evallist),
-                        p=0.5,
-                        alternative="two-sided",
-                    ).pvalue,
-                    6,
-                )
-                bothtest = [f"{bothtest} (*)" if bothtest < 0.05 else str(bothtest)]
 
                 pa.parquet.write_table(
                     pa.table(
-                        {
-                            "evaluation": evalstr,
-                            "uptest": uptest,
-                            "downtest": downtest,
-                            "bothtest": bothtest,
-                        }
+                        {"evaluation": evalstr, "uptest": uptest, "downtest": downtest}
                     ),
                     f"../data/evaluation/{number}/{pattern}",
                     compression="LZ4",
                 )
-
-            i += 1
 
         print()
         print(
@@ -180,16 +156,15 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
 
 
 @numba.jit
-def find_first_breakthrough(HL_array, O, openidx, limit, nticks):
+def find_first_breakthrough(HL_array, O, openidx, limit, percent):
     for idx in range(openidx, limit):
-        if (
-            HL_array[idx, 0] >= O + 0.25 * nticks
-            and HL_array[idx, 1] <= O - 0.25 * nticks
+        if HL_array[idx, 0] >= O * (1 + percent / 100) and HL_array[idx, 1] <= O * (
+            1 - percent / 100
         ):
             return np.nan
-        if HL_array[idx, 0] >= O + 0.25 * nticks:
+        if HL_array[idx, 0] >= O * (1 + percent / 100):
             return 1
-        if HL_array[idx, 1] <= O - 0.25 * nticks:
+        if HL_array[idx, 1] <= O * (1 - percent / 100):
             return 0
     return np.nan
 
