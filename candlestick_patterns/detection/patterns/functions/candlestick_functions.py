@@ -663,7 +663,7 @@ def short_black_body(O: float, C: float) -> bool:
     Returns
     -------
     bool
-        True if open is strictly largar than close and body is short. False otherwise.
+        True if open is strictly larger than close and body is short. False otherwise.
     """
     return np.logical_and(O > C, short_body(O, C))
 
@@ -682,7 +682,7 @@ def normal_black_body(O: float, C: float) -> bool:
     Returns
     -------
     bool
-        True if open is strictly largar than close and body is normal. False otherwise.
+        True if open is strictly larger than close and body is normal. False otherwise.
     """
     return np.logical_and(O > C, normal_body(O, C))
 
@@ -701,7 +701,7 @@ def tall_black_body(O: float, C: float) -> bool:
     Returns
     -------
     bool
-        True if open is strictly largar than close and body is tall. False otherwise.
+        True if open is strictly larger than close and body is tall. False otherwise.
     """
     return np.logical_and(O > C, tall_body(O, C))
 
@@ -720,7 +720,7 @@ def extall_black_body(O: float, C: float) -> bool:
     Returns
     -------
     bool
-        True if open is strictly largar than close and body is extremely tall.
+        True if open is strictly larger than close and body is extremely tall.
         False otherwise.
     """
     return np.logical_and(O > C, extall_body(O, C))
