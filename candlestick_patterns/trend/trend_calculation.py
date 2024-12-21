@@ -16,14 +16,20 @@ def monotonic(C: list) -> int:
     int
         1 if the list is strictly increasing, -1 if strictly decreasing, 0 otherwise.
     """
+    increasing, decreasing = False, False
+
     for i in range(len(C)):
-        if C[i] >= C[i + 1]:
-            break
-        if i == len(C) - 1:
-            return 1
-    for i in range(len(C)):
-        if C[i] <= C[i + 1]:
-            break
-        if i == len(C) - 1:
-            return -1
-    return 0
+        if C[i + 1] > C[i]:
+            increasing = True
+        elif C[i + 1] < C[i]:
+            decreasing = True
+        else:
+            return 0
+
+        if increasing and decreasing:
+            return 0
+
+    if increasing:
+        return 1
+    elif decreasing:
+        return -1
