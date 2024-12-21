@@ -1,7 +1,8 @@
 import numpy as np
+from scipy.stats import ks_2samp
 
 
-def calculate_percentiles(df: np.ndarray) -> tuple[list, list, list, list]:
+def calculate_percentiles(df: np.ndarray) -> tuple:
     """
     Calculates the percentiles of the data for calibration.
 
@@ -14,7 +15,9 @@ def calculate_percentiles(df: np.ndarray) -> tuple[list, list, list, list]:
     -------
     tuple
         A tuple containing lists of the 10th, 30th, and 70th percentiles for the
-        black and white candles, as well as lists of the 10th, 30th, 70th and 90th
+        body lengths, split up into black and white candles separately if the lengths do
+        not come from the same distribution (tested with a two-sample
+        Kolmogorov-Smirnov test), as well as lists of the 10th, 30th, 70th and 90th
         percentiles of the upper and lower shadows.
     """
 
@@ -41,9 +44,19 @@ def calculate_percentiles(df: np.ndarray) -> tuple[list, list, list, list]:
     black_idx = O > C
     white_idx = C > O
 
-    return (
-        np.percentile(body_length(O[black_idx], C[black_idx]), [10, 30, 70]),
-        np.percentile(body_length(O[white_idx], C[white_idx]), [10, 30, 70]),
-        np.percentile(upper_shadow_length(O, H, C), [10, 30, 70, 90]),
-        np.percentile(lower_shadow_length(O, L, C), [10, 30, 70, 90]),
-    )
+    black_length = np.abs(O[black_idx] / C[black_idx] - 1)
+    white_length = np.abs(O[white_idx] / C[white_idx] - 1)
+
+    if ks_2samp(black_length, white_length).pvalue < 0.05:
+        return (
+            np.percentile(body_length(O[black_idx], C[black_idx]), [10, 30, 70]),
+            np.percentile(body_length(O[white_idx], C[white_idx]), [10, 30, 70]),
+            np.percentile(upper_shadow_length(O, H, C), [10, 30, 70, 90]),
+            np.percentile(lower_shadow_length(O, L, C), [10, 30, 70, 90]),
+        )
+    else:
+        return (
+            np.percentile(body_length(O, C), [10, 30, 70]),
+            np.percentile(upper_shadow_length(O, H, C), [10, 30, 70, 90]),
+            np.percentile(lower_shadow_length(O, L, C), [10, 30, 70, 90]),
+        )
