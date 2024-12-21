@@ -36,9 +36,7 @@ def make_summary(filename: str) -> None:
         "Number detected",
         "Signal type",
     ]
-    field_names.extend(
-        ["Buy evaluation", "Binomial test >", "Binomial test <", "Binomial test < >"]
-    )
+    field_names.extend(["Buy evaluation", "Binomial test >", "Binomial test <"])
     table.field_names = field_names
     table.align["Pattern"] = "l"
     table.align["Number detected"] = "r"
@@ -178,7 +176,7 @@ def make_summary(filename: str) -> None:
                 [
                     x
                     for x in pq.read_table(f"../data/evaluation/{number}/{pattern}")
-                    .to_pandas()[["evaluation", "uptest", "downtest", "bothtest"]]
+                    .to_pandas()[["evaluation", "uptest", "downtest"]]
                     .iloc[0]
                     .values
                 ]
