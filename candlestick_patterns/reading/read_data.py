@@ -51,9 +51,11 @@ def read_and_preprocess(
             for date in unique_dates
         ]
     )
-    df = df.reindex(time_idx)
-    df = df.interpolate(method="linear")
-    df = df.round({"open": 3, "high": 3, "low": 3, "close": 3, "volume": 0})
+    df = (
+        df.reindex(time_idx)
+        .interpolate(method="linear")
+        .round({"open": 3, "high": 3, "low": 3, "close": 3, "volume": 0})
+    )
 
     df = aggregate.aggregate(df, interval_minutes)
 
