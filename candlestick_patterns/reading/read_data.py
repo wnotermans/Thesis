@@ -35,7 +35,8 @@ def read_and_preprocess(
     """
 
     print("Reading and handling data", end="\r")
-    t = time.time()
+    t = time.perf_counter()
+
     df = pd.read_parquet(f"../data/{filename}.parquet")
     df["datetime"] = pd.to_datetime(df["datetime"])
     df = df.set_index("datetime")  # set datetime as index for mplfinance and filtering
@@ -66,5 +67,9 @@ def read_and_preprocess(
         )
     )
     del df["5_MA"]
-    print(f"Calculating trend done in {round(time.time()-t,2):<3.2f}s", end="\n\n")
+
+    print(
+        f"Reading and handling data done in {round(time.perf_counter()-t,2):<3.2f}s",
+        end="\n\n",
+    )
     return df, percentiles

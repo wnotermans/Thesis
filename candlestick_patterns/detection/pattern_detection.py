@@ -34,8 +34,7 @@ def detection(df: pd.DataFrame) -> None:
     None
         Outputs the 309 candlestick patterns to disk in `.parquet` format.
     """
-
-    total_time = time.time()
+    total_time = time.perf_counter()
 
     column_dict = {
         f"{col}_{shift}": df[col].shift(shift).values
@@ -89,11 +88,10 @@ def detection(df: pd.DataFrame) -> None:
             if callable(attr):
                 pattern_funcs.append(name)
 
-        i = 1
         num_funcs = len(pattern_funcs)
 
-        t = time.time()
-        for func_name in pattern_funcs:
+        t = time.perf_counter()
+        for i, func_name in enumerate(pattern_funcs):
 
             try:
                 os.remove(f"../data/patterns/{number}/{func_name}.parquet")
@@ -102,8 +100,8 @@ def detection(df: pd.DataFrame) -> None:
 
             print(
                 f"Detecting {func_name:<54} | "
-                + f"{'#'*(50*i//num_funcs):<50} "
-                + f"({i:>3}/{num_funcs})",
+                + f"{'#'*(50*(i+1)//num_funcs):<50} "
+                + f"({i+1:>3}/{num_funcs})",
                 end="\r",
             )
 
@@ -116,16 +114,14 @@ def detection(df: pd.DataFrame) -> None:
                 compression="LZ4",
             )
 
-            i += 1
-
         print()
         print(
             f"Detecting patterns with {number} candlestick(s): "
-            + f"Done in {round(time.time()-t,2):<3.2f}s.",
+            + f"Done in {round(time.perf_counter()-t,2):<3.2f}s.",
             end="\n\n",
         )
 
     print(
-        f"All done. Total detection time: {round(time.time()-total_time,2)}s",
+        f"All done. Total detection time: {round(time.perf_counter()-total_time,2)}s",
         end="\n\n",
     )

@@ -26,7 +26,7 @@ def make_summary(filename: str) -> None:
     None
         `filename`.txt to disk.
     """
-    t = time.time()
+    t = time.perf_counter()
     print("Making summary table", end="\r")
 
     table = PrettyTable()
@@ -55,8 +55,7 @@ def make_summary(filename: str) -> None:
         "twelve",
         "thirteen",
     ]:
-        i = 1
-        for pattern in os.listdir(f"../data/patterns/{number}"):
+        for div, pattern in enumerate(os.listdir(f"../data/patterns/{number}")):
             row = [
                 f"{pattern.removesuffix(".parquet").replace("_"," ")}",
                 w2n.word_to_num(number),
@@ -186,11 +185,13 @@ def make_summary(filename: str) -> None:
             )
             table.add_row(
                 row,
-                divider=(i % 3 == 0),
+                divider=((div + 1) % 3 == 0),
             )
-            i += 1
 
     with open(filename, "w") as f:
         f.write(str(table))
 
-    print(f"Making summary table done in {round(time.time()-t,2):>3.2f}s", end="\n\n")
+    print(
+        f"Making summary table done in {round(time.perf_counter()-t,2):>3.2f}s",
+        end="\n\n",
+    )

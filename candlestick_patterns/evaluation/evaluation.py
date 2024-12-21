@@ -31,7 +31,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
     HL_array = df[["high", "low"]].to_numpy()
     nticks = 40
 
-    total_time = time.time()
+    total_time = time.perf_counter()
 
     for number in [
         "one",
@@ -46,11 +46,10 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
         "thirteen",
     ]:
         print(f"Candlestick patterns with {number} candlestick(s)")
-        i = 1
         n = len(os.listdir(f"../data/patterns/{number}"))
-        t = time.time()
+        t = time.perf_counter()
 
-        for pattern in os.listdir(f"../data/patterns/{number}"):
+        for i, pattern in enumerate(os.listdir(f"../data/patterns/{number}")):
 
             try:
                 os.remove(f"../data/evaluation/{number}/{pattern}")
@@ -59,8 +58,8 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
 
             print(
                 f"Evaluating {pattern:<54} | "
-                + f"{'#'*(50*i//n):<50} "
-                + f"({i:>3}/{n})",
+                + f"{'#'*(50*(i+1)//n):<50} "
+                + f"({i+1:>3}/{n})",
                 end="\r",
             )
 
@@ -170,12 +169,12 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
         print()
         print(
             f"Evaluating patterns with {number} candlestick(s): "
-            + f"Done in {round(time.time()-t,2):<3.2f}s.",
+            + f"Done in {round(time.perf_counter()-t,2):<3.2f}s.",
             end="\n\n",
         )
 
     print(
-        f"All done. Total evaluation time: {round(time.time()-total_time,2)}s",
+        f"All done. Total evaluation time: {round(time.perf_counter()-total_time,2)}s",
         end="\n\n",
     )
 
@@ -201,7 +200,7 @@ def n_holding_periods(df):
     shifted_closes = {f"close_{n}": df["close_0"].shift(-n) for n in range(1, 10)}
     df = pd.concat([df, pd.DataFrame(shifted_closes, index=df.index)], axis=1)
 
-    total_time = time.time()
+    total_time = time.perf_counter()
 
     for number in [
         "one",
@@ -218,7 +217,7 @@ def n_holding_periods(df):
         print(f"Candlestick patterns with {number} candlestick(s)")
         i = 1
         n = len(os.listdir(f"../data/patterns/{number}"))
-        t = time.time()
+        t = time.perf_counter()
 
         for pattern in os.listdir(f"../data/patterns/{number}"):
 
@@ -306,11 +305,11 @@ def n_holding_periods(df):
         print()
         print(
             f"Evaluating patterns with {number} candlestick(s): "
-            + f"Done in {round(time.time()-t,2):<3.2f}s.",
+            + f"Done in {round(time.perf_counter()-t,2):<3.2f}s.",
             end="\n\n",
         )
 
     print(
-        f"All done. Total evaluation time: {round(time.time()-total_time,2)}s",
+        f"All done. Total evaluation time: {round(time.perf_counter()-total_time,2)}s",
         end="\n\n",
     )
