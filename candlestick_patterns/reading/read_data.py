@@ -17,8 +17,11 @@ def read_and_preprocess(
     Read the data from disk and perform some basic operations on it.
 
     Reads data in `.parquet` format and sets a datetimeindex, which is useful for time
-    filtering or making plots with mplfinance. Next, if the parameter for aggregation is
-    passed, aggregates the data. Finally, calculates moving averages and trend.
+    filtering or making plots with mplfinance. Filters data to US market time
+    (09:30-16:00). Next, if the parameter for aggregation is passed, aggregates the
+    data. Calculates gaps in the data and splits it into a reference and main set.
+    Calculates percentiles of body and shadow length on the referce set.
+    Finally, calculates moving averages and trend.
 
     Parameters
     ----------
@@ -31,17 +34,19 @@ def read_and_preprocess(
     Returns
     -------
     pd.DataFrame
-        A dataframe with datetime index, with an added "trend" column.
+        The main dataset (starting 01/01/2007) with datetime index, with added "trend"
+        and "gap" columns.
     tuple
-        A tuple with the 10th/30th/70th percentiles of the real body, upper and lower
-        shadows, respectively.
+        A tuple with the 10th/30th/70th percentiles of the real body (split between
+        black and white if it fails the Kolmogorov-Smirnov test);
+        10th/30th/70th/90th percentiles for upper and lower shadow length, respectively.
     """
     print("Reading and handling data", end="\r")
     t = time.perf_counter()
 
     df = pd.read_parquet(f"../data/{filename}.parquet")
     df["datetime"] = pd.to_datetime(df["datetime"])
-    df = df.set_index("datetime")  # set datetime as index for mplfinance and filtering
+    df = df.set_index("datetime")
     unique_dates = sorted(set(df.index.date))
     time_idx = pd.concat(
         [
@@ -52,7 +57,7 @@ def read_and_preprocess(
         ]
     )
     df = (
-        df.reindex(time_idx)
+        df.reindex(time_idx)  # filters to US market time and adds NaNs for missing data
         .interpolate(method="linear")
         .round({"open": 3, "high": 3, "low": 3, "close": 3, "volume": 0})
     )
