@@ -7,7 +7,7 @@ from summary import summary_table
 
 
 def main():
-    t = time.time()
+    t = time.perf_counter()
     print(
         """
  _____                                                                                                                   _____ 
@@ -48,7 +48,7 @@ def main():
         evaluation.stop_loss_take_profit_evaluation(df)
         print(" Summary table ".center(127, "#"), end="\n\n")
         summary_table.make_summary(f"summary_{data}_{interval_minutes}_minutes.txt")
-    print(f" All done in {round(time.time()-t,2):>3.2f}s ".center(127, "#"))
+    print(f" All done in {round(time.perf_counter()-t,2):>3.2f}s ".center(127, "#"))
 
 
 if __name__ == "__main__":
