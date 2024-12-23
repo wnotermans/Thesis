@@ -94,7 +94,7 @@ def detection(df: pd.DataFrame) -> None:
         for i, func_name in enumerate(pattern_funcs):
 
             try:
-                os.remove(f"../data/patterns/{number}/{func_name}.parquet")
+                os.remove(f"data/patterns/{number}/{func_name}.parquet")
             except FileNotFoundError:
                 pass
 
@@ -110,7 +110,7 @@ def detection(df: pd.DataFrame) -> None:
 
             pa.parquet.write_table(
                 pa.table({f"{func_name}": pat}),
-                f"../data/patterns/{number}/{func_name}.parquet",
+                f"data/patterns/{number}/{func_name}.parquet",
                 compression="LZ4",
             )
 

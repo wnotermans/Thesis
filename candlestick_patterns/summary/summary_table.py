@@ -53,11 +53,11 @@ def make_summary(filename: str) -> None:
         "twelve",
         "thirteen",
     ]:
-        for div, pattern in enumerate(os.listdir(f"../data/patterns/{number}")):
+        for div, pattern in enumerate(os.listdir(f"data/patterns/{number}")):
             row = [
                 f"{pattern.removesuffix(".parquet").replace("_"," ")}",
                 w2n.word_to_num(number),
-                pq.read_table(f"../data/patterns/{number}/{pattern}")
+                pq.read_table(f"data/patterns/{number}/{pattern}")
                 .to_pandas()
                 .sum()
                 .values[0],
@@ -175,7 +175,7 @@ def make_summary(filename: str) -> None:
             row.extend(
                 [
                     x
-                    for x in pq.read_table(f"../data/evaluation/{number}/{pattern}")
+                    for x in pq.read_table(f"data/evaluation/{number}/{pattern}")
                     .to_pandas()[["evaluation", "uptest", "downtest"]]
                     .iloc[0]
                     .values

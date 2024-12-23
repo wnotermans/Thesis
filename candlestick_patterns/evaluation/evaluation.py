@@ -46,13 +46,13 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
         "thirteen",
     ]:
         print(f"Candlestick patterns with {number} candlestick(s)")
-        n = len(os.listdir(f"../data/patterns/{number}"))
+        n = len(os.listdir(f"data/patterns/{number}"))
         t = time.perf_counter()
 
-        for i, pattern in enumerate(os.listdir(f"../data/patterns/{number}")):
+        for i, pattern in enumerate(os.listdir(f"data/patterns/{number}")):
 
             try:
-                os.remove(f"../data/evaluation/{number}/{pattern}")
+                os.remove(f"data/evaluation/{number}/{pattern}")
             except FileNotFoundError:
                 pass
 
@@ -64,7 +64,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
             )
 
             n_detected = (
-                pq.read_table(f"../data/patterns/{number}/{pattern}")
+                pq.read_table(f"data/patterns/{number}/{pattern}")
                 .to_pandas()
                 .sum()
                 .values[0]
@@ -79,14 +79,14 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                             "bothtest": "/",
                         }
                     ),
-                    f"../data/evaluation/{number}/{pattern}",
+                    f"data/evaluation/{number}/{pattern}",
                     compression="LZ4",
                 )
 
             else:
 
                 df["pat"] = (
-                    pq.read_table(f"../data/patterns/{number}/{pattern}")
+                    pq.read_table(f"data/patterns/{number}/{pattern}")
                     .to_pandas()
                     .set_index(df.index)
                     .shift(1)
@@ -138,7 +138,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                     pa.table(
                         {"evaluation": evalstr, "uptest": uptest, "downtest": downtest}
                     ),
-                    f"../data/evaluation/{number}/{pattern}",
+                    f"data/evaluation/{number}/{pattern}",
                     compression="LZ4",
                 )
 

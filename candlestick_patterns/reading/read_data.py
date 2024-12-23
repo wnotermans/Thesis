@@ -44,7 +44,7 @@ def read_and_preprocess(
     print("Reading and handling data", end="\r")
     t = time.perf_counter()
 
-    df = pd.read_parquet(f"../data/{filename}.parquet")
+    df = pd.read_parquet(f"data/{filename}.parquet")
     df["datetime"] = pd.to_datetime(df["datetime"])
     df = df.set_index("datetime")
     unique_dates = sorted(set(df.index.date))
