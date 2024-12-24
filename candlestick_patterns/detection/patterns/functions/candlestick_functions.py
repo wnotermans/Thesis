@@ -28,6 +28,8 @@ def sli_greater(x: float, y: float) -> bool:
     ----------
     x : float
     y : float
+    percentile : tuple
+        Tuple of length percentiles
 
     Returns
     -------
@@ -46,6 +48,8 @@ def mod_greater(x: float, y: float) -> bool:
     ----------
     x : float
     y : float
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
@@ -231,11 +235,13 @@ def doji(O: float, C: float) -> bool:
         Open.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if open == close.
+        True if length of the body is in the appropiate percentile. False otherwise.
     """
     return O == C
 
@@ -250,12 +256,12 @@ def short_body(O: float, C: float) -> bool:
         Open.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if bottom of the body is slightly less than the top. False otherwise.
-    """
     return sli_less(bottom_body(O, C), top_body(O, C))
 
 
@@ -312,13 +318,15 @@ def extall_body(O: float, C: float) -> bool:
     -------
     bool
         True if bottom of the body is extremely less than the top. False otherwise.
+        True if length of the body is between the appropiate percentiles.
+        False otherwise.
     """
     return ext_less(bottom_body(O, C), top_body(O, C))
 
 
 def no_us(O: float, H: float, C: float) -> bool:
     """
-    Checks if the candle has no upper shadow.
+    Checks if the candle has (almost) no upper shadow.
 
     Parameters
     ----------
@@ -328,11 +336,14 @@ def no_us(O: float, H: float, C: float) -> bool:
         High.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if high equals the top of the body. False otherwise.
+        True if length of the upper shadow is in the appropiate percentile.
+        False otherwise.
     """
     return H == top_body(O, C)
 
@@ -349,11 +360,14 @@ def small_us(O: float, H: float, C: float) -> bool:
         High.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if high is slightly greater than the top of the body. False otherwise.
+        True if length of the upper shadow is between the appropiate percentiles.
+        False otherwise.
     """
     return sli_greater(H, top_body(O, C))
 
@@ -370,11 +384,14 @@ def normal_us(O: float, H: float, C: float) -> bool:
         High.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if high is moderately greater than the top of the body. False otherwise.
+        True if length of the upper shadow is between the appropiate percentiles.
+        False otherwise.
     """
     return mod_greater(H, top_body(O, C))
 
@@ -391,11 +408,14 @@ def long_us(O: float, H: float, C: float) -> bool:
         High.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if high is largely greater than the top of the body. False otherwise.
+        True if length of the upper shadow is between the appropiate percentiles.
+        False otherwise.
     """
     return lar_greater(H, top_body(O, C))
 
@@ -412,18 +432,21 @@ def exlong_us(O: float, H: float, C: float) -> bool:
         High.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if high is extremely greater than the top of the body. False otherwise.
+        True if length of the upper shadow is between the appropiate percentiles.
+        False otherwise.
     """
     return ext_greater(H, top_body(O, C))
 
 
 def no_ls(O: float, L: float, C: float) -> bool:
     """
-    Checks if the candle has no lower shadow.
+    Checks if the candle has (almost) no lower shadow.
 
     Parameters
     ----------
@@ -433,11 +456,14 @@ def no_ls(O: float, L: float, C: float) -> bool:
         Low.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if low equals the bottom of the body. False otherwise
+        True if length of the lower shadow is in the appropiate percentile.
+        False otherwise.
     """
     return L == bottom_body(O, C)
 
@@ -454,11 +480,14 @@ def small_ls(O: float, L: float, C: float) -> bool:
         Low.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if low is slightly less than the bottom of the body. False otherwise.
+        True if length of the lower shadow is between the appropiate percentiles.
+        False otherwise.
     """
     return sli_less(L, bottom_body(O, C))
 
@@ -475,11 +504,14 @@ def normal_ls(O: float, L: float, C: float) -> bool:
         Low.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if low is moderately less than the bottom of the body. False otherwise.
+        True if length of the lower shadow is between the appropiate percentiles.
+        False otherwise.
     """
     return mod_less(L, bottom_body(O, C))
 
@@ -496,11 +528,14 @@ def long_ls(O: float, L: float, C: float) -> bool:
         Low.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if low is largely less than the bottom of the body. False otherwise.
+        True if length of the lower shadow is between the appropiate percentiles.
+        False otherwise.
     """
     return lar_less(L, bottom_body(O, C))
 
@@ -517,11 +552,14 @@ def exlong_ls(O: float, L: float, C: float) -> bool:
         Low.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if low is extremely less than the bottom of the body. False otherwise.
+        True if length of the lower shadow is between the appropiate percentiles.
+        False otherwise.
     """
     return ext_less(L, bottom_body(O, C))
 
@@ -659,11 +697,14 @@ def short_black_body(O: float, C: float) -> bool:
         Open.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if open is strictly larger than close and body is short. False otherwise.
+        True if open is strictly larger than close and length of the body is in the
+        appropiate percentile. False otherwise.
     """
     return np.logical_and(O > C, short_body(O, C))
 
@@ -678,11 +719,14 @@ def normal_black_body(O: float, C: float) -> bool:
         Open.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if open is strictly larger than close and body is normal. False otherwise.
+        True if open is strictly larger than close and length of the body is in the
+        appropiate percentile. False otherwise.
     """
     return np.logical_and(O > C, normal_body(O, C))
 
@@ -697,11 +741,14 @@ def tall_black_body(O: float, C: float) -> bool:
         Open.
     C : float
         Close.
+    percentile: tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if open is strictly larger than close and body is tall. False otherwise.
+        True if open is strictly larger than close and length of the body is in the
+        appropiate percentile. False otherwise.
     """
     return np.logical_and(O > C, tall_body(O, C))
 
@@ -755,11 +802,12 @@ def short_white_body(O: float, C: float) -> bool:
         Open.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if open is strictly smaller than close and body is short. False otherwise.
     """
     return np.logical_and(O < C, short_body(O, C))
 
@@ -774,11 +822,12 @@ def normal_white_body(O: float, C: float) -> bool:
         Open.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if open is strictly smaller than close and body is normal. False otherwise.
     """
     return np.logical_and(O < C, normal_body(O, C))
 
@@ -793,11 +842,12 @@ def tall_white_body(O: float, C: float) -> bool:
         Open.
     C : float
         Close.
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
     bool
-        True if open is strictly smaller than close and body is tall. False otherwise.
     """
     return np.logical_and(O < C, tall_body(O, C))
 
