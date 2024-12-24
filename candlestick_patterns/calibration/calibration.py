@@ -22,7 +22,7 @@ def calculate_percentiles(df: np.ndarray) -> tuple:
     """
 
     def body_length(O: float, C: float) -> float:
-        return np.abs(O / C - 1)
+        return np.abs(O - C)
 
     def top_body(O: float, C: float) -> float:
         return np.maximum(O, C)
@@ -44,13 +44,13 @@ def calculate_percentiles(df: np.ndarray) -> tuple:
     black_idx = O > C
     white_idx = C > O
 
-    black_length = np.abs(O[black_idx] / C[black_idx] - 1)
-    white_length = np.abs(O[white_idx] / C[white_idx] - 1)
+    black_length = body_length(O[black_idx], C[black_idx])
+    white_length = body_length(O[white_idx], C[white_idx])
 
     if ks_2samp(black_length, white_length).pvalue < 0.05:
         return (
-            np.percentile(body_length(O[black_idx], C[black_idx]), [10, 30, 70]),
-            np.percentile(body_length(O[white_idx], C[white_idx]), [10, 30, 70]),
+            np.percentile(black_length, [10, 30, 70]),
+            np.percentile(white_length, [10, 30, 70]),
             np.percentile(upper_shadow_length(O, H, C), [10, 30, 70, 90]),
             np.percentile(lower_shadow_length(O, L, C), [10, 30, 70, 90]),
         )
