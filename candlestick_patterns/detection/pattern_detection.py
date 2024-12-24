@@ -20,7 +20,7 @@ from detection.patterns import (
 from detection.patterns.functions import candlestick_functions as cf
 
 
-def detection(df: pd.DataFrame) -> None:
+def detection(df: pd.DataFrame, percentile: tuple) -> None:
     """
     Performs pattern detection.
 
@@ -28,6 +28,8 @@ def detection(df: pd.DataFrame) -> None:
     ----------
     df : pd.DataFrame
         A Dataframe with OHLC data.
+    percentile: tuple
+        Tuple of length percentiles.
 
     Returns
     -------
@@ -106,7 +108,7 @@ def detection(df: pd.DataFrame) -> None:
             )
 
             func_call = getattr(globals().get(f"{number}_patterns"), func_name)
-            pat = func_call(locals().get(f"{number}_candle"), T)
+            pat = func_call(locals().get(f"{number}_candle"), T, percentile)
 
             pa.parquet.write_table(
                 pa.table({f"{func_name}": pat}),

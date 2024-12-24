@@ -3,7 +3,9 @@ import numpy as np
 from detection.patterns.functions import candlestick_functions as cf
 
 
-def concealing_baby_swallow_(candles: np.ndarray, T: np.ndarray) -> bool:
+def concealing_baby_swallow_(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: two tall black candles without shadows, black candle with long upper
     shadow and a downwards body gap compared to #1 and #2. The high of #3 is inside the
     body of #2. #4 is a black candle that completely engulfs #3, including shadows.
@@ -25,17 +27,17 @@ def concealing_baby_swallow_(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_black_body(O_1, C_1),
-            cf.tall_black_body(O_2, C_2),
+            cf.tall_black_body(O_1, C_1, percentile),
+            cf.tall_black_body(O_2, C_2, percentile),
             cf.black_body(O_3, C_3),
             cf.black_body(O_4, C_4),
             cf.down_body_gap(O_1, C_1, O_3, C_3),
             cf.down_body_gap(O_2, C_2, O_3, C_3),
-            cf.no_us(O_1, H_1, C_1),
-            cf.no_us(O_2, H_2, C_2),
-            cf.no_ls(O_1, L_1, C_1),
-            cf.no_ls(O_2, L_2, C_2),
-            cf.long_ls(O_3, L_3, C_3),
+            cf.no_us(O_1, H_1, C_1, percentile),
+            cf.no_us(O_2, H_2, C_2, percentile),
+            cf.no_ls(O_1, L_1, C_1, percentile),
+            cf.no_ls(O_2, L_2, C_2, percentile),
+            cf.long_ls(O_3, L_3, C_3, percentile),
             O_2 > H_3,
             H_3 > C_2,
             H_4 > H_3,
@@ -44,7 +46,9 @@ def concealing_baby_swallow_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def concealing_baby_swallow_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def concealing_baby_swallow_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: two tall black candles without shadows, black candle with long upper
     shadow and a downwards body gap compared to #1 and #2. The high of #3 is inside the
     body of #2. #4 is a black candle that completely engulfs #3, including shadows.
@@ -65,17 +69,17 @@ def concealing_baby_swallow_no_trend(candles: np.ndarray, T: np.ndarray) -> bool
     O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_black_body(O_1, C_1),
-            cf.tall_black_body(O_2, C_2),
+            cf.tall_black_body(O_1, C_1, percentile),
+            cf.tall_black_body(O_2, C_2, percentile),
             cf.black_body(O_3, C_3),
             cf.black_body(O_4, C_4),
             cf.down_body_gap(O_1, C_1, O_3, C_3),
             cf.down_body_gap(O_2, C_2, O_3, C_3),
-            cf.no_us(O_1, H_1, C_1),
-            cf.no_us(O_2, H_2, C_2),
-            cf.no_ls(O_1, L_1, C_1),
-            cf.no_ls(O_2, L_2, C_2),
-            cf.long_ls(O_3, L_3, C_3),
+            cf.no_us(O_1, H_1, C_1, percentile),
+            cf.no_us(O_2, H_2, C_2, percentile),
+            cf.no_ls(O_1, L_1, C_1, percentile),
+            cf.no_ls(O_2, L_2, C_2, percentile),
+            cf.long_ls(O_3, L_3, C_3, percentile),
             O_2 > H_3,
             H_3 > C_2,
             H_4 > H_3,
@@ -84,7 +88,9 @@ def concealing_baby_swallow_no_trend(candles: np.ndarray, T: np.ndarray) -> bool
     )
 
 
-def concealing_baby_swallow_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def concealing_baby_swallow_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: two tall black candles without shadows, black candle with long upper
     shadow and a downwards body gap compared to #1 and #2. The high of #3 is inside the
     body of #2. #4 is a black candle that completely engulfs #3, including shadows.
@@ -106,17 +112,17 @@ def concealing_baby_swallow_opp_trend(candles: np.ndarray, T: np.ndarray) -> boo
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_black_body(O_1, C_1),
-            cf.tall_black_body(O_2, C_2),
+            cf.tall_black_body(O_1, C_1, percentile),
+            cf.tall_black_body(O_2, C_2, percentile),
             cf.black_body(O_3, C_3),
             cf.black_body(O_4, C_4),
             cf.down_body_gap(O_1, C_1, O_3, C_3),
             cf.down_body_gap(O_2, C_2, O_3, C_3),
-            cf.no_us(O_1, H_1, C_1),
-            cf.no_us(O_2, H_2, C_2),
-            cf.no_ls(O_1, L_1, C_1),
-            cf.no_ls(O_2, L_2, C_2),
-            cf.long_ls(O_3, L_3, C_3),
+            cf.no_us(O_1, H_1, C_1, percentile),
+            cf.no_us(O_2, H_2, C_2, percentile),
+            cf.no_ls(O_1, L_1, C_1, percentile),
+            cf.no_ls(O_2, L_2, C_2, percentile),
+            cf.long_ls(O_3, L_3, C_3, percentile),
             O_2 > H_3,
             H_3 > C_2,
             H_4 > H_3,
@@ -125,7 +131,9 @@ def concealing_baby_swallow_opp_trend(candles: np.ndarray, T: np.ndarray) -> boo
     )
 
 
-def three_line_strike_bearish_(candles: np.ndarray, T: np.ndarray) -> bool:
+def three_line_strike_bearish_(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: three black candles, each one closing lower, white candle that opens
     below the close of #3 and closes above the open of #1.
 
@@ -158,7 +166,9 @@ def three_line_strike_bearish_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def three_line_strike_bearish_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def three_line_strike_bearish_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: three black candles, each one closing lower, white candle that opens
     below the close of #3 and closes above the open of #1.
 
@@ -190,7 +200,9 @@ def three_line_strike_bearish_no_trend(candles: np.ndarray, T: np.ndarray) -> bo
     )
 
 
-def three_line_strike_bearish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def three_line_strike_bearish_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: three black candles, each one closing lower, white candle that opens
     below the close of #3 and closes above the open of #1.
 
@@ -223,7 +235,9 @@ def three_line_strike_bearish_opp_trend(candles: np.ndarray, T: np.ndarray) -> b
     )
 
 
-def three_line_strike_bullish_(candles: np.ndarray, T: np.ndarray) -> bool:
+def three_line_strike_bullish_(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: three white candles, each one closing higher, black candle that opens
     above the close of #3 and closes below the open of #1.
 
@@ -256,7 +270,9 @@ def three_line_strike_bullish_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def three_line_strike_bullish_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def three_line_strike_bullish_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: three white candles, each one closing higher, black candle that opens
     above the close of #3 and closes below the open of #1.
 
@@ -288,7 +304,9 @@ def three_line_strike_bullish_no_trend(candles: np.ndarray, T: np.ndarray) -> bo
     )
 
 
-def three_line_strike_bullish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def three_line_strike_bullish_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: three white candles, each one closing higher, black candle that opens
     above the close of #3 and closes below the open of #1.
 

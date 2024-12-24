@@ -3,7 +3,7 @@ import numpy as np
 from detection.patterns.functions import candlestick_functions as cf
 
 
-def long_black_day_(candles: np.ndarray, T: np.ndarray) -> bool:
+def long_black_day_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     """Definition: tall black candle, with a body at least three times the average
     length of the preceding five or ten candles. The shadows are shorter than the body.
 
@@ -59,7 +59,7 @@ def long_black_day_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
     return np.logical_and.reduce(
         (
-            cf.tall_black_body(O_11, C_11),
+            cf.tall_black_body(O_11, C_11, percentile),
             cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
             cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
@@ -95,7 +95,9 @@ def long_black_day_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def long_black_day_down_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def long_black_day_down_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall black candle, with a body at least three times the average
     length of the preceding five or ten candles. The shadows are shorter than the body.
 
@@ -152,7 +154,7 @@ def long_black_day_down_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_black_body(O_11, C_11),
+            cf.tall_black_body(O_11, C_11, percentile),
             cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
             cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
@@ -188,7 +190,9 @@ def long_black_day_down_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def long_black_day_up_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def long_black_day_up_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall black candle, with a body at least three times the average
     length of the preceding five or ten candles. The shadows are shorter than the body.
 
@@ -245,7 +249,7 @@ def long_black_day_up_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_black_body(O_11, C_11),
+            cf.tall_black_body(O_11, C_11, percentile),
             cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
             cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
@@ -281,7 +285,7 @@ def long_black_day_up_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def long_white_day_(candles: np.ndarray, T: np.ndarray) -> bool:
+def long_white_day_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     """Definition: tall white candle, with a body at least three times the average
     length of the preceding five or ten candles. The shadows are shorter than the body.
 
@@ -337,7 +341,7 @@ def long_white_day_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
     return np.logical_and.reduce(
         (
-            cf.tall_white_body(O_11, C_11),
+            cf.tall_white_body(O_11, C_11, percentile),
             cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
             cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
@@ -373,7 +377,9 @@ def long_white_day_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def long_white_day_down_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def long_white_day_down_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall white candle, with a body at least three times the average
     length of the preceding five or ten candles. The shadows are shorter than the body.
 
@@ -430,7 +436,7 @@ def long_white_day_down_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_white_body(O_11, C_11),
+            cf.tall_white_body(O_11, C_11, percentile),
             cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
             cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(
@@ -466,7 +472,9 @@ def long_white_day_down_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def long_white_day_up_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def long_white_day_up_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall white candle, with a body at least three times the average
     length of the preceding five or ten candles. The shadows are shorter than the body.
 
@@ -523,7 +531,7 @@ def long_white_day_up_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_white_body(O_11, C_11),
+            cf.tall_white_body(O_11, C_11, percentile),
             cf.upper_shadow_length(O_11, H_11, C_11) < cf.body_height(O_11, C_11),
             cf.lower_shadow_length(O_11, L_11, C_11) < cf.body_height(O_11, C_11),
             np.logical_or(

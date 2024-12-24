@@ -3,7 +3,7 @@ import numpy as np
 from detection.patterns.functions import candlestick_functions as cf
 
 
-def breakaway_bearish_(candles: np.ndarray, T: np.ndarray) -> bool:
+def breakaway_bearish_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     """Definition: tall white candle, white candle with an upwards body gap, candle of
     either color that closes higher, white candle that closes higher, tall black candle
     that closes within the gap between #1 and #2.
@@ -27,10 +27,10 @@ def breakaway_bearish_(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_white_body(O_1, C_1),
+            cf.tall_white_body(O_1, C_1, percentile),
             cf.white_body(O_2, C_2),
             cf.white_body(O_4, C_4),
-            cf.tall_black_body(O_5, C_5),
+            cf.tall_black_body(O_5, C_5, percentile),
             cf.up_body_gap(O_1, C_1, O_2, C_2),
             C_3 > C_2,
             C_4 > C_3,
@@ -40,7 +40,9 @@ def breakaway_bearish_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def breakaway_bearish_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def breakaway_bearish_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall white candle, white candle with an upwards body gap, candle of
     either color that closes higher, white candle that closes higher, tall black candle
     that closes within the gap between #1 and #2.
@@ -63,10 +65,10 @@ def breakaway_bearish_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_white_body(O_1, C_1),
+            cf.tall_white_body(O_1, C_1, percentile),
             cf.white_body(O_2, C_2),
             cf.white_body(O_4, C_4),
-            cf.tall_black_body(O_5, C_5),
+            cf.tall_black_body(O_5, C_5, percentile),
             cf.up_body_gap(O_1, C_1, O_2, C_2),
             C_3 > C_2,
             C_4 > C_3,
@@ -76,7 +78,9 @@ def breakaway_bearish_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def breakaway_bearish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def breakaway_bearish_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall white candle, white candle with an upwards body gap, candle of
     either color that closes higher, white candle that closes higher, tall black candle
     that closes within the gap between #1 and #2.
@@ -100,10 +104,10 @@ def breakaway_bearish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_white_body(O_1, C_1),
+            cf.tall_white_body(O_1, C_1, percentile),
             cf.white_body(O_2, C_2),
             cf.white_body(O_4, C_4),
-            cf.tall_black_body(O_5, C_5),
+            cf.tall_black_body(O_5, C_5, percentile),
             cf.up_body_gap(O_1, C_1, O_2, C_2),
             C_3 > C_2,
             C_4 > C_3,
@@ -113,7 +117,7 @@ def breakaway_bearish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def breakaway_bullish_(candles: np.ndarray, T: np.ndarray) -> bool:
+def breakaway_bullish_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     """Definition: tall black candle, black candle with a downwards body gap, candle of
     either color that closes lower, black candle that closes lower, tall white candle
     that closes within the gap between #1 and #2.
@@ -137,10 +141,10 @@ def breakaway_bullish_(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_black_body(O_1, C_1),
+            cf.tall_black_body(O_1, C_1, percentile),
             cf.black_body(O_2, C_2),
             cf.black_body(O_4, C_4),
-            cf.tall_white_body(O_5, C_5),
+            cf.tall_white_body(O_5, C_5, percentile),
             cf.down_body_gap(O_1, C_1, O_2, C_2),
             C_3 < C_2,
             C_4 < C_3,
@@ -150,7 +154,9 @@ def breakaway_bullish_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def breakaway_bullish_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def breakaway_bullish_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall black candle, black candle with a downwards body gap, candle of
     either color that closes lower, black candle that closes lower, tall white candle
     that closes within the gap between #1 and #2.
@@ -173,10 +179,10 @@ def breakaway_bullish_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_black_body(O_1, C_1),
+            cf.tall_black_body(O_1, C_1, percentile),
             cf.black_body(O_2, C_2),
             cf.black_body(O_4, C_4),
-            cf.tall_white_body(O_5, C_5),
+            cf.tall_white_body(O_5, C_5, percentile),
             cf.down_body_gap(O_1, C_1, O_2, C_2),
             C_3 < C_2,
             C_4 < C_3,
@@ -186,7 +192,9 @@ def breakaway_bullish_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def breakaway_bullish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def breakaway_bullish_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall black candle, black candle with a downwards body gap, candle of
     either color that closes lower, black candle that closes lower, tall white candle
     that closes within the gap between #1 and #2.
@@ -210,10 +218,10 @@ def breakaway_bullish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_black_body(O_1, C_1),
+            cf.tall_black_body(O_1, C_1, percentile),
             cf.black_body(O_2, C_2),
             cf.black_body(O_4, C_4),
-            cf.tall_white_body(O_5, C_5),
+            cf.tall_white_body(O_5, C_5, percentile),
             cf.down_body_gap(O_1, C_1, O_2, C_2),
             C_3 < C_2,
             C_4 < C_3,
@@ -223,7 +231,9 @@ def breakaway_bullish_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def falling_three_methods_(candles: np.ndarray, T: np.ndarray) -> bool:
+def falling_three_methods_(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall black candle, small white candle, small candle of either color,
     small white candle, tall black candle. #2, #3 and #4 close higher, but the close of
     #2 and #4 are bounded between the high-low range of #1. #5 closes below #1.
@@ -247,11 +257,11 @@ def falling_three_methods_(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_black_body(O_1, C_1),
-            cf.short_white_body(O_2, C_2),
-            cf.short_body(O_3, C_3),
-            cf.short_white_body(O_4, C_4),
-            cf.tall_black_body(O_5, C_5),
+            cf.tall_black_body(O_1, C_1, percentile),
+            cf.short_white_body(O_2, C_2, percentile),
+            cf.short_body(O_3, C_3, percentile),
+            cf.short_white_body(O_4, C_4, percentile),
+            cf.tall_black_body(O_5, C_5, percentile),
             C_2 < C_3,
             C_3 < C_4,
             H_1 > C_4,
@@ -261,7 +271,9 @@ def falling_three_methods_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def falling_three_methods_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def falling_three_methods_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall black candle, small white candle, small candle of either color,
     small white candle, tall black candle. #2, #3 and #4 close higher, but the close of
     #2 and #4 are bounded between the high-low range of #1. #5 closes below #1.
@@ -284,11 +296,11 @@ def falling_three_methods_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_black_body(O_1, C_1),
-            cf.short_white_body(O_2, C_2),
-            cf.short_body(O_3, C_3),
-            cf.short_white_body(O_4, C_4),
-            cf.tall_black_body(O_5, C_5),
+            cf.tall_black_body(O_1, C_1, percentile),
+            cf.short_white_body(O_2, C_2, percentile),
+            cf.short_body(O_3, C_3, percentile),
+            cf.short_white_body(O_4, C_4, percentile),
+            cf.tall_black_body(O_5, C_5, percentile),
             C_2 < C_3,
             C_3 < C_4,
             H_1 > C_4,
@@ -298,7 +310,9 @@ def falling_three_methods_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def falling_three_methods_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def falling_three_methods_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall black candle, small white candle, small candle of either color,
     small white candle, tall black candle. #2, #3 and #4 close higher, but the close of
     #2 and #4 are bounded between the high-low range of #1. #5 closes below #1.
@@ -322,11 +336,11 @@ def falling_three_methods_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_black_body(O_1, C_1),
-            cf.short_white_body(O_2, C_2),
-            cf.short_body(O_3, C_3),
-            cf.short_white_body(O_4, C_4),
-            cf.tall_black_body(O_5, C_5),
+            cf.tall_black_body(O_1, C_1, percentile),
+            cf.short_white_body(O_2, C_2, percentile),
+            cf.short_body(O_3, C_3, percentile),
+            cf.short_white_body(O_4, C_4, percentile),
+            cf.tall_black_body(O_5, C_5, percentile),
             C_2 < C_3,
             C_3 < C_4,
             H_1 > C_4,
@@ -336,7 +350,7 @@ def falling_three_methods_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def ladder_bottom_(candles: np.ndarray, T: np.ndarray) -> bool:
+def ladder_bottom_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     """Definition: three tall black candles, each opening and closing lower, black
     candle with an upper shadow, white candle with an upwards body gap.
 
@@ -359,12 +373,12 @@ def ladder_bottom_(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_black_body(O_1, C_1),
-            cf.tall_black_body(O_2, C_2),
-            cf.tall_black_body(O_3, C_3),
+            cf.tall_black_body(O_1, C_1, percentile),
+            cf.tall_black_body(O_2, C_2, percentile),
+            cf.tall_black_body(O_3, C_3, percentile),
             cf.black_body(O_4, C_4),
             cf.white_body(O_5, C_5),
-            np.logical_not(cf.no_us(O_4, H_4, C_4)),
+            np.logical_not(cf.no_us(O_4, H_4, C_4, percentile)),
             cf.up_body_gap(O_4, C_4, O_5, C_5),
             O_2 < O_1,
             O_3 < O_2,
@@ -374,7 +388,9 @@ def ladder_bottom_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def ladder_bottom_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def ladder_bottom_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: three tall black candles, each opening and closing lower, black
     candle with an upper shadow, white candle with an upwards body gap.
 
@@ -396,12 +412,12 @@ def ladder_bottom_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_black_body(O_1, C_1),
-            cf.tall_black_body(O_2, C_2),
-            cf.tall_black_body(O_3, C_3),
+            cf.tall_black_body(O_1, C_1, percentile),
+            cf.tall_black_body(O_2, C_2, percentile),
+            cf.tall_black_body(O_3, C_3, percentile),
             cf.black_body(O_4, C_4),
             cf.white_body(O_5, C_5),
-            np.logical_not(cf.no_us(O_4, H_4, C_4)),
+            np.logical_not(cf.no_us(O_4, H_4, C_4, percentile)),
             cf.up_body_gap(O_4, C_4, O_5, C_5),
             O_2 < O_1,
             O_3 < O_2,
@@ -411,7 +427,9 @@ def ladder_bottom_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def ladder_bottom_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def ladder_bottom_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: three tall black candles, each opening and closing lower, black
     candle with an upper shadow, white candle with an upwards body gap.
 
@@ -434,12 +452,12 @@ def ladder_bottom_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_black_body(O_1, C_1),
-            cf.tall_black_body(O_2, C_2),
-            cf.tall_black_body(O_3, C_3),
+            cf.tall_black_body(O_1, C_1, percentile),
+            cf.tall_black_body(O_2, C_2, percentile),
+            cf.tall_black_body(O_3, C_3, percentile),
             cf.black_body(O_4, C_4),
             cf.white_body(O_5, C_5),
-            np.logical_not(cf.no_us(O_4, H_4, C_4)),
+            np.logical_not(cf.no_us(O_4, H_4, C_4, percentile)),
             cf.up_body_gap(O_4, C_4, O_5, C_5),
             O_2 < O_1,
             O_3 < O_2,
@@ -449,7 +467,7 @@ def ladder_bottom_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def mat_hold_(candles: np.ndarray, T: np.ndarray) -> bool:
+def mat_hold_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     """Definition: tall white candle, small black candle with an upwards body gap, short
     candle of either color and short black candle both closing lower, with close of #4
     staying above the low of #1, white candle that closes above the maximum of the
@@ -474,10 +492,10 @@ def mat_hold_(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_white_body(O_1, C_1),
-            cf.short_black_body(O_2, C_2),
-            cf.short_body(O_3, C_3),
-            cf.short_black_body(O_4, C_4),
+            cf.tall_white_body(O_1, C_1, percentile),
+            cf.short_black_body(O_2, C_2, percentile),
+            cf.short_body(O_3, C_3, percentile),
+            cf.short_black_body(O_4, C_4, percentile),
             cf.white_body(O_5, C_5),
             cf.up_body_gap(O_1, C_1, O_2, C_2),
             C_2 > C_3,
@@ -488,7 +506,7 @@ def mat_hold_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def mat_hold_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def mat_hold_no_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     """Definition: tall white candle, small black candle with an upwards body gap, short
     candle of either color and short black candle both closing lower, with close of #4
     staying above the low of #1, white candle that closes above the maximum of the
@@ -512,10 +530,10 @@ def mat_hold_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_white_body(O_1, C_1),
-            cf.short_black_body(O_2, C_2),
-            cf.short_body(O_3, C_3),
-            cf.short_black_body(O_4, C_4),
+            cf.tall_white_body(O_1, C_1, percentile),
+            cf.short_black_body(O_2, C_2, percentile),
+            cf.short_body(O_3, C_3, percentile),
+            cf.short_black_body(O_4, C_4, percentile),
             cf.white_body(O_5, C_5),
             cf.up_body_gap(O_1, C_1, O_2, C_2),
             C_2 > C_3,
@@ -526,7 +544,7 @@ def mat_hold_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def mat_hold_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def mat_hold_opp_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     """Definition: tall white candle, small black candle with an upwards body gap, short
     candle of either color and short black candle both closing lower, with close of #4
     staying above the low of #1, white candle that closes above the maximum of the
@@ -551,10 +569,10 @@ def mat_hold_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_white_body(O_1, C_1),
-            cf.short_black_body(O_2, C_2),
-            cf.short_body(O_3, C_3),
-            cf.short_black_body(O_4, C_4),
+            cf.tall_white_body(O_1, C_1, percentile),
+            cf.short_black_body(O_2, C_2, percentile),
+            cf.short_body(O_3, C_3, percentile),
+            cf.short_black_body(O_4, C_4, percentile),
             cf.white_body(O_5, C_5),
             cf.up_body_gap(O_1, C_1, O_2, C_2),
             C_2 > C_3,
@@ -565,7 +583,9 @@ def mat_hold_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def rising_three_methods_(candles: np.ndarray, T: np.ndarray) -> bool:
+def rising_three_methods_(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall white candle, small black candle, small candle of either color,
     small black candle, tall white candle. #2, #3 and #4 close lower, but the closes of
     #2 and #4 are bounded between the high-low range of #1. #5 closes above the highs of
@@ -590,11 +610,11 @@ def rising_three_methods_(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_white_body(O_1, C_1),
-            cf.short_black_body(O_2, C_2),
-            cf.short_body(O_3, C_3),
-            cf.short_black_body(O_4, C_4),
-            cf.tall_white_body(O_5, C_5),
+            cf.tall_white_body(O_1, C_1, percentile),
+            cf.short_black_body(O_2, C_2, percentile),
+            cf.short_body(O_3, C_3, percentile),
+            cf.short_black_body(O_4, C_4, percentile),
+            cf.tall_white_body(O_5, C_5, percentile),
             C_2 > C_3,
             C_3 > C_4,
             H_1 > C_4,
@@ -604,7 +624,9 @@ def rising_three_methods_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def rising_three_methods_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def rising_three_methods_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall white candle, small black candle, small candle of either color,
     small black candle, tall white candle. #2, #3 and #4 close lower, but the closes of
     #2 and #4 are bounded between the high-low range of #1. #5 closes above the highs of
@@ -628,11 +650,11 @@ def rising_three_methods_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_white_body(O_1, C_1),
-            cf.short_black_body(O_2, C_2),
-            cf.short_body(O_3, C_3),
-            cf.short_black_body(O_4, C_4),
-            cf.tall_white_body(O_5, C_5),
+            cf.tall_white_body(O_1, C_1, percentile),
+            cf.short_black_body(O_2, C_2, percentile),
+            cf.short_body(O_3, C_3, percentile),
+            cf.short_black_body(O_4, C_4, percentile),
+            cf.tall_white_body(O_5, C_5, percentile),
             C_2 > C_3,
             C_3 > C_4,
             H_1 > C_4,
@@ -642,7 +664,9 @@ def rising_three_methods_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def rising_three_methods_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def rising_three_methods_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: tall white candle, small black candle, small candle of either color,
     small black candle, tall white candle. #2, #3 and #4 close lower, but the closes of
     #2 and #4 are bounded between the high-low range of #1. #5 closes above the highs of
@@ -667,11 +691,11 @@ def rising_three_methods_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_white_body(O_1, C_1),
-            cf.short_black_body(O_2, C_2),
-            cf.short_body(O_3, C_3),
-            cf.short_black_body(O_4, C_4),
-            cf.tall_white_body(O_5, C_5),
+            cf.tall_white_body(O_1, C_1, percentile),
+            cf.short_black_body(O_2, C_2, percentile),
+            cf.short_body(O_3, C_3, percentile),
+            cf.short_black_body(O_4, C_4, percentile),
+            cf.tall_white_body(O_5, C_5, percentile),
             C_2 > C_3,
             C_3 > C_4,
             H_1 > C_4,

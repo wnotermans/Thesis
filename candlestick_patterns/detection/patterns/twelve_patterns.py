@@ -3,7 +3,9 @@ import numpy as np
 from detection.patterns.functions import candlestick_functions as cf
 
 
-def twelve_new_price_lines_(candles: np.ndarray, T: np.ndarray) -> bool:
+def twelve_new_price_lines_(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: twelve candles of either color reaching a new high.
 
     Trend: up.
@@ -82,7 +84,9 @@ def twelve_new_price_lines_(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def twelve_new_price_lines_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def twelve_new_price_lines_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: twelve candles of either color reaching a new high.
 
     Trend: up.
@@ -160,7 +164,9 @@ def twelve_new_price_lines_no_trend(candles: np.ndarray, T: np.ndarray) -> bool:
     )
 
 
-def twelve_new_price_lines_opp_trend(candles: np.ndarray, T: np.ndarray) -> bool:
+def twelve_new_price_lines_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: twelve candles of either color reaching a new high.
 
     Trend: up.
