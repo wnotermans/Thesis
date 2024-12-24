@@ -22,7 +22,7 @@ def body_height(O: float, C: float) -> float:
 
 def sli_greater(x: float, y: float) -> bool:
     """
-    Checks if x is slightly greater than y.
+    Checks if x and y are near to each other.
 
     Parameters
     ----------
@@ -68,6 +68,8 @@ def lar_greater(x: float, y: float) -> bool:
     ----------
     x : float
     y : float
+    percentile : tuple
+        Tuple of length percentiles.
 
     Returns
     -------
@@ -808,6 +810,8 @@ def short_white_body(O: float, C: float) -> bool:
     Returns
     -------
     bool
+        True if open is strictly smaller than close and length of the body is in the
+        appropiate percentile. False otherwise.
     """
     return np.logical_and(O < C, short_body(O, C))
 
@@ -828,6 +832,8 @@ def normal_white_body(O: float, C: float) -> bool:
     Returns
     -------
     bool
+        True if open is strictly smaller than close and length of the body is in the
+        appropiate percentile. False otherwise.
     """
     return np.logical_and(O < C, normal_body(O, C))
 
@@ -848,6 +854,8 @@ def tall_white_body(O: float, C: float) -> bool:
     Returns
     -------
     bool
+        True if open is strictly smaller than close and length of the body is in the
+        appropiate percentile. False otherwise.
     """
     return np.logical_and(O < C, tall_body(O, C))
 
