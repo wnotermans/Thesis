@@ -7,9 +7,12 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 from scipy.stats import binomtest
+from word2number import w2n
+
+pd.set_option("future.no_silent_downcasting", True)
 
 
-def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
+def stop_loss_take_profit_evaluation(df: pd.DataFrame, mode: str = "exclude") -> None:
     """
     Stop loss/take profit-based candlestick pattern evaluation.
 
@@ -20,6 +23,8 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
     ----------
     df : pd.DataFrame
         A DataFrame with OHLC data. Candlestick patterns are read from disk.
+    mode : {"exclude", "ignore", "only"}
+        Mode of handling gaps in the data.
 
     Returns
     -------
@@ -63,13 +68,19 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                 end="\r",
             )
 
-            n_detected = (
+            df["pat"] = (
                 pq.read_table(f"data/patterns/{number}/{pattern}")
                 .to_pandas()
-                .sum()
-                .values[0]
+                .set_index(df.index)
+                .shift(1)
             )
-            if n_detected == 0 or n_detected == 1:
+            df["pat"] = df["pat"].fillna(False)
+            df["pat"] = handle_gaps(
+                df["pat"], df["gap"], w2n.word_to_num(number), mode=mode
+            )
+            num_detected = df["pat"].sum()
+
+            if num_detected == 0 or num_detected == 1:
                 pa.parquet.write_table(
                     pa.table(
                         {
@@ -84,32 +95,25 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                 )
 
             else:
-
-                df["pat"] = (
-                    pq.read_table(f"data/patterns/{number}/{pattern}")
-                    .to_pandas()
-                    .set_index(df.index)
-                    .shift(1)
-                )
-
                 patternidxs = df[df["pat"] == True].index
                 del df["pat"]
 
-                evallist = []
+                evallist = np.array([])
 
                 for patidx in patternidxs:
                     openidx = df.index.get_loc(patidx)
                     O = df.loc[patidx, "open"]
 
-                    evallist.append(
-                        find_first_breakthrough(HL_ARRAY, O, openidx, len(df), percent)
+                    evallist = np.append(
+                        evallist,
+                        find_first_breakthrough(HL_ARRAY, O, openidx, len(df), percent),
                     )
 
-                evallist = np.array(evallist)
                 evalstr = [
                     str(
                         [
                             f"{round(100*np.nansum(evallist)/len(evallist),2):>2.2f}%",
+                            num_detected,
                         ]
                     )
                 ]
@@ -167,6 +171,45 @@ def find_first_breakthrough(HL_array, O, openidx, limit, percent):
         if HL_array[idx, 1] <= O * (1 - percent / 100):
             return 0
     return np.nan
+
+
+def handle_gaps(
+    pattern: pd.Series, gap: pd.Series, number_candles: int, mode: str = "exclude"
+) -> pd.Series:
+    """
+    Handle gaps in the data according to the given mode.
+
+    * "exclude": excludes patterns where there are gaps inbetween the candles that make
+    up the pattern.
+    * "ignore": ignore any gaps, replace any NaNs in the data with False.
+    * "only": only consideres patterns with gaps inbetween the candles.
+
+    Parameters
+    ----------
+    pattern : np.ndarray
+        Boolean series with the candlestick pattern.
+    gap : pd.Series
+        Boolean series with the data gaps.
+    number_candles : int
+        Number of candles in the pattern
+    mode : {"exclude", "ignore", "only"}
+        Gap handling mode.
+
+    Returns
+    -------
+    np.ndarray
+        Boolean series with patterns included or excluded according to the gap handling
+        policy.
+    """
+    if mode == "ignore":
+        return pattern
+    gap_number_candles_adjusted = np.logical_or.reduce(
+        [np.array(gap.shift(n)) for n in range(number_candles)]
+    )
+    if mode == "exclude":
+        return np.logical_and(pattern, np.logical_not(gap_number_candles_adjusted))
+    if mode == "only":
+        return np.logical_and(pattern, gap_number_candles_adjusted)
 
 
 def n_holding_periods(df):
