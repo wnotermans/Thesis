@@ -720,7 +720,7 @@ def down_shadow_gap(first_L: float, second_H: float) -> bool:
 
 def up_shadow_gap(first_H: float, second_L: float) -> bool:
     """
-    Checks for a downwards shadow gap between two candles.
+    Checks for an upwards shadow gap between two candles.
 
     Parameters
     ----------
