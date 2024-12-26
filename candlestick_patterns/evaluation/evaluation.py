@@ -74,10 +74,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, mode: str = "exclude") ->
                 .set_index(df.index)
                 .shift(1)
             )
-            df["pat"] = df["pat"].fillna(False)
-            df["pat"] = handle_gaps(
-                df["pat"], df["gap"], w2n.word_to_num(number), mode=mode
-            )
+            df.iat[0, 4] = False
             num_detected = df["pat"].sum()
 
             if num_detected == 0 or num_detected == 1:
@@ -113,7 +110,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, mode: str = "exclude") ->
                     str(
                         [
                             f"{round(100*np.nansum(evallist)/len(evallist),2):>2.2f}%",
-                            num_detected,
                         ]
                     )
                 ]
@@ -171,45 +167,6 @@ def find_first_breakthrough(HL_array, O, openidx, limit, percent):
         if HL_array[idx, 1] <= O * (1 - percent / 100):
             return 0
     return np.nan
-
-
-def handle_gaps(
-    pattern: pd.Series, gap: pd.Series, number_candles: int, mode: str = "exclude"
-) -> pd.Series:
-    """
-    Handle gaps in the data according to the given mode.
-
-    * "exclude": excludes patterns where there are gaps inbetween the candles that make
-    up the pattern.
-    * "ignore": ignore any gaps, replace any NaNs in the data with False.
-    * "only": only consideres patterns with gaps inbetween the candles.
-
-    Parameters
-    ----------
-    pattern : np.ndarray
-        Boolean series with the candlestick pattern.
-    gap : pd.Series
-        Boolean series with the data gaps.
-    number_candles : int
-        Number of candles in the pattern
-    mode : {"exclude", "ignore", "only"}
-        Gap handling mode.
-
-    Returns
-    -------
-    np.ndarray
-        Boolean series with patterns included or excluded according to the gap handling
-        policy.
-    """
-    if mode == "ignore":
-        return pattern
-    gap_number_candles_adjusted = np.logical_or.reduce(
-        [np.array(gap.shift(n)) for n in range(number_candles)]
-    )
-    if mode == "exclude":
-        return np.logical_and(pattern, np.logical_not(gap_number_candles_adjusted))
-    if mode == "only":
-        return np.logical_and(pattern, gap_number_candles_adjusted)
 
 
 def n_holding_periods(df):

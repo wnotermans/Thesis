@@ -4,6 +4,7 @@ import time
 import numpy as np
 import pandas as pd
 import pyarrow as pa
+from word2number import w2n
 
 from detection.patterns import (
     eight_patterns,
@@ -20,7 +21,7 @@ from detection.patterns import (
 from detection.patterns.functions import candlestick_functions as cf
 
 
-def detection(df: pd.DataFrame, percentile: tuple) -> None:
+def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> None:
     """
     Performs pattern detection.
 
@@ -28,8 +29,10 @@ def detection(df: pd.DataFrame, percentile: tuple) -> None:
     ----------
     df : pd.DataFrame
         A Dataframe with OHLC data.
-    percentile: tuple
+    percentile : tuple
         Tuple of length percentiles.
+    mode : {"exclude", "ignore", "only"}
+        Mode of handling gaps in the data.
 
     Returns
     -------
@@ -109,6 +112,7 @@ def detection(df: pd.DataFrame, percentile: tuple) -> None:
 
             func_call = getattr(globals().get(f"{number}_patterns"), func_name)
             pat = func_call(locals().get(f"{number}_candle"), T, percentile)
+            pat = handle_gaps(pat, df["gap"], w2n.word_to_num(number), mode=mode)
 
             pa.parquet.write_table(
                 pa.table({f"{func_name}": pat}),
@@ -127,3 +131,42 @@ def detection(df: pd.DataFrame, percentile: tuple) -> None:
         f"All done. Total detection time: {round(time.perf_counter()-total_time,2)}s",
         end="\n\n",
     )
+
+
+def handle_gaps(
+    pattern: pd.Series, gap: pd.Series, number_candles: int, mode: str = "exclude"
+) -> pd.Series:
+    """
+    Handle gaps in the data according to the given mode.
+
+    * "exclude": excludes patterns where there are gaps inbetween the candles that make
+    up the pattern.
+    * "ignore": ignore any gaps, replace any NaNs in the data with False.
+    * "only": only consideres patterns with gaps inbetween the candles.
+
+    Parameters
+    ----------
+    pattern : np.ndarray
+        Boolean series with the candlestick pattern.
+    gap : pd.Series
+        Boolean series with the data gaps.
+    number_candles : int
+        Number of candles in the pattern
+    mode : {"exclude", "ignore", "only"}
+        Gap handling mode.
+
+    Returns
+    -------
+    np.ndarray
+        Boolean series with patterns included or excluded according to the gap handling
+        policy.
+    """
+    if mode == "ignore":
+        return pattern
+    gap_number_candles_adjusted = np.logical_or.reduce(
+        [np.array(gap.shift(n)) for n in range(number_candles)]
+    )
+    if mode == "exclude":
+        return np.logical_and(pattern, np.logical_not(gap_number_candles_adjusted))
+    if mode == "only":
+        return np.logical_and(pattern, gap_number_candles_adjusted)
