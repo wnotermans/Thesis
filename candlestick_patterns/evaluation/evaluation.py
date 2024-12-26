@@ -7,9 +7,6 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 from scipy.stats import binomtest
-from word2number import w2n
-
-pd.set_option("future.no_silent_downcasting", True)
 
 
 def stop_loss_take_profit_evaluation(df: pd.DataFrame, mode: str = "exclude") -> None:
