@@ -67,8 +67,9 @@ def read_and_preprocess(
     df["gap"] = df.index.astype(np.int64) // 10**9
     df["gap"] = (df["gap"] - df["gap"].shift(1)) // 60 > interval_minutes
 
-    reference_set = df[df.index < "2007-01-01"]
-    main_set = df[df.index >= "2007-01-01"]
+    reference_date = max(df.index[0] + pd.DateOffset(years=5), pd.Timestamp(2007, 1, 1))
+    reference_set = df[df.index < reference_date]
+    main_set = df[df.index >= reference_date]
 
     percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
 
