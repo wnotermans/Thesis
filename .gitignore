@@ -161,7 +161,7 @@ cython_debug/
 
 Data/
 Papers and Books/
-candlestick_patterns/utility/test.*
+candlestick_patterns/utility/
 Thesis/.Rproj.user/
 Thesis/_book/
 .Rproj.user
