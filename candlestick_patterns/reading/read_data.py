@@ -47,7 +47,7 @@ def read_and_preprocess(
     df = pd.read_parquet(f"data/{filename}.parquet")
     df["datetime"] = pd.to_datetime(df["datetime"])
     df = df.set_index("datetime")
-    unique_dates = sorted(set(df.index.date))
+    unique_dates = list(sorted(set(df.index.date)))
     time_idx = pd.concat(
         [
             pd.date_range(
@@ -67,9 +67,7 @@ def read_and_preprocess(
     df["gap"] = df.index.astype(np.int64) // 10**9
     df["gap"] = (df["gap"] - df["gap"].shift(1)) // 60 > interval_minutes
 
-    reference_date = max(df.index[0] + pd.DateOffset(years=5), pd.Timestamp(2007, 1, 1))
-    reference_set = df[df.index < reference_date]
-    main_set = df[df.index >= reference_date]
+    reference_set, main_set = split_data(df, unique_dates)
 
     percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
 
@@ -91,3 +89,37 @@ def read_and_preprocess(
         end="\n\n",
     )
     return main_set, percentiles
+
+
+def split_data(df: pd.DataFrame, unique_dates: list) -> pd.DataFrame | pd.DataFrame:
+    """Split data into a reference and main set.
+
+    The reference set is taken to be the data before January 1st, 2007. If the data
+    starts after this date or less than 5 years of data is available before
+    January 1st, 2007, it will take the first 5 years of the data as a reference set.
+    If the data covers less than 15 years, it is split in a 1:2 ratio.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC data and a DateTimeIndex.
+    unique_dates : list
+        List of unique dates in the DateTimeIndex of the DataFrame.
+
+    Returns
+    -------
+    pd.DataFrame
+        Reference set and main in the same format as the input. See summary for how it
+        is split up.
+    """
+    first_day = pd.Timestamp(unique_dates[0])
+    last_day = pd.Timestamp(unique_dates[-1])
+    date_diff = last_day - first_day
+    num_years = (date_diff.days + date_diff.seconds / 86400) / 365.25
+    if num_years <= 15:
+        split_date = first_day + date_diff / 3
+    else:
+        split_date = max(first_day + pd.DateOffset(years=5), pd.Timestamp(2007, 1, 1))
+    reference_set = df[df.index < split_date]
+    main_set = df[df.index >= split_date]
+    return reference_set, main_set
