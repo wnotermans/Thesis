@@ -49,5 +49,12 @@ OHLC & Open, High, Low and Close
 
 # List of Symbols
 
+To be added.
+
+\listoffigures
+
+\listoftables
+
 \tableofcontents
+
 \mainmatter

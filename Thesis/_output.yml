@@ -15,4 +15,6 @@ bookdown::pdf_book:
   latex_engine: pdflatex
   citation_package: natbib
   keep_tex: yes
-  toc: false
+  toc: no
+  lof: no
+  lot: no
