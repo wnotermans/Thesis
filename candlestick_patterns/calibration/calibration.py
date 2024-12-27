@@ -8,8 +8,8 @@ def calculate_percentiles(df: np.ndarray) -> tuple:
 
     Parameters
     ----------
-    df : pandas.DataFrame
-        A DataFrame containing OHLC (Open, High, Low, Close) data.
+    df : np.ndarray
+        An array containing OHLC (Open, High, Low, Close) data.
 
     Returns
     -------
