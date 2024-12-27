@@ -62,7 +62,7 @@ def read_and_preprocess(
         .round({"open": 3, "high": 3, "low": 3, "close": 3, "volume": 0})
     )
 
-    df = aggregate.aggregate(df, interval_minutes)
+    df = aggregate.aggregate(df, interval_minutes).bfill().ffill()
 
     df["gap"] = df.index.astype(np.int64) // 10**9
     df["gap"] = (df["gap"] - df["gap"].shift(1)) // 60 > interval_minutes
