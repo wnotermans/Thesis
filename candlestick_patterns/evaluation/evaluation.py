@@ -9,7 +9,7 @@ import pyarrow.parquet as pq
 from scipy.stats import binomtest
 
 
-def stop_loss_take_profit_evaluation(df: pd.DataFrame, mode: str = "exclude") -> None:
+def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
     """
     Stop loss/take profit-based candlestick pattern evaluation.
 
@@ -20,8 +20,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, mode: str = "exclude") ->
     ----------
     df : pd.DataFrame
         A DataFrame with OHLC data. Candlestick patterns are read from disk.
-    mode : {"exclude", "ignore", "only"}
-        Mode of handling gaps in the data.
 
     Returns
     -------
