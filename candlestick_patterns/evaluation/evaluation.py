@@ -32,7 +32,8 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
     percent = 1
 
     total_time = time.perf_counter()
-
+    num_patterns = 309
+    i = 0
     for number in [
         "one",
         "two",
@@ -45,11 +46,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
         "twelve",
         "thirteen",
     ]:
-        print(f"Candlestick patterns with {number} candlestick(s)")
-        n = len(os.listdir(f"data/patterns/{number}"))
-        t = time.perf_counter()
-
-        for i, pattern in enumerate(os.listdir(f"data/patterns/{number}")):
+        for pattern in os.listdir(f"data/patterns/{number}"):
 
             try:
                 os.remove(f"data/evaluation/{number}/{pattern}")
@@ -57,11 +54,12 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                 pass
 
             print(
-                f"Evaluating {pattern:<54} | "
-                + f"{'#'*(50*(i+1)//n):<50} "
-                + f"({i+1:>3}/{n})",
+                f"Evaluating {pattern:<52} <|> "
+                + f"{'-'*(48*i//num_patterns)+">":<49} "
+                + f"({i+1:>3}/{num_patterns})",
                 end="\r",
             )
+            i += 1
 
             df["pat"] = (
                 pq.read_table(f"data/patterns/{number}/{pattern}")
@@ -137,13 +135,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                     compression="LZ4",
                 )
 
-        print()
-        print(
-            f"Evaluating patterns with {number} candlestick(s): "
-            + f"Done in {round(time.perf_counter()-t,2):<3.2f}s.",
-            end="\n\n",
-        )
-
+    print()
     print(
         f"All done. Total evaluation time: {round(time.perf_counter()-total_time,2)}s",
         end="\n\n",

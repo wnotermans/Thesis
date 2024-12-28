@@ -73,6 +73,9 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
     twelve_candle = [candle_dict[f"candle_minus_{n}"] for n in range(11, -1, -1)]
     thirteen_candle = [candle_dict[f"candle_minus_{n}"] for n in range(12, -1, -1)]
 
+    num_patterns = 309
+    i = 0
+
     for number in [
         "one",
         "two",
@@ -85,7 +88,6 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
         "twelve",
         "thirteen",
     ]:
-        print(f"Candlestick patterns with {number} candlestick(s)")
 
         pattern_funcs = []  # get all functions names of the pattern functions
         for name in dir(globals().get(f"{number}_patterns")):
@@ -93,10 +95,7 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
             if callable(attr):
                 pattern_funcs.append(name)
 
-        num_funcs = len(pattern_funcs)
-
-        t = time.perf_counter()
-        for i, func_name in enumerate(pattern_funcs):
+        for func_name in pattern_funcs:
 
             try:
                 os.remove(f"data/patterns/{number}/{func_name}.parquet")
@@ -104,11 +103,12 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
                 pass
 
             print(
-                f"Detecting {func_name:<54} | "
-                + f"{'#'*(50*(i+1)//num_funcs):<50} "
-                + f"({i+1:>3}/{num_funcs})",
+                f"Detecting {func_name:<53} <|> "
+                + f"{'-'*(48*i//num_patterns)+">":<49} "
+                + f"({i+1:>3}/{num_patterns})",
                 end="\r",
             )
+            i += 1
 
             func_call = getattr(globals().get(f"{number}_patterns"), func_name)
             pat = func_call(locals().get(f"{number}_candle"), T, percentile)
@@ -120,13 +120,7 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
                 compression="LZ4",
             )
 
-        print()
-        print(
-            f"Detecting patterns with {number} candlestick(s): "
-            + f"Done in {round(time.perf_counter()-t,2):<3.2f}s.",
-            end="\n\n",
-        )
-
+    print()
     print(
         f"All done. Total detection time: {round(time.perf_counter()-total_time,2)}s",
         end="\n\n",
