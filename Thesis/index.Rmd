@@ -6,6 +6,7 @@ classoption:
   - a4paper
   - oneside
 bibliography: bib.bib
+csl: ieee.csl
 link-citations: yes
 ---
 
