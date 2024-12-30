@@ -7,13 +7,15 @@ bookdown::gitbook:
       after: |
         <li><a href="https://github.com/rstudio/bookdown" target="blank">Made with bookdown</a></li>
     download: ["pdf", "epub"]
+    pandoc_args: [ "--csl", "ieee.csl" ]
 bookdown::pdf_book:
   includes:
     in_header: preamble.tex
     before_body: cover.tex
     after_body: backcover.tex
   latex_engine: pdflatex
-  citation_package: natbib
+  citation_package: default
+  pandoc_args: [ "--csl", "ieee.csl" ]
   keep_tex: yes
   toc: no
   lof: no
