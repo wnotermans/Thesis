@@ -58,6 +58,7 @@ def read_and_preprocess(
             for date in unique_dates
         ]
     )
+    print(calculate_missing(df, time_idx))
     df = (
         df.reindex(time_idx)  # filters to US market time and adds NaNs for missing data
         .interpolate(method="linear")
@@ -91,6 +92,35 @@ def read_and_preprocess(
         end="\n\n",
     )
     return main_set, percentiles
+
+
+def calculate_missing(df: pd.DataFrame, time_idx: pd.DatetimeIndex) -> str:
+    """
+    Calculates the amount of missing data in the dataset.
+
+    Data is considered missing if the gap to the previous data point is more than
+    10 minutes. Periods where the market is closed are not considered as missing.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with the original data, before any filtering or aggregation.
+    time_idx : pd.DatetimeIndex
+        DatetimeIndex used for filtering the data.
+
+    Returns
+    -------
+    str
+        Percentage of missing data.
+    """
+    time_filtered_df = df.reindex(time_idx).dropna()
+    time_filtered_df["unixtime"] = time_filtered_df.index.astype(np.int64) // 10**9
+    minute_gaps = np.array(
+        (time_filtered_df["unixtime"] - time_filtered_df["unixtime"].shift(1)) // 60
+    )
+    allowed_gaps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1050, 2490, 3930, 5370]
+    missing_data_points = np.logical_not(np.isin(minute_gaps, allowed_gaps)).sum()
+    return f"Missing data: {missing_data_points/len(df):.02%}"
 
 
 def split_data(df: pd.DataFrame, unique_dates: list) -> pd.DataFrame | pd.DataFrame:
