@@ -41,7 +41,9 @@ def read_and_preprocess(
         black and white if it fails the Kolmogorov-Smirnov test);
         10th/30th/70th/90th percentiles for upper and lower shadow length, respectively.
     """
-    print("Reading and handling data", end="\r")
+    print(
+        f"Reading and handling dataset {filename} with {interval_minutes} minute aggregation"
+    )
     t = time.perf_counter()
 
     df = pd.read_parquet(f"data/{filename}.parquet")
@@ -85,7 +87,7 @@ def read_and_preprocess(
     del main_set["5_MA"]
 
     print(
-        f"Reading and handling data done in {round(time.perf_counter()-t,2):<3.2f}s",
+        f"Reading and handling dataset {filename} done in {round(time.perf_counter()-t,2):<3.2f}s",
         end="\n\n",
     )
     return main_set, percentiles
@@ -114,12 +116,15 @@ def split_data(df: pd.DataFrame, unique_dates: list) -> pd.DataFrame | pd.DataFr
     """
     first_day = pd.Timestamp(unique_dates[0])
     last_day = pd.Timestamp(unique_dates[-1])
+    print(f"Start date: {first_day}")
+    print(f"End date: {last_day}")
     date_diff = last_day - first_day
     num_years = (date_diff.days + date_diff.seconds / 86400) / 365.25
     if num_years <= 15:
         split_date = first_day + date_diff / 3
     else:
         split_date = max(first_day + pd.DateOffset(years=5), pd.Timestamp(2007, 1, 1))
+    print(f"Data split date: {split_date}")
     reference_set = df[df.index < split_date]
     main_set = df[df.index >= split_date]
     return reference_set, main_set
