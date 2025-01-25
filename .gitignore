@@ -166,3 +166,6 @@ Thesis/.Rproj.user/
 Thesis/_book/
 .Rproj.user
 candlestick_patterns/*.txt
+Presentation/*.nav
+Presentation/*.snm
+Presentation/*.gz
