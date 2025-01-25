@@ -49,6 +49,7 @@ def read_and_preprocess(
     df = pd.read_parquet(f"data/{filename}.parquet")
     df["datetime"] = pd.to_datetime(df["datetime"])
     df = df.set_index("datetime")
+
     unique_dates = list(sorted(set(df.index.date)))
     time_idx = pd.concat(
         [
@@ -58,14 +59,18 @@ def read_and_preprocess(
             for date in unique_dates
         ]
     )
+
     print(calculate_missing(df, time_idx))
+
     df = (
         df.reindex(time_idx)  # filters to US market time and adds NaNs for missing data
         .interpolate(method="linear")
         .round({"open": 3, "high": 3, "low": 3, "close": 3, "volume": 0})
+        .bfill()
+        .ffill()
     )
 
-    df = aggregate.aggregate(df, interval_minutes).bfill().ffill()
+    df = aggregate.aggregate(df, interval_minutes)
 
     df["gap"] = df.index.astype(np.int64) // 10**9
     df["gap"] = (df["gap"] - df["gap"].shift(1)) // 60 > interval_minutes
