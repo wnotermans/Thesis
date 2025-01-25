@@ -29,10 +29,10 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
     del df["close"], df["trend"], df["volume"]
 
     HL_ARRAY = df[["high", "low"]].to_numpy()
-    percent = 1
+    MARGIN_PERCENT = 1
 
     total_time = time.perf_counter()
-    num_patterns = 309
+    NUM_PATTERNS = 309
     i = 0
     for number in [
         "one",
@@ -55,8 +55,8 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
 
             print(
                 f"Evaluating {pattern:<52} <|> "
-                + f"{'-'*(48*i//num_patterns)+">":<49} "
-                + f"({i+1:>3}/{num_patterns})",
+                + f"{'-'*(48*i//NUM_PATTERNS)+">":<49} "
+                + f"({i+1:>3}/{NUM_PATTERNS})",
                 end="\r",
             )
             i += 1
@@ -96,7 +96,9 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
 
                     evallist = np.append(
                         evallist,
-                        find_first_breakthrough(HL_ARRAY, O, openidx, len(df), percent),
+                        find_first_breakthrough(
+                            HL_ARRAY, O, openidx, len(df), MARGIN_PERCENT
+                        ),
                     )
 
                 evalstr = [
@@ -115,7 +117,15 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                     ).pvalue,
                     6,
                 )
-                uptest = [f"{uptest} (*)" if uptest < 0.05 else str(uptest)]
+                if uptest < 0.001:
+                    uptest = [f"{uptest} (***)"]
+                elif uptest < 0.01:
+                    uptest = [f"{uptest} (**)"]
+                elif uptest < 0.05:
+                    uptest = [f"{uptest} (*)"]
+                else:
+                    uptest = [f"{uptest}"]
+                # uptest = [f"{uptest} (*)" if uptest < 0.05 else str(uptest)]
                 downtest = round(
                     binomtest(
                         int(np.nansum(evallist)),
@@ -125,7 +135,15 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                     ).pvalue,
                     6,
                 )
-                downtest = [f"{downtest} (*)" if downtest < 0.05 else str(downtest)]
+                if downtest < 0.001:
+                    downtest = [f"{downtest} (***)"]
+                elif downtest < 0.01:
+                    downtest = [f"{downtest} (**)"]
+                elif downtest < 0.05:
+                    downtest = [f"{downtest} (*)"]
+                else:
+                    downtest = [f"{downtest}"]
+                # downtest = [f"{downtest} (*)" if downtest < 0.05 else str(downtest)]
 
                 pa.parquet.write_table(
                     pa.table(
