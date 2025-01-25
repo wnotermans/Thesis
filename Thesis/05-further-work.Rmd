@@ -1,0 +1,9 @@
+# Further work[^05-further-work-1]
+
+[^05-further-work-1]: This is an informal addendum chapter.
+
+With the base results obtained thus far, I am quite happy to see that candlestick patterns do appear to have some predictive power. While starting this thesis, I was a bit worried that I would spend a year trying to find some kind of positive result, only for my efforts to be in vain. Predicting the future isn't exactly easy (who would've thought?). All in all I am quite happy with and also a bit proud about the results I obtained and the code I wrote. I would like to thank. Prof. Dr. P. Leoni again for allowing me to take a look at a quite interesting subject.
+
+The methods and methodology employed thus far have all been quite simple, so in the coming semester I aim to take things such as trend definition, evaluation methods,... "to the next level", also including some additional technical indicators. It is said that candlestick patterns are mainly useful when combined with other techniques. There is also the possibility of expanding the method of detection, moving from a simple (and strict) rule based approach towards a more *fuzzy* approach, with less stringent conditions and less harsh cut-offs. Looking at the nature of the candlestick patterns, they are after all quite vaguely defined. One other extension that could be made is taking detection into the realm of machine learning.
+
+In short, I would like to try and verify the results obtained thus far by subjecting them to slight changes in definitions, playing with parameters, trends,... and see if these basic results still hold true. It could also be a challenge to see if it is possible to construct some kind of candlestick pattern based trading algorithm, that hopefully turns a profit.

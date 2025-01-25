@@ -6,7 +6,6 @@ classoption:
   - a4paper
   - oneside
 bibliography: bib.bib
-csl: ieee.csl
 link-citations: yes
 ---
 
@@ -22,11 +21,15 @@ Prior written permission from the supervisor(s) is also required for using the (
 
 \newpage\phantom{}
 
-# Foreword {.unnumbered}
+# Preface[^index-1] [^index-2] {.unnumbered}
+
+[^index-1]: In this intermediary report, footnotes will be used to provide some additional context and thing I will work on or look at in the future. They are not to be considered part of this report.
+
+[^index-2]: The code for this thesis is freely available on [GitHub](https://github.com/wnotermans/Thesis): <https://github.com/wnotermans/Thesis>.
 
 \pagenumbering{Roman}
 
-In this intermediate report, I would like to thank Prof. Dr. P. Leoni, Prof. Dr. W. Schoutens and KU Leuven for purchasing and providing me with the financial data necessary for this work.
+In this intermediate report, I would like to thank Prof. Dr. P. Leoni, Prof. Dr. W. Schoutens and KU Leuven for purchasing and providing me with the financial data necessary for this work. I would also like to thank Prof. Dr. T. Verdonck for being a reader of this thesis. Special thanks to Prof. Dr. P. Leoni for his help, insights and suggestions that he has provided me up until now.
 
 \vfill
 

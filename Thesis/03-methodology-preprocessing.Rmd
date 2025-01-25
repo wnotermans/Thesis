@@ -1,0 +1,96 @@
+# Methodology and data preprocessing
+
+In this chapter we will talk about the choice of data sets, why they were chosen and the way in which we preprocess and analyse them. We will also dive into the definitions of various aspects of candlestick patterns, such as the pattern definitions themselves, definitions of trends and methods of evaluation.
+
+## About the data sets
+
+In this thesis we make use of a few different data sets. A quick summary of various parameters related to preprocessing can be found below in \autoref{tab:summary-data-set}.[^03-methodology-preprocessing-1]
+
+[^03-methodology-preprocessing-1]: I am still looking for a good data set of financial derivatives data, such as options.
+
+```{=latex}
+\begin{center}
+\begin{longtable}{llcccc}
+\caption[Summary table of the studied data sets]{Summary table of the studied data sets.}
+\label{tab:summary-data-set}\\ \toprule
+Ticker & Asset type & Start date & Split date & End date & Missing data \\ \midrule
+BND & Bonds & 2007-04-10 & 2012-04-10 & 2024-12-13 & 0.20\% \\ 
+GLD & Gold & 2004-11-18 & 2009-11-18 & 2024-12-13 & 0.01\% \\ 
+QQQ & Stocks & 1999-03-10 & 2007-01-01 & 2024-12-13 & 0.01\% \\ 
+SPY & Stocks & 1998-01-02 & 2007-01-01 & 2024-12-13 & 0.02\% \\ \bottomrule
+\end{longtable}
+\end{center}
+```
+
+We look at four large indices (by assets under management), spread among different asset classes in the financial market. These are QQQ and SPY (stocks), BND (bonds) and GLD (gold/commodity). The start and end dates of the available data for each set can be found in \autoref{tab:summary-data-set}. Each of these data sets contains market data on 1-minute intervals.
+
+\newpage
+
+## Data handling
+
+The original data sets include some data during pre-market and after-market hours. Because the volume outside regular market hours is typically very small, with lots of missing data points, we first filter down our data to the regular market hours of 09:30-16:00. After this filtering operation, a small amount of data is still missing, which could be due to no transactions taking place during that specific minute, or possibly failure to record the information. The exact reason cannot be ascertained from the data itself. We slightly alleviate this issue of missing data by linearly interpolating, with a maximum of 10 minutes of data being generated this way. Longer gaps in the data are mainly due to the market being closed during nights, weekends and holidays. The small fraction of gaps longer than 10 minutes is kept as missing data, with an additional "missing data" flag in the code. After testing, we concluded that the results did not change significantly, so this interpolation only serves to reduce the amount of data gaps.
+
+During this study, we are not only interested in the original data on 1-minute intervals, we also wish to test whether the performance of candlestick patterns depends on the length of the time interval. For this, we need to aggregate the data into longer time intervals. This aggregation is performed according to how a candlestick is constructed: the Open of the new candlestick is the first Open of the aggregation interval; similarly, the new Close is the last Close of the aggregation interval. The new High and the Low are the maximum and minimum of the Highs and Lows in the aggregation interval, respectively. The new volume is the sum of the volumes over the aggregation interval.[^03-methodology-preprocessing-2] We aggregate the data to 2, 3, 4, 5 and 10 minute intervals.
+
+[^03-methodology-preprocessing-2]: Picture to be added.
+
+Next, the data set is split into a reference and a main set. The reference set is used to calibrate the body and shadow lengths. This set includes the data before January 1st, 2007. If less than five years of data is available (e.g. for the data set BND), the first five years of data are selected. This results in the split dates seen in \autoref{tab:summary-data-set}. The data after this split date is called the main set which will be used for evaluation of the candlestick patterns. This splitting is done as to avoid possibly biasing the results of evaluation by not testing out-of-sample. The cutoff date of January 1st, 2007 was chosen because of the global financial crisis that started later that year. Since the markets were relatively stable before this date, we prefer to calibrate on this period.
+
+## Calibration of real body and shadow lengths
+
+As mentioned previously, there are a number of candlestick patterns that specify the length that the real bodies or shadows must adhere to. This usually comes in the form of a vague description, e.g. "short" or "long". In order to make this description more concrete, percentiles are typically used in the literature. We follow the definitions of [-@etschberger2006], which can be found in \autoref{tab:summary-body-shadow-length}. These authors only specify lengths of the real body, but the given percentiles seem appropriate for the definition of shadow lengths as well. Since certain candlestick patterns call for an additional "extremely tall" length tier for the lengths of the shadows, we divide the upper tier into two parts, turning the percentiles symmetric with respect to the "normal" length tier.
+
+```{=latex}
+\begin{center}
+\begin{longtable}{cccccc}
+\caption[Percentile definitions of body and shadow lengths]{Percentile definitions of body and shadow lengths.}
+\label{tab:summary-body-shadow-length}\\ \toprule
+ & Doji & Short & Normal & Tall & Extremely tall \\ 
+Real body & $[0-10)$ & $[10-30)$ & $[30-70)$ & $[70-100]$ &  \\ \midrule
+Shadow & $[0-10)$ & $[10-30)$ & $[30-70)$ & $[70-90)$ & $[90-100]$ \\ \bottomrule
+\end{longtable}
+\end{center}
+```
+
+With regards to calculation, the length of the real body is simply calculated as $|O-C|$, where $O$ is the Open and $C$ is the Close. The upper shadow length is calculated as $H-\max(O,C)$, with $H$ the High. Similarly, the length of the lower shadow is calculated as $\min(O,C)-L$, with $L$ the Low. These lengths are absolute. One could also make use of relative lengths by, e.g., dividing by the Close or the Open. We found absolute lengths easier to work with programmatically.
+
+An important remark made in [-@etschberger2006] has to be taken into consideration with regards to the classification of real body lengths. In defining just a single classification for these lengths, an implicit assumption is made that the length of the real body is statistically independent of the color (white/black) of the real body. This assumption is checked through the use of a two-sample Kolmogorov-Smirnov test with hypotheses: $$H_0:W=B\qquad\qquad H_1:W\neq B.$$ Here, $W$ is the distribution of the lengths of the white candles, and $B$ is the distribution of the lengths of the black candles. We reject the null hypothesis $H_0$ if it does not pass the Kolmogorov-Smirnov test at the 5% significance level. In that case, separate classifications for black and white real body lengths are used. This remark should not apply to the shadow lengths, as their method of calculation differs. Upon testing, the null hypothesis of equal distribution was rejected in every test that we ran, which seems to back up this claim.
+
+## Candlestick patterns
+
+The candlestick patterns we look at in this thesis are the 103 patterns defined in [-@hu2019].[^03-methodology-preprocessing-3] This paper defines the candlestick patterns through first-order logic, by making use of very specific conditions on the parameters of the candlesticks, such as the High, Low, real body and shadow lengths... The original intent of [-@hu2019] was for these patterns to be used in conjunction with daily candles, which leads into a few problems, as we will see in the next chapter. The only notable difference between our implementation of the candlestick patterns and the ones in [-@hu2019] are the definitions of "small", "normal", etc. shadows and real bodies. For this, we make use of the definition laid out in the previous section in \autoref{tab:summary-body-shadow-length}.
+
+[^03-methodology-preprocessing-3]: A detailed appendix of candlestick patterns will be added in the final version.
+
+The 103 candlestick patterns are made up of a varying number of candlesticks, ranging from 1 to 13 candles. A summary can be found in \autoref{tab:number-candles}. We note that the number of candles are typically called the amount of candle *lines*, hence the naming convention.
+
+```{=latex}
+\begin{center}
+\begin{longtable}{lc}
+\caption[Overview of number of candles in the patterns]{Overview of number of candles in the patterns.}
+\label{tab:number-candles}\\ \toprule
+Group & Number of patterns \\ \midrule
+One-Line Candles & 29 \\
+Two-Line Candles & 32 \\
+Three-Line Candles & 29 \\
+Four-Line Candles & 3 \\
+Five(+)-Line Candles & 10 \\ \bottomrule
+\end{longtable}
+\end{center}
+```
+
+## Trend
+
+Most candlestick patterns also include a specific trend in their definition: these patterns are only valid for either an uptrend or a downtrend. Defining a trend is no simple matter however. The theory considers many definitions, making use of e.g. (exponential) moving averages, Bollinger bands,... For our initial investigation into the predictive power, we make use of a relatively simple but widespread method of defining the trend: by using the moving average. Specifically, the moving average of the Close of the 5 previous candles. If this moving average increases/decreases monotonically 7 times in a row, we define this as a(n) uptrend/downtrend, respectively. A large issue in defining trends is that it there is always some "lag" with respect to the data. In the next part of the research, many different methods of defining the trend will be investigated. We also test whether the trend makes any difference at all, by testing the patterns without considering the trend and even with the opposite trend.
+
+## Theoretical prediction
+
+The patterns belong to a few predictive categories: they can either predict a trend reversal or a continuation. Some patterns do not have an outspoken theoretical prediction. Naming conventions typically include the trend, which is either "bull" for an uptrend or "bear" for a downtrend, along with the prediction. This leads to predictions such as "bullish continuation" or "bearish reversal".[^03-methodology-preprocessing-4] These predictions are usually simplified to a binary buy/sell prediction. For example, the pattern "Concealing Baby Swallow" \autoref{fig:pattern_example}(a) is a bullish reversal, meaning it signals the end of a downtrend and the beginning of an uptrend, at least in theory. This means that now would be a good time to buy the asset, hence, the pattern is a *buy signal*. The predictions for each specific pattern are relatively consistent among the literature, with some exceptions here and there. We follow the predictions given in [-@bulkowski2012].
+
+[^03-methodology-preprocessing-4]: This will be a part of the candlestick pattern appendix.
+
+## Evaluation
+
+Finally, after having detected the candlestick patterns by (pre)processing the data and detecting the patterns by making use of the definitions laid out in the previous sections, we have to evaluate the performance of the patterns. Again, as might by expected at this point, many different methods of evaluation have been proposed in the literature. For the case of daily candles, a simple buy-and-hold strategy is often employed. In our case of intraday data, this would not really provide an accurate measure of performance, as the intraday nature of this thesis implies more frequent trading, contrary to a buy-and-hold strategy [-@fock2005]. For this reason, we make use of a stop-loss/take-profit strategy. For patterns that signal it is opportune to buy (a buy signal), this works as follows. When the candlestick pattern of interest is detected, the index is bought at the earliest possible time: the Open of the next candle. Also, two different margins are set: a take-profit margin 1% above the buy-in price, and a stop-loss margin 1% below buy-in price. The performance of this transaction is then evaluated by looking which margin is breached first. By tallying up all the wins (take-profit) and the losses (stop-loss) of all the detected instances of a pattern, we arrive at a win rate. For sell signals, this entire process is inverted, with buying becoming selling and the margins switching places.
+
+Under the assumption that the movements of our financial data is purely random, a win rate of 50% is to be expected. Significant deviations from this baseline would provide evidence of candlestick patterns having some measure of predictive power. To test this, we employ a one-sided binomial test, since the outcome of our evaluation is binary: either win or lose. The hypotheses are $$H_0:\pi=0.5\qquad\qquad H_1:\pi>0.5$$ with $\pi$ the win rate. We evaluate at the 5% significance level.
