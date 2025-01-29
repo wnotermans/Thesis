@@ -169,3 +169,4 @@ candlestick_patterns/*.txt
 Presentation/*.nav
 Presentation/*.snm
 Presentation/*.gz
+Presentation/*.bbl
