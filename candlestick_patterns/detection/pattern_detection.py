@@ -73,7 +73,7 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
     twelve_candle = [candle_dict[f"candle_minus_{n}"] for n in range(11, -1, -1)]
     thirteen_candle = [candle_dict[f"candle_minus_{n}"] for n in range(12, -1, -1)]
 
-    num_patterns = 309
+    NUM_PATTERNS = 309
     i = 0
 
     for number in [
@@ -102,12 +102,8 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
             except FileNotFoundError:
                 pass
 
-            print(
-                f"Detecting {func_name:<53} <|> "
-                + f"{'-'*(48*i//num_patterns)+">":<49} "
-                + f"({i+1:>3}/{num_patterns})",
-                end="\r",
-            )
+            print_status_bar(func_name, i, NUM_PATTERNS)
+
             i += 1
 
             func_call = getattr(globals().get(f"{number}_patterns"), func_name)
@@ -125,6 +121,32 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
         f"All done. Total detection time: {round(time.perf_counter()-total_time,2)}s",
         end="\n\n",
     )
+
+def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
+    """
+    Prints out the status bar (function name, progress bar and count).
+
+    Parameters
+    ----------
+    pattern_name : str
+        Name of the pattern being detected.
+    i : int
+        Current iteration number.
+    total_patterns : int
+        Total number of patterns.
+
+    Returns
+    -------
+    None
+        Prints a line that overwrites the previous status bar.
+    """
+    left_line = (51 * (i + 1) // total_patterns) * "-"
+    right_line = (51 - len(left_line)) * "-"
+    progress_bar = f"|{left_line}>>{right_line}|"
+    status_bar = (
+        f"Detecting {pattern_name:<53}" + progress_bar + f"({i+1:>3}/{total_patterns})"
+    )
+    print(status_bar, end="\r")
 
 
 def handle_gaps(
