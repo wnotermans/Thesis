@@ -121,7 +121,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                     uptest = [f"{uptest} (*)"]
                 else:
                     uptest = [f"{uptest}"]
-                # uptest = [f"{uptest} (*)" if uptest < 0.05 else str(uptest)]
                 downtest = round(
                     binomtest(
                         int(np.nansum(evallist)),
@@ -139,7 +138,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                     downtest = [f"{downtest} (*)"]
                 else:
                     downtest = [f"{downtest}"]
-                # downtest = [f"{downtest} (*)" if downtest < 0.05 else str(downtest)]
 
                 pa.parquet.write_table(
                     pa.table(
