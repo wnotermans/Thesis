@@ -89,13 +89,9 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
         "thirteen",
     ]:
 
-        pattern_funcs = []  # get all functions names of the pattern functions
-        for name in dir(globals().get(f"{number}_patterns")):
-            attr = getattr(globals().get(f"{number}_patterns"), name)
-            if callable(attr):
-                pattern_funcs.append(name)
+        func_name_list = extract_func_names(number_candles=number)
 
-        for func_name in pattern_funcs:
+        for func_name in func_name_list:
 
             try:
                 os.remove(f"data/patterns/{number}/{func_name}.parquet")
@@ -121,6 +117,30 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
         f"All done. Total detection time: {round(time.perf_counter()-total_time,2)}s",
         end="\n\n",
     )
+
+
+def extract_func_names(number_candles: str) -> list:
+    """
+    Extract the function names of pattern functions from number of candlesticks.
+
+    Parameters
+    ----------
+    number_candles : str
+        The number of candlesticks in the pattern.
+
+    Returns
+    -------
+    list
+        List of all the function names of the candlestick patterns.
+    """
+    func_names = []
+    file_name = f"{number_candles}_patterns"
+    for name in dir(globals().get(file_name)):
+        attribute = getattr(globals().get(file_name), name)
+        if callable(attribute):
+            func_names.append(name)
+    return func_names
+
 
 def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
     """
