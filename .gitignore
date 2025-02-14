@@ -159,13 +159,13 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-Data/
+data/
+.vscode/
 Papers and Books/
-candlestick_patterns/utility/
+utility/
 Thesis/.Rproj.user/
 Thesis/_book/
 .Rproj.user
-candlestick_patterns/*.txt
 Presentation/*.nav
 Presentation/*.snm
 Presentation/*.gz
