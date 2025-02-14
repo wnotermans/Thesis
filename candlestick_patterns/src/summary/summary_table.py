@@ -1,8 +1,8 @@
+import csv
 import os
 import time
 
 import pyarrow.parquet as pq
-from prettytable import PrettyTable
 from word2number import w2n
 
 
@@ -14,7 +14,7 @@ def make_summary(filename: str) -> None:
      - Number of patterns detected
      - Type of pattern signal (buy/sell/any/hold)
      - Buy evaluation (win %, average profit), sell evaluation is the opposite
-     - t-tests: "greater", "less", "two-sided"
+     - binomial tests: "greater", "less"
 
     Parameters
     ----------
@@ -29,17 +29,18 @@ def make_summary(filename: str) -> None:
     t = time.perf_counter()
     print("Making summary table", end="\r")
 
-    table = PrettyTable()
-    field_names = [
-        "Pattern",
-        "Number of candlesticks",
-        "Number detected",
-        "Signal type",
-    ]
-    field_names.extend(["Buy evaluation", "Binomial test >", "Binomial test <"])
-    table.field_names = field_names
-    table.align["Pattern"] = "l"
-    table.align["Number detected"] = "r"
+    table = []
+    table.append(
+        [
+            "Pattern",
+            "Number of candlesticks",
+            "Number detected",
+            "Signal type",
+            "Buy evaluation",
+            "Binomial test >",
+            "Binomial test <",
+        ]
+    )
 
     for number in [
         "one",
@@ -55,12 +56,14 @@ def make_summary(filename: str) -> None:
     ]:
         for div, pattern in enumerate(os.listdir(f"data/patterns/{number}")):
             row = [
-                f"{pattern.removesuffix(".parquet").replace("_"," ")}",
+                f"{pattern.removesuffix(".parquet").replace("_"," ").strip()}",
                 w2n.word_to_num(number),
-                pq.read_table(f"data/patterns/{number}/{pattern}")
-                .to_pandas()
-                .sum()
-                .values[0],
+                int(
+                    pq.read_table(f"data/patterns/{number}/{pattern}")
+                    .to_pandas()
+                    .sum()
+                    .values[0]
+                ),
             ]
             name = (
                 pattern.removesuffix(".parquet")
@@ -174,20 +177,25 @@ def make_summary(filename: str) -> None:
                 row.append("Any")
             row.extend(
                 [
-                    x
+                    x.strip("[']")
+                    for x in pq.read_table(
+                        f"data/evaluation/{number}/{pattern}"
+                    ).to_pandas()["evaluation"]
+                ]
+            )
+            row.extend(
+                [
+                    f"{float(x):.4f}" if x != "/" else "/"
                     for x in pq.read_table(f"data/evaluation/{number}/{pattern}")
-                    .to_pandas()[["evaluation", "uptest", "downtest"]]
+                    .to_pandas()[["uptest", "downtest"]]
                     .iloc[0]
                     .values
                 ]
             )
-            table.add_row(
-                row,
-                divider=((div + 1) % 3 == 0),
-            )
-
-    with open(filename, "w") as f:
-        f.write(str(table))
+            table.append(row)
+    with open(f"{filename}.csv", "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(table)
 
     print(
         f"Making summary table done in {round(time.perf_counter()-t,2):>3.2f}s",

@@ -123,7 +123,7 @@ def calculate_missing(df: pd.DataFrame, time_idx: pd.DatetimeIndex) -> str:
     minute_gaps = np.array(
         (time_filtered_df["unixtime"] - time_filtered_df["unixtime"].shift(1)) // 60
     )
-    allowed_gaps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1050, 2490, 3930, 5370]
+    allowed_gaps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1050, 1051, 2490, 3930, 5370]
     missing_data_points = np.logical_not(np.isin(minute_gaps, allowed_gaps)).sum()
     return f"Missing data: {missing_data_points/len(df):.02%}"
 

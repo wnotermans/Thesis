@@ -554,7 +554,7 @@ def doji_long_legged_up_trend(
     )
 
 
-def doji_nothern_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
+def doji_northern_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     """Definition: doji in an uptrend.
 
     Trend: up.
@@ -565,7 +565,9 @@ def doji_nothern_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     return np.logical_and.reduce((T == 1, cf.doji(O, C, percentile)))
 
 
-def doji_nothern_no_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
+def doji_northern_no_trend(
+    candle: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
     """Definition: doji in an uptrend.
 
     Trend: up.
@@ -576,7 +578,7 @@ def doji_nothern_no_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) 
     return cf.doji(O, C, percentile)
 
 
-def doji_nothern_opp_trend(
+def doji_northern_opp_trend(
     candle: np.ndarray, T: np.ndarray, percentile: tuple
 ) -> bool:
     """Definition: doji in an uptrend.

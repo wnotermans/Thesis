@@ -1,0 +1,21 @@
+[project]
+name = "candlestick_patterns"
+version = "1.0.0"
+description = "Source code for my thesis 'Performance of candlestick pattens on intraday market data'."
+readme = "README.md"
+authors = [
+    { name = "wnotermans", email = "woutnotermans1@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "mplfinance>=0.12.10b0",
+    "numba>=0.61.0",
+    "pyarrow>=19.0.0",
+    "scipy>=1.15.1",
+    "word2number>=1.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+]

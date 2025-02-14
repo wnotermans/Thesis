@@ -68,14 +68,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
 
             if num_detected == 0 or num_detected == 1:
                 pa.parquet.write_table(
-                    pa.table(
-                        {
-                            "evaluation": "/",
-                            "uptest": "/",
-                            "downtest": "/",
-                            "bothtest": "/",
-                        }
-                    ),
+                    pa.table({"evaluation": "/", "uptest": "/", "downtest": "/"}),
                     f"data/evaluation/{number}/{pattern}",
                     compression="LZ4",
                 )
@@ -104,40 +97,36 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                         ]
                     )
                 ]
-                uptest = round(
-                    binomtest(
-                        int(np.nansum(evallist)),
-                        len(evallist),
-                        p=0.5,
-                        alternative="greater",
-                    ).pvalue,
-                    6,
-                )
-                if uptest < 0.001:
-                    uptest = [f"{uptest} (***)"]
-                elif uptest < 0.01:
-                    uptest = [f"{uptest} (**)"]
-                elif uptest < 0.05:
-                    uptest = [f"{uptest} (*)"]
-                else:
-                    uptest = [f"{uptest}"]
-                downtest = round(
-                    binomtest(
-                        int(np.nansum(evallist)),
-                        len(evallist),
-                        p=0.5,
-                        alternative="less",
-                    ).pvalue,
-                    6,
-                )
-                if downtest < 0.001:
-                    downtest = [f"{downtest} (***)"]
-                elif downtest < 0.01:
-                    downtest = [f"{downtest} (**)"]
-                elif downtest < 0.05:
-                    downtest = [f"{downtest} (*)"]
-                else:
-                    downtest = [f"{downtest}"]
+                uptest = binomtest(
+                    int(np.nansum(evallist)),
+                    len(evallist),
+                    p=0.5,
+                    alternative="greater",
+                ).pvalue
+
+                # if uptest < 0.001:
+                #     uptest = [f"{uptest} (***)"]
+                # elif uptest < 0.01:
+                #     uptest = [f"{uptest} (**)"]
+                # elif uptest < 0.05:
+                #     uptest = [f"{uptest} (*)"]
+                # else:
+                uptest = [f"{uptest}"]
+                downtest = binomtest(
+                    int(np.nansum(evallist)),
+                    len(evallist),
+                    p=0.5,
+                    alternative="less",
+                ).pvalue
+
+                # if downtest < 0.001:
+                #     downtest = [f"{downtest} (***)"]
+                # elif downtest < 0.01:
+                #     downtest = [f"{downtest} (**)"]
+                # elif downtest < 0.05:
+                #     downtest = [f"{downtest} (*)"]
+                # else:
+                downtest = [f"{downtest}"]
 
                 pa.parquet.write_table(
                     pa.table(
@@ -183,6 +172,8 @@ def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
 
 @numba.jit
 def find_first_breakthrough(HL_array, O, openidx, limit, percent):
+    if O < 0:
+        percent = -percent
     for idx in range(openidx, limit):
         if HL_array[idx, 0] >= O * (1 + percent / 100) and HL_array[idx, 1] <= O * (
             1 - percent / 100
