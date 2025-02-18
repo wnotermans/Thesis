@@ -193,7 +193,7 @@ def make_summary(filename: str) -> None:
                 ]
             )
             table.append(row)
-    with open(f"{filename}.csv", "w", newline="") as csvfile:
+    with open(f"data/summaries/{filename}.csv", "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(table)
 
