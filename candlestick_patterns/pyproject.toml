@@ -19,3 +19,12 @@ dependencies = [
 dev = [
     "pytest>=8.3.4",
 ]
+
+[tool.ruff.lint]
+select = [    
+    "E", # pycodestyle
+    "F", # Pyflakes
+    "UP", # pyupgrade
+    "B", # flake8-bugbear
+    "I", # isort
+]
