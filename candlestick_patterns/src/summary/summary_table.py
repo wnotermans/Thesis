@@ -198,6 +198,6 @@ def make_summary(filename: str) -> None:
         writer.writerows(table)
 
     print(
-        f"Making summary table done in {round(time.perf_counter()-t,2):>3.2f}s",
+        f"Making summary table done in {round(time.perf_counter() - t, 2):>3.2f}s",
         end="\n\n",
     )

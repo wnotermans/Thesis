@@ -47,7 +47,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
         "thirteen",
     ]:
         for pattern in os.listdir(f"data/patterns/{number}"):
-
             try:
                 os.remove(f"data/evaluation/{number}/{pattern}")
             except FileNotFoundError:
@@ -63,7 +62,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                 .set_index(df.index)
                 .shift(1)
             )
-            df.iat[0, 4] = False
+            df.iloc[0, 4] = False
             num_detected = df["pat"].sum()
 
             if num_detected == 0 or num_detected == 1:
@@ -74,7 +73,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                 )
 
             else:
-                patternidxs = df[df["pat"] == True].index
+                pattern_indices = df[df["pat"]].index
                 del df["pat"]
 
                 eval_list = np.array([])
@@ -93,7 +92,11 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                 eval_str = [
                     str(
                         [
-                            f"{round(100*np.nansum(evallist)/len(evallist),2):>2.2f}%",
+                            f"{
+                                round(
+                                    100 * np.nansum(eval_list) / len(eval_list), 2
+                                ):>2.2f
+                            }%",
                         ]
                     )
                 ]
@@ -125,7 +128,9 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
 
     print()
     print(
-        f"All done. Total evaluation time: {round(time.perf_counter()-total_time,2)}s",
+        f"All done. Total evaluation time: {
+            round(time.perf_counter() - total_time, 2)
+        }s",
         end="\n\n",
     )
 
@@ -152,7 +157,9 @@ def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
     right_line = (51 - len(left_line)) * "-"
     progress_bar = f"|{left_line}>>{right_line}|"
     status_bar = (
-        f"Evaluating {pattern_name:<52}" + progress_bar + f"({i+1:>3}/{total_patterns})"
+        f"Evaluating {pattern_name:<52}"
+        + progress_bar
+        + f"({i + 1:>3}/{total_patterns})"
     )
     print(status_bar, end="\r")
 

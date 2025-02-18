@@ -7,18 +7,17 @@ import pyarrow as pa
 from word2number import w2n
 
 from detection.patterns import (
-    eight_patterns,
-    eleven_patterns,
-    five_patterns,
-    four_patterns,
-    one_patterns,
-    ten_patterns,
-    thirteen_patterns,
-    three_patterns,
-    twelve_patterns,
-    two_patterns,
+    eight_patterns,  # noqa: F401
+    eleven_patterns,  # noqa: F401
+    five_patterns,  # noqa: F401
+    four_patterns,  # noqa: F401
+    one_patterns,  # noqa: F401
+    ten_patterns,  # noqa: F401
+    thirteen_patterns,  # noqa: F401
+    three_patterns,  # noqa: F401
+    twelve_patterns,  # noqa: F401
+    two_patterns,  # noqa: F401
 )
-from detection.patterns.functions import candlestick_functions as cf
 
 
 def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> None:
@@ -42,7 +41,7 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
     total_time = time.perf_counter()
 
     column_dict = {
-        f"{col}_{shift}": df[col].shift(shift).values
+        f"{col}_{shift}": df[col].shift(shift).to_numpy()
         for col in ["open", "high", "low", "close", "volume"]
         for shift in range(13)
     }
@@ -88,11 +87,9 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
         "twelve",
         "thirteen",
     ]:
-
         func_name_list = extract_func_names(number_candles=number)
 
         for func_name in func_name_list:
-
             try:
                 os.remove(f"data/patterns/{number}/{func_name}.parquet")
             except FileNotFoundError:
@@ -114,7 +111,9 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
 
     print()
     print(
-        f"All done. Total detection time: {round(time.perf_counter()-total_time,2)}s",
+        f"All done. Total detection time: {
+            round(time.perf_counter() - total_time, 2)
+        }s",
         end="\n\n",
     )
 
@@ -164,7 +163,9 @@ def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
     right_line = (51 - len(left_line)) * "-"
     progress_bar = f"|{left_line}>>{right_line}|"
     status_bar = (
-        f"Detecting {pattern_name:<53}" + progress_bar + f"({i+1:>3}/{total_patterns})"
+        f"Detecting {pattern_name:<53}"
+        + progress_bar
+        + f"({i + 1:>3}/{total_patterns})"
     )
     print(status_bar, end="\r")
 
@@ -175,7 +176,7 @@ def handle_gaps(
     """
     Handle gaps in the data according to the given mode.
 
-    * "exclude": excludes patterns where there are gaps inbetween the candles that make
+    * "exclude": excludes patterns where there are gaps between the candles that make
     up the pattern.
     * "ignore": ignore any gaps, replace any NaNs in the data with False.
     * "only": only considers patterns with gaps between the candles.

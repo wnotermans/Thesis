@@ -42,7 +42,8 @@ def read_and_preprocess(
         10th/30th/70th/90th percentiles for upper and lower shadow length, respectively.
     """
     print(
-        f"Reading and handling dataset {filename} with {interval_minutes} minute aggregation"
+        f"Reading and handling dataset {filename}"
+        + f"with {interval_minutes} minute aggregation"
     )
     t = time.perf_counter()
 
@@ -93,7 +94,9 @@ def read_and_preprocess(
     del main_set["5_MA"]
 
     print(
-        f"Reading and handling dataset {filename} done in {round(time.perf_counter()-t,2):<3.2f}s",
+        f"Reading and handling dataset {filename} done in {
+            round(time.perf_counter() - t, 2):<3.2f
+        }s",
         end="\n\n",
     )
     return main_set, percentiles
@@ -125,7 +128,7 @@ def calculate_missing(df: pd.DataFrame, time_idx: pd.DatetimeIndex) -> str:
     )
     allowed_gaps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1050, 1051, 2490, 3930, 5370]
     missing_data_points = np.logical_not(np.isin(minute_gaps, allowed_gaps)).sum()
-    return f"Missing data: {missing_data_points/len(df):.02%}"
+    return f"Missing data: {missing_data_points / len(df):.02%}"
 
 
 def split_data(df: pd.DataFrame, unique_dates: list) -> pd.DataFrame | pd.DataFrame:
