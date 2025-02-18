@@ -51,7 +51,7 @@ def read_and_preprocess(
     df["datetime"] = pd.to_datetime(df["datetime"])
     df = df.set_index("datetime")
 
-    unique_dates = list(sorted(set(df.index.date)))
+    unique_dates = sorted(set(df.index.date))
     time_idx = pd.concat(
         [
             pd.date_range(
@@ -131,7 +131,9 @@ def calculate_missing(df: pd.DataFrame, time_idx: pd.DatetimeIndex) -> str:
     return f"Missing data: {missing_data_points / len(df):.02%}"
 
 
-def split_data(df: pd.DataFrame, unique_dates: list) -> pd.DataFrame | pd.DataFrame:
+def split_data(
+    df: pd.DataFrame, unique_dates: list
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Split data into a reference and main set.
 
     The reference set is taken to be the data before January 1st, 2007. If the data
