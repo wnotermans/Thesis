@@ -147,10 +147,10 @@ def three_line_strike_bearish_(
         candles[2],
         candles[3],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -182,10 +182,10 @@ def three_line_strike_bearish_no_trend(
         candles[2],
         candles[3],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
     return np.logical_and.reduce(
         (
             cf.black_body(O_1, C_1),
@@ -216,10 +216,10 @@ def three_line_strike_bearish_opp_trend(
         candles[2],
         candles[3],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -251,10 +251,10 @@ def three_line_strike_bullish_(
         candles[2],
         candles[3],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -286,10 +286,10 @@ def three_line_strike_bullish_no_trend(
         candles[2],
         candles[3],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
     return np.logical_and.reduce(
         (
             cf.white_body(O_1, C_1),
@@ -320,10 +320,10 @@ def three_line_strike_bullish_opp_trend(
         candles[2],
         candles[3],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,

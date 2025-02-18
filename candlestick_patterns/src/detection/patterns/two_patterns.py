@@ -12,8 +12,8 @@ def above_the_stomach_(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -36,8 +36,8 @@ def above_the_stomach_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.black_body(O_1, C_1),
@@ -59,8 +59,8 @@ def above_the_stomach_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -81,8 +81,8 @@ def below_the_stomach_(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -104,8 +104,8 @@ def below_the_stomach_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_white_body(O_1, C_1, percentile),
@@ -126,8 +126,8 @@ def below_the_stomach_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -147,8 +147,8 @@ def dark_cloud_cover_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> 
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -171,8 +171,8 @@ def dark_cloud_cover_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_white_body(O_1, C_1, percentile),
@@ -194,8 +194,8 @@ def dark_cloud_cover_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -215,8 +215,8 @@ def doji_gapping_down_(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    L_1 = candle_1[:, 2]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
     return np.logical_and.reduce(
         (T == -1, cf.doji(O_2, C_2, percentile), cf.down_shadow_gap(L_1, H_2))
     )
@@ -232,8 +232,8 @@ def doji_gapping_down_no_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    L_1 = candle_1[:, 2]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
     return np.logical_and.reduce(
         (cf.doji(O_2, C_2, percentile), cf.down_shadow_gap(L_1, H_2))
     )
@@ -249,8 +249,8 @@ def doji_gapping_down_opp_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    L_1 = candle_1[:, 2]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
     return np.logical_and.reduce(
         (T == 1, cf.doji(O_2, C_2, percentile), cf.down_shadow_gap(L_1, H_2))
     )
@@ -264,8 +264,8 @@ def doji_gapping_up_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> b
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    H_1 = candle_1[:, 1]
+    O_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (T == 1, cf.doji(O_2, C_2, percentile), cf.up_shadow_gap(H_1, L_2))
     )
@@ -281,8 +281,8 @@ def doji_gapping_up_no_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    H_1 = candle_1[:, 1]
+    O_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (cf.doji(O_2, C_2, percentile), cf.up_shadow_gap(H_1, L_2))
     )
@@ -298,8 +298,8 @@ def doji_gapping_up_opp_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    H_1 = candle_1[:, 1]
+    O_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (T == -1, cf.doji(O_2, C_2, percentile), cf.up_shadow_gap(H_1, L_2))
     )
@@ -315,7 +315,7 @@ def doji_star_bearish_(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -342,7 +342,7 @@ def doji_star_bearish_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -368,7 +368,7 @@ def doji_star_bearish_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -393,8 +393,8 @@ def doji_star_bullish_(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -419,8 +419,8 @@ def doji_star_bullish_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_black_body(O_1, C_1, percentile),
@@ -444,8 +444,8 @@ def doji_star_bullish_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -467,8 +467,8 @@ def engulfing_bearish_(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (T == 1, cf.white_body(O_1, C_1), cf.black_body(O_2, C_2), O_1 > C_2, O_2 > C_1)
     )
@@ -485,8 +485,8 @@ def engulfing_bearish_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (cf.white_body(O_1, C_1), cf.black_body(O_2, C_2), O_1 > C_2, O_2 > C_1)
     )
@@ -503,8 +503,8 @@ def engulfing_bearish_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -525,8 +525,8 @@ def engulfing_bullish_(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -549,8 +549,8 @@ def engulfing_bullish_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (cf.black_body(O_1, C_1), cf.white_body(O_2, C_2), C_1 > O_2, C_2 > O_1)
     )
@@ -567,8 +567,8 @@ def engulfing_bullish_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (T == 1, cf.black_body(O_1, C_1), cf.white_body(O_2, C_2), C_1 > O_2, C_2 > O_1)
     )
@@ -584,7 +584,7 @@ def hammer_inverted_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> b
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -611,7 +611,7 @@ def hammer_inverted_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -637,7 +637,7 @@ def hammer_inverted_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -662,8 +662,8 @@ def harami_bearish_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bo
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -689,8 +689,8 @@ def harami_bearish_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_white_body(O_1, C_1, percentile),
@@ -715,8 +715,8 @@ def harami_bearish_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -740,8 +740,8 @@ def harami_bullish_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bo
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -767,8 +767,8 @@ def harami_bullish_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_black_body(O_1, C_1, percentile),
@@ -793,8 +793,8 @@ def harami_bullish_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -959,8 +959,8 @@ def homing_pigeon_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> boo
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -983,8 +983,8 @@ def homing_pigeon_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_black_body(O_1, C_1, percentile),
@@ -1006,8 +1006,8 @@ def homing_pigeon_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1029,8 +1029,8 @@ def in_neck_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -1052,8 +1052,8 @@ def in_neck_no_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> b
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_black_body(O_1, C_1, percentile),
@@ -1074,8 +1074,8 @@ def in_neck_opp_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> 
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1254,8 +1254,8 @@ def last_engulfing_bottom_(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -1278,8 +1278,8 @@ def last_engulfing_bottom_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (cf.white_body(O_1, C_1), cf.black_body(O_2, C_2), O_1 > C_2, O_2 > C_1)
     )
@@ -1296,8 +1296,8 @@ def last_engulfing_bottom_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1318,8 +1318,8 @@ def last_engulfing_top_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1342,8 +1342,8 @@ def last_engulfing_top_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (cf.black_body(O_1, C_1), cf.white_body(O_2, C_2), C_1 > O_2, C_2 > O_1)
     )
@@ -1360,8 +1360,8 @@ def last_engulfing_top_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -1381,8 +1381,8 @@ def matching_low_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -1403,8 +1403,8 @@ def matching_low_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (cf.tall_black_body(O_1, C_1, percentile), cf.black_body(O_2, C_2), C_1 == C_2)
     )
@@ -1420,8 +1420,8 @@ def matching_low_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1443,8 +1443,8 @@ def meeting_lines_bearish_(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1466,8 +1466,8 @@ def meeting_lines_bearish_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_white_body(O_1, C_1, percentile),
@@ -1488,8 +1488,8 @@ def meeting_lines_bearish_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -1511,8 +1511,8 @@ def meeting_lines_bullish_(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -1534,8 +1534,8 @@ def meeting_lines_bullish_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_white_body(O_1, C_1, percentile),
@@ -1556,8 +1556,8 @@ def meeting_lines_bullish_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1577,7 +1577,7 @@ def on_neck_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -1599,7 +1599,7 @@ def on_neck_no_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> b
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -1620,7 +1620,7 @@ def on_neck_opp_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> 
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -1642,8 +1642,8 @@ def piercing_pattern_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> 
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -1667,8 +1667,8 @@ def piercing_pattern_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.black_body(O_1, C_1),
@@ -1691,8 +1691,8 @@ def piercing_pattern_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1715,8 +1715,8 @@ def separating_lines_bearish_(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -1737,8 +1737,8 @@ def separating_lines_bearish_no_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_white_body(O_1, C_1, percentile),
@@ -1758,8 +1758,8 @@ def separating_lines_bearish_opp_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1780,8 +1780,8 @@ def separating_lines_bullish_(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1802,8 +1802,8 @@ def separating_lines_bullish_no_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_black_body(O_1, C_1, percentile),
@@ -1823,8 +1823,8 @@ def separating_lines_bullish_opp_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -1848,7 +1848,7 @@ def shooting_star_two_candle_(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -1876,7 +1876,7 @@ def shooting_star_two_candle_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -1903,7 +1903,7 @@ def shooting_star_two_candle_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
     O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
     return np.logical_and.reduce(
         (
@@ -1927,8 +1927,8 @@ def thrusting_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -1949,8 +1949,8 @@ def thrusting_no_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             cf.black_body(O_1, C_1),
@@ -1970,8 +1970,8 @@ def thrusting_opp_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) -
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 2], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -1991,8 +1991,8 @@ def tweezers_bottom_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> b
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    L_1 = candle_1[:, 2]
+    L_2 = candle_2[:, 2]
     return np.logical_and.reduce((T == -1, L_1 == L_2))
 
 
@@ -2006,8 +2006,8 @@ def tweezers_bottom_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    L_1 = candle_1[:, 2]
+    L_2 = candle_2[:, 2]
     return L_1 == L_2
 
 
@@ -2021,8 +2021,8 @@ def tweezers_bottom_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    L_1 = candle_1[:, 2]
+    L_2 = candle_2[:, 2]
     return np.logical_and.reduce((T == 1, L_1 == L_2))
 
 
@@ -2034,8 +2034,8 @@ def tweezers_top_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    H_1 = candle_1[:, 1]
+    H_2 = candle_2[:, 1]
     return np.logical_and.reduce((T == 1, H_1 == H_2))
 
 
@@ -2049,8 +2049,8 @@ def tweezers_top_no_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    H_1 = candle_1[:, 1]
+    H_2 = candle_2[:, 1]
     return H_1 == H_2
 
 
@@ -2064,8 +2064,8 @@ def tweezers_top_opp_trend(
     Prediction: reversal.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    H_1 = candle_1[:, 1]
+    H_2 = candle_2[:, 1]
     return np.logical_and.reduce((T == -1, H_1 == H_2))
 
 
@@ -2077,8 +2077,8 @@ def window_falling_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bo
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    L_1 = candle_1[:, 2]
+    H_2 = candle_2[:, 1]
     return np.logical_and.reduce((T == -1, cf.down_shadow_gap(L_1, H_2)))
 
 
@@ -2092,8 +2092,8 @@ def window_falling_no_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    L_1 = candle_1[:, 2]
+    H_2 = candle_2[:, 1]
     return cf.down_shadow_gap(L_1, H_2)
 
 
@@ -2107,8 +2107,8 @@ def window_falling_opp_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    L_1 = candle_1[:, 2]
+    H_2 = candle_2[:, 1]
     return np.logical_and.reduce((T == 1, cf.down_shadow_gap(L_1, H_2)))
 
 
@@ -2120,8 +2120,8 @@ def window_rising_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> boo
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    H_1 = candle_1[:, 1]
+    L_2 = candle_2[:, 2]
     return np.logical_and.reduce((T == 1, cf.up_shadow_gap(H_1, L_2)))
 
 
@@ -2135,8 +2135,8 @@ def window_rising_no_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    H_1 = candle_1[:, 1]
+    L_2 = candle_2[:, 2]
     return cf.up_shadow_gap(H_1, L_2)
 
 
@@ -2150,6 +2150,6 @@ def window_rising_opp_trend(
     Prediction: continuation.
     """
     candle_1, candle_2 = candles[0], candles[1]
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    H_1 = candle_1[:, 1]
+    L_2 = candle_2[:, 2]
     return np.logical_and.reduce((T == -1, cf.up_shadow_gap(H_1, L_2)))

@@ -19,11 +19,11 @@ def breakaway_bearish_(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
         candles[3],
         candles[4],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    C_3 = candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -58,11 +58,11 @@ def breakaway_bearish_no_trend(
         candles[3],
         candles[4],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    C_3 = candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_white_body(O_1, C_1, percentile),
@@ -96,11 +96,11 @@ def breakaway_bearish_opp_trend(
         candles[3],
         candles[4],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    C_3 = candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -133,11 +133,11 @@ def breakaway_bullish_(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
         candles[3],
         candles[4],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    C_3 = candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -172,11 +172,11 @@ def breakaway_bullish_no_trend(
         candles[3],
         candles[4],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    C_3 = candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_black_body(O_1, C_1, percentile),
@@ -210,11 +210,11 @@ def breakaway_bullish_opp_trend(
         candles[3],
         candles[4],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    C_3 = candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -250,10 +250,10 @@ def falling_three_methods_(
         candles[4],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -290,10 +290,10 @@ def falling_three_methods_no_trend(
         candles[4],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_black_body(O_1, C_1, percentile),
@@ -329,10 +329,10 @@ def falling_three_methods_opp_trend(
         candles[4],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, C_4 = candle_4[:, 0], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -365,11 +365,11 @@ def ladder_bottom_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> boo
         candles[3],
         candles[4],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, H_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -405,11 +405,11 @@ def ladder_bottom_no_trend(
         candles[3],
         candles[4],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, H_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_black_body(O_1, C_1, percentile),
@@ -444,11 +444,11 @@ def ladder_bottom_opp_trend(
         candles[3],
         candles[4],
     )
-    O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_1, C_1 = candle_1[:, 0], candle_1[:, 3]
+    O_2, C_2 = candle_2[:, 0], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    O_4, H_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -485,10 +485,10 @@ def mat_hold_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
         candles[4],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
+    O_3, H_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 3]
+    O_4, H_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -501,7 +501,7 @@ def mat_hold_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
             C_2 > C_3,
             C_3 > C_4,
             L_1 < C_4,
-            C_5 > np.maximum.reduce((H_1, H_2, H_3, H_4)),
+            np.maximum.reduce((H_1, H_2, H_3, H_4)) < C_5,
         )
     )
 
@@ -524,10 +524,10 @@ def mat_hold_no_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> 
         candles[4],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
+    O_3, H_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 3]
+    O_4, H_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_white_body(O_1, C_1, percentile),
@@ -539,7 +539,7 @@ def mat_hold_no_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> 
             C_2 > C_3,
             C_3 > C_4,
             L_1 < C_4,
-            C_5 > np.maximum.reduce((H_1, H_2, H_3, H_4)),
+            np.maximum.reduce((H_1, H_2, H_3, H_4)) < C_5,
         )
     )
 
@@ -562,10 +562,10 @@ def mat_hold_opp_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
         candles[4],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
+    O_3, H_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 3]
+    O_4, H_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -578,7 +578,7 @@ def mat_hold_opp_trend(candles: np.ndarray, T: np.ndarray, percentile: tuple) ->
             C_2 > C_3,
             C_3 > C_4,
             L_1 < C_4,
-            C_5 > np.maximum.reduce((H_1, H_2, H_3, H_4)),
+            np.maximum.reduce((H_1, H_2, H_3, H_4)) < C_5,
         )
     )
 
@@ -603,10 +603,10 @@ def rising_three_methods_(
         candles[4],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
+    O_3, H_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 3]
+    O_4, H_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
@@ -619,7 +619,7 @@ def rising_three_methods_(
             C_3 > C_4,
             H_1 > C_4,
             L_1 < C_2,
-            C_5 > np.maximum.reduce((H_1, H_2, H_3, H_4)),
+            np.maximum.reduce((H_1, H_2, H_3, H_4)) < C_5,
         )
     )
 
@@ -644,10 +644,10 @@ def rising_three_methods_no_trend(
         candles[4],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
+    O_3, H_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 3]
+    O_4, H_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             cf.tall_white_body(O_1, C_1, percentile),
@@ -659,7 +659,7 @@ def rising_three_methods_no_trend(
             C_3 > C_4,
             H_1 > C_4,
             L_1 < C_2,
-            C_5 > np.maximum.reduce((H_1, H_2, H_3, H_4)),
+            np.maximum.reduce((H_1, H_2, H_3, H_4)) < C_5,
         )
     )
 
@@ -684,10 +684,10 @@ def rising_three_methods_opp_trend(
         candles[4],
     )
     O_1, H_1, L_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 2], candle_1[:, 3]
-    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
-    O_3, H_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 2], candle_3[:, 3]
-    O_4, H_4, L_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 2], candle_4[:, 3]
-    O_5, H_5, L_5, C_5 = candle_5[:, 0], candle_5[:, 1], candle_5[:, 2], candle_5[:, 3]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
+    O_3, H_3, C_3 = candle_3[:, 0], candle_3[:, 1], candle_3[:, 3]
+    O_4, H_4, C_4 = candle_4[:, 0], candle_4[:, 1], candle_4[:, 3]
+    O_5, C_5 = candle_5[:, 0], candle_5[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
@@ -700,6 +700,6 @@ def rising_three_methods_opp_trend(
             C_3 > C_4,
             H_1 > C_4,
             L_1 < C_2,
-            C_5 > np.maximum.reduce((H_1, H_2, H_3, H_4)),
+            np.maximum.reduce((H_1, H_2, H_3, H_4)) < C_5,
         )
     )
