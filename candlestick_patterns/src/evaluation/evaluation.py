@@ -106,6 +106,8 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                     p=0.5,
                     alternative="greater",
                 ).pvalue
+                up_test = [f"{up_test}"]
+
                 down_test = binomtest(
                     int(np.nansum(eval_list)),
                     len(eval_list),
@@ -206,7 +208,6 @@ def n_holding_periods(df):
         t = time.perf_counter()
 
         for pattern in os.listdir(f"../data/patterns/{number}"):
-
             try:
                 os.remove(f"../data/evaluation/{number}/{pattern}")
             except FileNotFoundError:
@@ -214,7 +215,7 @@ def n_holding_periods(df):
 
             print(
                 f"Evaluating {pattern:<54} | "
-                + f"{'#'*(50*i//n):<50} "
+                + f"{'#' * (50 * i // n):<50} "
                 + f"({i:>3}/{n})",
                 end="\r",
             )
@@ -226,11 +227,10 @@ def n_holding_periods(df):
                 .values[0]
                 == 0
             ):
-                buyeval = list(("/", "/") for _ in range(10))
-                selleval = list(("/", "/") for _ in range(10))
+                buy_eval = list(("/", "/") for _ in range(10))
+                sell_eval = list(("/", "/") for _ in range(10))
 
             else:
-
                 df["pat"] = (
                     pq.read_table(f"../data/patterns/{number}/{pattern}")
                     .to_pandas()
@@ -238,16 +238,16 @@ def n_holding_periods(df):
                     .shift(1)
                 )
 
-                subset = df[df["pat"] == True]
+                subset = df[df["pat"]]
 
                 mean_buy_profit = {
-                    f"{n+1}_holding_periods": np.format_float_positional(
+                    f"{n + 1}_holding_periods": np.format_float_positional(
                         (subset[f"close_{n}"] - subset["open"]).mean(), 2
                     )
                     for n in range(10)
                 }
                 buy_winning_rate = {
-                    f"{n+1}_holding_periods": np.format_float_positional(
+                    f"{n + 1}_holding_periods": np.format_float_positional(
                         100
                         * (subset[f"close_{n}"] > subset["open"]).sum()
                         / len(subset),
@@ -256,13 +256,13 @@ def n_holding_periods(df):
                     for n in range(10)
                 }
                 mean_sell_profit = {
-                    f"{n+1}_holding_periods": np.format_float_positional(
+                    f"{n + 1}_holding_periods": np.format_float_positional(
                         (subset["open"] - subset[f"close_{n}"]).mean(), 2
                     )
                     for n in range(10)
                 }
                 sell_winning_rate = {
-                    f"{n+1}_holding_periods": np.format_float_positional(
+                    f"{n + 1}_holding_periods": np.format_float_positional(
                         100
                         * (subset["open"] > subset[f"close_{n}"]).sum()
                         / len(subset),
@@ -271,17 +271,17 @@ def n_holding_periods(df):
                     for n in range(10)
                 }
 
-                buyeval = list(
+                buy_eval = list(
                     (mean_buy_profit[key], buy_winning_rate[key])
                     for key in mean_buy_profit.keys()
                 )
-                selleval = list(
+                sell_eval = list(
                     (mean_sell_profit[key], sell_winning_rate[key])
                     for key in mean_sell_profit.keys()
                 )
 
             pa.parquet.write_table(
-                pa.table({"buy": buyeval, "sell": selleval}),
+                pa.table({"buy": buy_eval, "sell": sell_eval}),
                 f"../data/evaluation/{number}/{pattern}",
                 compression="LZ4",
             )
@@ -291,11 +291,13 @@ def n_holding_periods(df):
         print()
         print(
             f"Evaluating patterns with {number} candlestick(s): "
-            + f"Done in {round(time.perf_counter()-t,2):<3.2f}s.",
+            + f"Done in {round(time.perf_counter() - t, 2):<3.2f}s.",
             end="\n\n",
         )
 
     print(
-        f"All done. Total evaluation time: {round(time.perf_counter()-total_time,2)}s",
+        f"All done. Total evaluation time: {
+            round(time.perf_counter() - total_time, 2)
+        }s",
         end="\n\n",
     )
