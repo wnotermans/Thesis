@@ -68,7 +68,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
 
             if num_detected == 0 or num_detected == 1:
                 pa.parquet.write_table(
-                    pa.table({"evaluation": "/", "uptest": "/", "downtest": "/"}),
+                    pa.table({"evaluation": "/", "up_test": "/", "down_test": "/"}),
                     f"data/evaluation/{number}/{pattern}",
                     compression="LZ4",
                 )
@@ -77,60 +77,47 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                 patternidxs = df[df["pat"] == True].index
                 del df["pat"]
 
-                evallist = np.array([])
+                eval_list = np.array([])
 
-                for patidx in patternidxs:
-                    openidx = df.index.get_loc(patidx)
-                    O = df.loc[patidx, "open"]
+                for pattern_index in pattern_indices:
+                    open_index = df.index.get_loc(pattern_index)
+                    OP = df.loc[pattern_index, "open"]
 
-                    evallist = np.append(
-                        evallist,
+                    eval_list = np.append(
+                        eval_list,
                         find_first_breakthrough(
-                            HL_ARRAY, O, openidx, len(df), MARGIN_PERCENT
+                            HL_ARRAY, OP, open_index, len(df), MARGIN_PERCENT
                         ),
                     )
 
-                evalstr = [
+                eval_str = [
                     str(
                         [
                             f"{round(100*np.nansum(evallist)/len(evallist),2):>2.2f}%",
                         ]
                     )
                 ]
-                uptest = binomtest(
-                    int(np.nansum(evallist)),
-                    len(evallist),
+                up_test = binomtest(
+                    int(np.nansum(eval_list)),
+                    len(eval_list),
                     p=0.5,
                     alternative="greater",
                 ).pvalue
-
-                # if uptest < 0.001:
-                #     uptest = [f"{uptest} (***)"]
-                # elif uptest < 0.01:
-                #     uptest = [f"{uptest} (**)"]
-                # elif uptest < 0.05:
-                #     uptest = [f"{uptest} (*)"]
-                # else:
-                uptest = [f"{uptest}"]
-                downtest = binomtest(
-                    int(np.nansum(evallist)),
-                    len(evallist),
+                down_test = binomtest(
+                    int(np.nansum(eval_list)),
+                    len(eval_list),
                     p=0.5,
                     alternative="less",
                 ).pvalue
-
-                # if downtest < 0.001:
-                #     downtest = [f"{downtest} (***)"]
-                # elif downtest < 0.01:
-                #     downtest = [f"{downtest} (**)"]
-                # elif downtest < 0.05:
-                #     downtest = [f"{downtest} (*)"]
-                # else:
-                downtest = [f"{downtest}"]
+                down_test = [f"{down_test}"]
 
                 pa.parquet.write_table(
                     pa.table(
-                        {"evaluation": evalstr, "uptest": uptest, "downtest": downtest}
+                        {
+                            "evaluation": eval_str,
+                            "up_test": up_test,
+                            "down_test": down_test,
+                        }
                     ),
                     f"data/evaluation/{number}/{pattern}",
                     compression="LZ4",
@@ -171,17 +158,17 @@ def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
 
 
 @numba.jit
-def find_first_breakthrough(HL_array, O, openidx, limit, percent):
-    if O < 0:
+def find_first_breakthrough(HL_array, OP, open_index, limit, percent):
+    if OP < 0:
         percent = -percent
-    for idx in range(openidx, limit):
-        if HL_array[idx, 0] >= O * (1 + percent / 100) and HL_array[idx, 1] <= O * (
+    for idx in range(open_index, limit):
+        if HL_array[idx, 0] >= OP * (1 + percent / 100) and HL_array[idx, 1] <= OP * (
             1 - percent / 100
         ):
             return np.nan
-        if HL_array[idx, 0] >= O * (1 + percent / 100):
+        if HL_array[idx, 0] >= OP * (1 + percent / 100):
             return 1
-        if HL_array[idx, 1] <= O * (1 - percent / 100):
+        if HL_array[idx, 1] <= OP * (1 - percent / 100):
             return 0
     return np.nan
 

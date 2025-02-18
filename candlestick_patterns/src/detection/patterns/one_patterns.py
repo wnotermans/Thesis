@@ -11,13 +11,13 @@ def belt_hold_bearish_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> 
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_black_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            cf.small_ls(O, L, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.small_ls(OP, L, C, percentile),
         )
     )
 
@@ -32,12 +32,12 @@ def belt_hold_bearish_no_trend(
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_black_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            cf.small_ls(O, L, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.small_ls(OP, L, C, percentile),
         )
     )
 
@@ -52,13 +52,13 @@ def belt_hold_bearish_opp_trend(
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_black_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            cf.small_ls(O, L, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.small_ls(OP, L, C, percentile),
         )
     )
 
@@ -71,13 +71,13 @@ def belt_hold_bullish_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> 
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_white_body(O, C, percentile),
-            cf.no_ls(O, L, C, percentile),
-            cf.small_us(O, H, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
+            cf.small_us(OP, H, C, percentile),
         )
     )
 
@@ -92,12 +92,12 @@ def belt_hold_bullish_no_trend(
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_white_body(O, C, percentile),
-            cf.no_ls(O, L, C, percentile),
-            cf.small_us(O, H, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
+            cf.small_us(OP, H, C, percentile),
         )
     )
 
@@ -112,13 +112,13 @@ def belt_hold_bullish_opp_trend(
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_white_body(O, C, percentile),
-            cf.no_ls(O, L, C, percentile),
-            cf.small_us(O, H, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
+            cf.small_us(OP, H, C, percentile),
         )
     )
 
@@ -131,14 +131,14 @@ def candle_black_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.normal_black_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.normal_black_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -153,15 +153,15 @@ def candle_black_down_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.normal_black_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.normal_black_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -174,15 +174,15 @@ def candle_black_up_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) 
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.normal_black_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.normal_black_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -195,14 +195,14 @@ def candle_short_black_(candle: np.ndarray, T: np.ndarray, percentile: tuple) ->
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.short_black_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.short_black_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -217,15 +217,15 @@ def candle_short_black_down_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.short_black_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.short_black_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -240,15 +240,15 @@ def candle_short_black_up_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.short_black_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.short_black_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -261,14 +261,14 @@ def candle_short_white_(candle: np.ndarray, T: np.ndarray, percentile: tuple) ->
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.short_white_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.short_white_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -283,15 +283,15 @@ def candle_short_white_down_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.short_white_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.short_white_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -306,15 +306,15 @@ def candle_short_white_up_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.short_white_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.short_white_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -327,14 +327,14 @@ def candle_white_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.normal_white_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.normal_white_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -349,15 +349,15 @@ def candle_white_down_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.normal_white_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.normal_white_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -370,15 +370,15 @@ def candle_white_up_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) 
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.normal_white_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.upper_shadow_length(O, H, C) < cf.body_height(O, C),
-            cf.lower_shadow_length(O, L, C) < cf.body_height(O, C),
+            cf.normal_white_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.upper_shadow_length(OP, H, C) < cf.body_height(OP, C),
+            cf.lower_shadow_length(OP, L, C) < cf.body_height(OP, C),
         )
     )
 
@@ -390,12 +390,12 @@ def doji_dragonfly_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> boo
 
     Prediction: reversal if down.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.doji(O, C, percentile),
-            cf.small_us(O, H, C, percentile),
-            cf.long_ls(O, L, C, percentile),
+            cf.doji(OP, C, percentile),
+            cf.small_us(OP, H, C, percentile),
+            cf.long_ls(OP, L, C, percentile),
         )
     )
 
@@ -409,13 +409,13 @@ def doji_dragonfly_down_trend(
 
     Prediction: reversal if down.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.doji(O, C, percentile),
-            cf.small_us(O, H, C, percentile),
-            cf.long_ls(O, L, C, percentile),
+            cf.doji(OP, C, percentile),
+            cf.small_us(OP, H, C, percentile),
+            cf.long_ls(OP, L, C, percentile),
         )
     )
 
@@ -429,13 +429,13 @@ def doji_dragonfly_up_trend(
 
     Prediction: reversal if down.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.doji(O, C, percentile),
-            cf.small_us(O, H, C, percentile),
-            cf.long_ls(O, L, C, percentile),
+            cf.doji(OP, C, percentile),
+            cf.small_us(OP, H, C, percentile),
+            cf.long_ls(OP, L, C, percentile),
         )
     )
 
@@ -447,12 +447,12 @@ def doji_gravestone_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bo
 
     Prediction: reversal if up.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.doji(O, C, percentile),
-            cf.no_ls(O, L, C, percentile),
-            cf.long_us(O, H, C, percentile),
+            cf.doji(OP, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
+            cf.long_us(OP, H, C, percentile),
         )
     )
 
@@ -466,13 +466,13 @@ def doji_gravestone_down_trend(
 
     Prediction: reversal if up.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.doji(O, C, percentile),
-            cf.no_ls(O, L, C, percentile),
-            cf.long_us(O, H, C, percentile),
+            cf.doji(OP, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
+            cf.long_us(OP, H, C, percentile),
         )
     )
 
@@ -486,13 +486,13 @@ def doji_gravestone_up_trend(
 
     Prediction: reversal if up.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.doji(O, C, percentile),
-            cf.no_ls(O, L, C, percentile),
-            cf.long_us(O, H, C, percentile),
+            cf.doji(OP, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
+            cf.long_us(OP, H, C, percentile),
         )
     )
 
@@ -504,12 +504,12 @@ def doji_long_legged_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> b
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.doji(O, C, percentile),
-            cf.long_us(O, H, C, percentile),
-            cf.long_ls(O, L, C, percentile),
+            cf.doji(OP, C, percentile),
+            cf.long_us(OP, H, C, percentile),
+            cf.long_ls(OP, L, C, percentile),
         )
     )
 
@@ -523,13 +523,13 @@ def doji_long_legged_down_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.doji(O, C, percentile),
-            cf.long_us(O, H, C, percentile),
-            cf.long_ls(O, L, C, percentile),
+            cf.doji(OP, C, percentile),
+            cf.long_us(OP, H, C, percentile),
+            cf.long_ls(OP, L, C, percentile),
         )
     )
 
@@ -543,13 +543,13 @@ def doji_long_legged_up_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.doji(O, C, percentile),
-            cf.long_us(O, H, C, percentile),
-            cf.long_ls(O, L, C, percentile),
+            cf.doji(OP, C, percentile),
+            cf.long_us(OP, H, C, percentile),
+            cf.long_ls(OP, L, C, percentile),
         )
     )
 
@@ -561,8 +561,8 @@ def doji_northern_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool
 
     Prediction: reversal.
     """
-    O, C = candle[:, 0], candle[:, 3]
-    return np.logical_and.reduce((T == 1, cf.doji(O, C, percentile)))
+    OP, C = candle[:, 0], candle[:, 3]
+    return np.logical_and.reduce((T == 1, cf.doji(OP, C, percentile)))
 
 
 def doji_northern_no_trend(
@@ -574,8 +574,8 @@ def doji_northern_no_trend(
 
     Prediction: reversal.
     """
-    O, C = candle[:, 0], candle[:, 3]
-    return cf.doji(O, C, percentile)
+    OP, C = candle[:, 0], candle[:, 3]
+    return cf.doji(OP, C, percentile)
 
 
 def doji_northern_opp_trend(
@@ -587,8 +587,8 @@ def doji_northern_opp_trend(
 
     Prediction: reversal.
     """
-    O, C = candle[:, 0], candle[:, 3]
-    return np.logical_and.reduce((T == -1, cf.doji(O, C, percentile)))
+    OP, C = candle[:, 0], candle[:, 3]
+    return np.logical_and.reduce((T == -1, cf.doji(OP, C, percentile)))
 
 
 def doji_southern_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
@@ -598,8 +598,8 @@ def doji_southern_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool
 
     Prediction: reversal.
     """
-    O, C = candle[:, 0], candle[:, 3]
-    return np.logical_and.reduce((T == -1, cf.doji(O, C, percentile)))
+    OP, C = candle[:, 0], candle[:, 3]
+    return np.logical_and.reduce((T == -1, cf.doji(OP, C, percentile)))
 
 
 def doji_southern_no_trend(
@@ -611,8 +611,8 @@ def doji_southern_no_trend(
 
     Prediction: reversal.
     """
-    O, C = candle[:, 0], candle[:, 3]
-    return cf.doji(O, C, percentile)
+    OP, C = candle[:, 0], candle[:, 3]
+    return cf.doji(OP, C, percentile)
 
 
 def doji_southern_opp_trend(
@@ -624,8 +624,8 @@ def doji_southern_opp_trend(
 
     Prediction: reversal.
     """
-    O, C = candle[:, 0], candle[:, 3]
-    return np.logical_and.reduce((T == 1, cf.doji(O, C, percentile)))
+    OP, C = candle[:, 0], candle[:, 3]
+    return np.logical_and.reduce((T == 1, cf.doji(OP, C, percentile)))
 
 
 def hammer_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
@@ -636,16 +636,16 @@ def hammer_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.short_body(O, C, percentile),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            (2 * cf.body_height(O, C) < cf.lower_shadow_length(O, L, C)),
-            (cf.lower_shadow_length(O, L, C) < 3 * cf.body_height(O, C)),
+            cf.short_body(OP, C, percentile),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            (2 * cf.body_height(OP, C) < cf.lower_shadow_length(OP, L, C)),
+            (cf.lower_shadow_length(OP, L, C) < 3 * cf.body_height(OP, C)),
             np.logical_or(
-                cf.small_us(O, H, C, percentile), cf.no_us(O, H, C, percentile)
+                cf.small_us(OP, H, C, percentile), cf.no_us(OP, H, C, percentile)
             ),
         )
     )
@@ -659,15 +659,15 @@ def hammer_no_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> boo
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.short_body(O, C, percentile),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            (2 * cf.body_height(O, C) < cf.lower_shadow_length(O, L, C)),
-            (cf.lower_shadow_length(O, L, C) < 3 * cf.body_height(O, C)),
+            cf.short_body(OP, C, percentile),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            (2 * cf.body_height(OP, C) < cf.lower_shadow_length(OP, L, C)),
+            (cf.lower_shadow_length(OP, L, C) < 3 * cf.body_height(OP, C)),
             np.logical_or(
-                cf.small_us(O, H, C, percentile), cf.no_us(O, H, C, percentile)
+                cf.small_us(OP, H, C, percentile), cf.no_us(OP, H, C, percentile)
             ),
         )
     )
@@ -681,16 +681,16 @@ def hammer_opp_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bo
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.short_body(O, C, percentile),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            (2 * cf.body_height(O, C) < cf.lower_shadow_length(O, L, C)),
-            (cf.lower_shadow_length(O, L, C) < 3 * cf.body_height(O, C)),
+            cf.short_body(OP, C, percentile),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            (2 * cf.body_height(OP, C) < cf.lower_shadow_length(OP, L, C)),
+            (cf.lower_shadow_length(OP, L, C) < 3 * cf.body_height(OP, C)),
             np.logical_or(
-                cf.small_us(O, H, C, percentile), cf.no_us(O, H, C, percentile)
+                cf.small_us(OP, H, C, percentile), cf.no_us(OP, H, C, percentile)
             ),
         )
     )
@@ -704,13 +704,13 @@ def hanging_man_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.no_us(O, H, C, percentile),
-            cf.long_ls(O, L, C, percentile),
-            cf.short_body(O, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.long_ls(OP, L, C, percentile),
+            cf.short_body(OP, C, percentile),
         )
     )
 
@@ -723,12 +723,12 @@ def hanging_man_no_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) -
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.no_us(O, H, C, percentile),
-            cf.long_ls(O, L, C, percentile),
-            cf.short_body(O, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.long_ls(OP, L, C, percentile),
+            cf.short_body(OP, C, percentile),
         )
     )
 
@@ -741,13 +741,13 @@ def hanging_man_opp_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) 
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.no_us(O, H, C, percentile),
-            cf.long_ls(O, L, C, percentile),
-            cf.short_body(O, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.long_ls(OP, L, C, percentile),
+            cf.short_body(OP, C, percentile),
         )
     )
 
@@ -759,12 +759,12 @@ def high_wave_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.exlong_us(O, H, C, percentile),
-            cf.exlong_ls(O, L, C, percentile),
-            cf.short_body(O, C, percentile),
+            cf.exlong_us(OP, H, C, percentile),
+            cf.exlong_ls(OP, L, C, percentile),
+            cf.short_body(OP, C, percentile),
         )
     )
 
@@ -776,13 +776,13 @@ def high_wave_down_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) -
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.exlong_us(O, H, C, percentile),
-            cf.exlong_ls(O, L, C, percentile),
-            cf.short_body(O, C, percentile),
+            cf.exlong_us(OP, H, C, percentile),
+            cf.exlong_ls(OP, L, C, percentile),
+            cf.short_body(OP, C, percentile),
         )
     )
 
@@ -794,13 +794,13 @@ def high_wave_up_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> 
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.exlong_us(O, H, C, percentile),
-            cf.exlong_ls(O, L, C, percentile),
-            cf.short_body(O, C, percentile),
+            cf.exlong_us(OP, H, C, percentile),
+            cf.exlong_ls(OP, L, C, percentile),
+            cf.short_body(OP, C, percentile),
         )
     )
 
@@ -812,12 +812,12 @@ def marubozu_black_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> boo
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_black_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -831,13 +831,13 @@ def marubozu_black_down_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_black_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -851,13 +851,13 @@ def marubozu_black_up_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_black_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -871,12 +871,12 @@ def marubozu_closing_black_(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_black_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -890,13 +890,13 @@ def marubozu_closing_black_down_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_black_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -910,13 +910,13 @@ def marubozu_closing_black_up_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_black_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -930,12 +930,12 @@ def marubozu_closing_white_(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_white_body(O, C, percentile),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.no_us(O, H, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.no_us(OP, H, C, percentile),
         )
     )
 
@@ -949,13 +949,13 @@ def marubozu_closing_white_down_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_white_body(O, C, percentile),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.no_us(O, H, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.no_us(OP, H, C, percentile),
         )
     )
 
@@ -969,13 +969,13 @@ def marubozu_closing_white_up_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_white_body(O, C, percentile),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.no_us(O, H, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.no_us(OP, H, C, percentile),
         )
     )
 
@@ -989,12 +989,12 @@ def marubozu_opening_black_(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_black_body(O, C, percentile),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.no_us(O, H, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.no_us(OP, H, C, percentile),
         )
     )
 
@@ -1008,13 +1008,13 @@ def marubozu_opening_black_down_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_black_body(O, C, percentile),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.no_us(O, H, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.no_us(OP, H, C, percentile),
         )
     )
 
@@ -1028,13 +1028,13 @@ def marubozu_opening_black_up_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_black_body(O, C, percentile),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            cf.no_us(O, H, C, percentile),
+            cf.tall_black_body(OP, C, percentile),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            cf.no_us(OP, H, C, percentile),
         )
     )
 
@@ -1048,12 +1048,12 @@ def marubozu_opening_white_(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_white_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -1067,13 +1067,13 @@ def marubozu_opening_white_down_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_white_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -1087,13 +1087,13 @@ def marubozu_opening_white_up_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_white_body(O, C, percentile),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -1105,12 +1105,12 @@ def marubozu_white_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> boo
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.tall_white_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -1124,13 +1124,13 @@ def marubozu_white_down_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.tall_white_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -1144,13 +1144,13 @@ def marubozu_white_up_trend(
 
     Prediction: continuation.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.tall_white_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            cf.no_ls(O, L, C, percentile),
+            cf.tall_white_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -1163,13 +1163,13 @@ def rickshaw_man_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.doji(O, C, percentile),
-            cf.exlong_us(O, H, C, percentile),
-            cf.exlong_ls(O, L, C, percentile),
-            cf.near(0.5 * (O + C), 0.5 * (H + L), percentile),
+            cf.doji(OP, C, percentile),
+            cf.exlong_us(OP, H, C, percentile),
+            cf.exlong_ls(OP, L, C, percentile),
+            cf.near(0.5 * (OP + C), 0.5 * (H + L), percentile),
         )
     )
 
@@ -1184,14 +1184,14 @@ def rickshaw_man_down_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.doji(O, C, percentile),
-            cf.exlong_us(O, H, C, percentile),
-            cf.exlong_ls(O, L, C, percentile),
-            cf.near(0.5 * (O + C), 0.5 * (H + L), percentile),
+            cf.doji(OP, C, percentile),
+            cf.exlong_us(OP, H, C, percentile),
+            cf.exlong_ls(OP, L, C, percentile),
+            cf.near(0.5 * (OP + C), 0.5 * (H + L), percentile),
         )
     )
 
@@ -1204,14 +1204,14 @@ def rickshaw_man_up_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) 
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.doji(O, C, percentile),
-            cf.exlong_us(O, H, C, percentile),
-            cf.exlong_ls(O, L, C, percentile),
-            cf.near(0.5 * (O + C), 0.5 * (H + L), percentile),
+            cf.doji(OP, C, percentile),
+            cf.exlong_us(OP, H, C, percentile),
+            cf.exlong_ls(OP, L, C, percentile),
+            cf.near(0.5 * (OP + C), 0.5 * (H + L), percentile),
         )
     )
 
@@ -1226,14 +1226,14 @@ def shooting_star_one_candle_(
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.long_us(O, H, C, percentile),
-            (cf.upper_shadow_length(O, H, C) > 2 * cf.body_height(O, C)),
-            cf.short_body(O, C, percentile),
-            cf.no_ls(O, L, C, percentile),
+            cf.long_us(OP, H, C, percentile),
+            (cf.upper_shadow_length(OP, H, C) > 2 * cf.body_height(OP, C)),
+            cf.short_body(OP, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -1248,13 +1248,13 @@ def shooting_star_one_candle_no_trend(
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.long_us(O, H, C, percentile),
-            (cf.upper_shadow_length(O, H, C) > 2 * cf.body_height(O, C)),
-            cf.short_body(O, C, percentile),
-            cf.no_ls(O, L, C, percentile),
+            cf.long_us(OP, H, C, percentile),
+            (cf.upper_shadow_length(OP, H, C) > 2 * cf.body_height(OP, C)),
+            cf.short_body(OP, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -1269,14 +1269,14 @@ def shooting_star_one_candle_opp_trend(
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.long_us(O, H, C, percentile),
-            (cf.upper_shadow_length(O, H, C) > 2 * cf.body_height(O, C)),
-            cf.short_body(O, C, percentile),
-            cf.no_ls(O, L, C, percentile),
+            cf.long_us(OP, H, C, percentile),
+            (cf.upper_shadow_length(OP, H, C) > 2 * cf.body_height(OP, C)),
+            cf.short_body(OP, C, percentile),
+            cf.no_ls(OP, L, C, percentile),
         )
     )
 
@@ -1288,14 +1288,14 @@ def spinning_top_black_(candle: np.ndarray, T: np.ndarray, percentile: tuple) ->
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.short_black_body(O, C, percentile),
-            (cf.upper_shadow_length(O, H, C) > cf.body_height(O, C)),
-            (cf.lower_shadow_length(O, L, C) > cf.body_height(O, C)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
+            cf.short_black_body(OP, C, percentile),
+            (cf.upper_shadow_length(OP, H, C) > cf.body_height(OP, C)),
+            (cf.lower_shadow_length(OP, L, C) > cf.body_height(OP, C)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
         )
     )
 
@@ -1309,15 +1309,15 @@ def spinning_top_black_down_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.short_black_body(O, C, percentile),
-            (cf.upper_shadow_length(O, H, C) > cf.body_height(O, C)),
-            (cf.lower_shadow_length(O, L, C) > cf.body_height(O, C)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
+            cf.short_black_body(OP, C, percentile),
+            (cf.upper_shadow_length(OP, H, C) > cf.body_height(OP, C)),
+            (cf.lower_shadow_length(OP, L, C) > cf.body_height(OP, C)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
         )
     )
 
@@ -1331,15 +1331,15 @@ def spinning_top_black_up_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.short_black_body(O, C, percentile),
-            (cf.upper_shadow_length(O, H, C) > cf.body_height(O, C)),
-            (cf.lower_shadow_length(O, L, C) > cf.body_height(O, C)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
+            cf.short_black_body(OP, C, percentile),
+            (cf.upper_shadow_length(OP, H, C) > cf.body_height(OP, C)),
+            (cf.lower_shadow_length(OP, L, C) > cf.body_height(OP, C)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
         )
     )
 
@@ -1351,14 +1351,14 @@ def spinning_top_white_(candle: np.ndarray, T: np.ndarray, percentile: tuple) ->
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.short_white_body(O, C, percentile),
-            (cf.upper_shadow_length(O, H, C) > cf.body_height(O, C)),
-            (cf.lower_shadow_length(O, L, C) > cf.body_height(O, C)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
+            cf.short_white_body(OP, C, percentile),
+            (cf.upper_shadow_length(OP, H, C) > cf.body_height(OP, C)),
+            (cf.lower_shadow_length(OP, L, C) > cf.body_height(OP, C)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
         )
     )
 
@@ -1372,15 +1372,15 @@ def spinning_top_white_down_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.short_white_body(O, C, percentile),
-            (cf.upper_shadow_length(O, H, C) > cf.body_height(O, C)),
-            (cf.lower_shadow_length(O, L, C) > cf.body_height(O, C)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
+            cf.short_white_body(OP, C, percentile),
+            (cf.upper_shadow_length(OP, H, C) > cf.body_height(OP, C)),
+            (cf.lower_shadow_length(OP, L, C) > cf.body_height(OP, C)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
         )
     )
 
@@ -1394,15 +1394,15 @@ def spinning_top_white_up_trend(
 
     Prediction: either.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.short_white_body(O, C, percentile),
-            (cf.upper_shadow_length(O, H, C) > cf.body_height(O, C)),
-            (cf.lower_shadow_length(O, L, C) > cf.body_height(O, C)),
-            np.logical_not(cf.no_ls(O, L, C, percentile)),
-            np.logical_not(cf.no_us(O, H, C, percentile)),
+            cf.short_white_body(OP, C, percentile),
+            (cf.upper_shadow_length(OP, H, C) > cf.body_height(OP, C)),
+            (cf.lower_shadow_length(OP, L, C) > cf.body_height(OP, C)),
+            np.logical_not(cf.no_ls(OP, L, C, percentile)),
+            np.logical_not(cf.no_us(OP, H, C, percentile)),
         )
     )
 
@@ -1415,13 +1415,13 @@ def takuri_line_(candle: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == -1,
-            cf.short_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            (cf.lower_shadow_length(O, L, C) > 3 * cf.body_height(O, C)),
+            cf.short_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            (cf.lower_shadow_length(OP, L, C) > 3 * cf.body_height(OP, C)),
         )
     )
 
@@ -1434,12 +1434,12 @@ def takuri_line_no_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) -
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
-            cf.short_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            (cf.lower_shadow_length(O, L, C) > 3 * cf.body_height(O, C)),
+            cf.short_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            (cf.lower_shadow_length(OP, L, C) > 3 * cf.body_height(OP, C)),
         )
     )
 
@@ -1452,12 +1452,12 @@ def takuri_line_opp_trend(candle: np.ndarray, T: np.ndarray, percentile: tuple) 
 
     Prediction: reversal.
     """
-    O, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
+    OP, H, L, C = candle[:, 0], candle[:, 1], candle[:, 2], candle[:, 3]
     return np.logical_and.reduce(
         (
             T == 1,
-            cf.short_body(O, C, percentile),
-            cf.no_us(O, H, C, percentile),
-            (cf.lower_shadow_length(O, L, C) > 3 * cf.body_height(O, C)),
+            cf.short_body(OP, C, percentile),
+            cf.no_us(OP, H, C, percentile),
+            (cf.lower_shadow_length(OP, L, C) > 3 * cf.body_height(OP, C)),
         )
     )

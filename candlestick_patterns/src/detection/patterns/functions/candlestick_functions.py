@@ -1,13 +1,13 @@
 import numpy as np
 
 
-def body_height(O: float, C: float) -> float:
+def body_height(OP: float, C: float) -> float:
     """
     Calculates the height of the real body without normalization.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -17,7 +17,7 @@ def body_height(O: float, C: float) -> float:
     float
         The height of the real body without normalization.
     """
-    return np.abs(O - C)
+    return np.abs(OP - C)
 
 
 def near(x: float, y: float, percentile: tuple) -> bool:
@@ -62,13 +62,13 @@ def near_up(x: float, y: float, percentile: tuple) -> bool:
     return np.logical_and(near(x, y, percentile), x < y)
 
 
-def doji(O: float, C: float, percentile: tuple) -> bool:
+def doji(OP: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the candle is a doji.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -78,20 +78,20 @@ def doji(O: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the body is in the appropiate percentile. False otherwise.
+        True if length of the body is in the appropriate percentile. False otherwise.
     """
     if len(percentile) == 3:
-        return body_height(O, C) < percentile[0][0]
-    return body_height(O, C) < (percentile[0][0] + percentile[1][0]) / 2
+        return body_height(OP, C) < percentile[0][0]
+    return body_height(OP, C) < (percentile[0][0] + percentile[1][0]) / 2
 
 
-def short_body(O: float, C: float, percentile: tuple) -> bool:
+def short_body(OP: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the candle has a short body.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -101,30 +101,31 @@ def short_body(O: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the body is between the appropiate percentiles.
+        True if length of the body is between the appropriate percentiles.
         False otherwise.
     """
     if len(percentile) == 3:
         return np.logical_and(
-            body_height(O, C) >= percentile[0][0], body_height(O, C) < percentile[0][1]
+            body_height(OP, C) >= percentile[0][0],
+            body_height(OP, C) < percentile[0][1],
         )
     return np.logical_and.reduce(
         (
-            body_height(O, C) >= percentile[0][0],
-            body_height(O, C) < percentile[0][1],
-            body_height(O, C) >= percentile[1][0],
-            body_height(O, C) < percentile[1][1],
+            body_height(OP, C) >= percentile[0][0],
+            body_height(OP, C) < percentile[0][1],
+            body_height(OP, C) >= percentile[1][0],
+            body_height(OP, C) < percentile[1][1],
         )
     )
 
 
-def no_us(O: float, H: float, C: float, percentile: tuple) -> bool:
+def no_us(OP: float, H: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the candle has (almost) no upper shadow.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     H : float
         High.
@@ -136,19 +137,19 @@ def no_us(O: float, H: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the upper shadow is in the appropiate percentile.
+        True if length of the upper shadow is in the appropriate percentile.
         False otherwise.
     """
-    return upper_shadow_length(O, H, C) <= percentile[-2][0]
+    return upper_shadow_length(OP, H, C) <= percentile[-2][0]
 
 
-def small_us(O: float, H: float, C: float, percentile: tuple) -> bool:
+def small_us(OP: float, H: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the upper shadow is small.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     H : float
         High.
@@ -160,22 +161,22 @@ def small_us(O: float, H: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the upper shadow is between the appropiate percentiles.
+        True if length of the upper shadow is between the appropriate percentiles.
         False otherwise.
     """
     return np.logical_and(
-        upper_shadow_length(O, H, C) > percentile[-2][0],
-        upper_shadow_length(O, H, C) <= percentile[-2][1],
+        upper_shadow_length(OP, H, C) > percentile[-2][0],
+        upper_shadow_length(OP, H, C) <= percentile[-2][1],
     )
 
 
-def normal_us(O: float, H: float, C: float, percentile: tuple) -> bool:
+def normal_us(OP: float, H: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the upper shadow is normal.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     H : float
         High.
@@ -187,22 +188,22 @@ def normal_us(O: float, H: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the upper shadow is between the appropiate percentiles.
+        True if length of the upper shadow is between the appropriate percentiles.
         False otherwise.
     """
     return np.logical_and(
-        upper_shadow_length(O, H, C) > percentile[-2][1],
-        upper_shadow_length(O, H, C) <= percentile[-2][2],
+        upper_shadow_length(OP, H, C) > percentile[-2][1],
+        upper_shadow_length(OP, H, C) <= percentile[-2][2],
     )
 
 
-def long_us(O: float, H: float, C: float, percentile: tuple) -> bool:
+def long_us(OP: float, H: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the upper shadow is long.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     H : float
         High.
@@ -214,22 +215,22 @@ def long_us(O: float, H: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the upper shadow is between the appropiate percentiles.
+        True if length of the upper shadow is between the appropriate percentiles.
         False otherwise.
     """
     return np.logical_and(
-        upper_shadow_length(O, H, C) > percentile[-2][2],
-        upper_shadow_length(O, H, C) <= percentile[-2][3],
+        upper_shadow_length(OP, H, C) > percentile[-2][2],
+        upper_shadow_length(OP, H, C) <= percentile[-2][3],
     )
 
 
-def exlong_us(O: float, H: float, C: float, percentile: tuple) -> bool:
+def exlong_us(OP: float, H: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the upper shadow is extremely long.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     H : float
         High.
@@ -241,19 +242,19 @@ def exlong_us(O: float, H: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the upper shadow is between the appropiate percentiles.
+        True if length of the upper shadow is between the appropriate percentiles.
         False otherwise.
     """
-    return upper_shadow_length(O, H, C) > percentile[-2][3]
+    return upper_shadow_length(OP, H, C) > percentile[-2][3]
 
 
-def no_ls(O: float, L: float, C: float, percentile: tuple) -> bool:
+def no_ls(OP: float, L: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the candle has (almost) no lower shadow.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     L : float
         Low.
@@ -265,19 +266,19 @@ def no_ls(O: float, L: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the lower shadow is in the appropiate percentile.
+        True if length of the lower shadow is in the appropriate percentile.
         False otherwise.
     """
-    return lower_shadow_length(O, L, C) <= percentile[-1][0]
+    return lower_shadow_length(OP, L, C) <= percentile[-1][0]
 
 
-def small_ls(O: float, L: float, C: float, percentile: tuple) -> bool:
+def small_ls(OP: float, L: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the lower shadow is small.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     L : float
         Low.
@@ -289,22 +290,22 @@ def small_ls(O: float, L: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the lower shadow is between the appropiate percentiles.
+        True if length of the lower shadow is between the appropriate percentiles.
         False otherwise.
     """
     return np.logical_and(
-        lower_shadow_length(O, L, C) > percentile[-1][0],
-        lower_shadow_length(O, L, C) <= percentile[-1][1],
+        lower_shadow_length(OP, L, C) > percentile[-1][0],
+        lower_shadow_length(OP, L, C) <= percentile[-1][1],
     )
 
 
-def normal_ls(O: float, L: float, C: float, percentile: tuple) -> bool:
+def normal_ls(OP: float, L: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the lower shadow is normal.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     L : float
         Low.
@@ -316,22 +317,22 @@ def normal_ls(O: float, L: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the lower shadow is between the appropiate percentiles.
+        True if length of the lower shadow is between the appropriate percentiles.
         False otherwise.
     """
     return np.logical_and(
-        lower_shadow_length(O, L, C) > percentile[-1][1],
-        lower_shadow_length(O, L, C) <= percentile[-1][2],
+        lower_shadow_length(OP, L, C) > percentile[-1][1],
+        lower_shadow_length(OP, L, C) <= percentile[-1][2],
     )
 
 
-def long_ls(O: float, L: float, C: float, percentile: tuple) -> bool:
+def long_ls(OP: float, L: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the lower shadow is long.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     L : float
         Low.
@@ -343,22 +344,22 @@ def long_ls(O: float, L: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the lower shadow is between the appropiate percentiles.
+        True if length of the lower shadow is between the appropriate percentiles.
         False otherwise.
     """
     return np.logical_and(
-        lower_shadow_length(O, L, C) > percentile[-1][2],
-        lower_shadow_length(O, L, C) <= percentile[-1][3],
+        lower_shadow_length(OP, L, C) > percentile[-1][2],
+        lower_shadow_length(OP, L, C) <= percentile[-1][3],
     )
 
 
-def exlong_ls(O: float, L: float, C: float, percentile: tuple) -> bool:
+def exlong_ls(OP: float, L: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the lower shadow is extremely long.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     L : float
         Low.
@@ -370,19 +371,19 @@ def exlong_ls(O: float, L: float, C: float, percentile: tuple) -> bool:
     Returns
     -------
     bool
-        True if length of the lower shadow is between the appropiate percentiles.
+        True if length of the lower shadow is between the appropriate percentiles.
         False otherwise.
     """
-    return lower_shadow_length(O, L, C) > percentile[-1][3]
+    return lower_shadow_length(OP, L, C) > percentile[-1][3]
 
 
-def top_body(O: float, C: float) -> float:
+def top_body(OP: float, C: float) -> float:
     """
     Computes the top of the body.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -392,16 +393,16 @@ def top_body(O: float, C: float) -> float:
     float
         The top of the body, which is the maximum of the open and close.
     """
-    return np.maximum(O, C)
+    return np.maximum(OP, C)
 
 
-def bottom_body(O: float, C: float) -> float:
+def bottom_body(OP: float, C: float) -> float:
     """
     Computes the bottom of the body.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -411,16 +412,16 @@ def bottom_body(O: float, C: float) -> float:
     float
         The bottom of the body, which is the minimum of the open and close.
     """
-    return np.minimum(O, C)
+    return np.minimum(OP, C)
 
 
-def upper_shadow_length(O: float, H: float, C: float) -> float:
+def upper_shadow_length(OP: float, H: float, C: float) -> float:
     """
     Computes the length of the upper shadow.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     H : float
         High.
@@ -432,16 +433,16 @@ def upper_shadow_length(O: float, H: float, C: float) -> float:
     float
         The length of the upper shadow.
     """
-    return H - top_body(O, C)
+    return H - top_body(OP, C)
 
 
-def lower_shadow_length(O: float, L: float, C: float) -> float:
+def lower_shadow_length(OP: float, L: float, C: float) -> float:
     """
     Computes the length of the lower shadow.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     L : float
         Low.
@@ -453,16 +454,16 @@ def lower_shadow_length(O: float, L: float, C: float) -> float:
     float
         The length of the lower shadow.
     """
-    return bottom_body(O, C) - L
+    return bottom_body(OP, C) - L
 
 
-def total_shadow_length(O: float, H: float, L: float, C: float) -> float:
+def total_shadow_length(OP: float, H: float, L: float, C: float) -> float:
     """
     Computes the length of both shadows added up.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     H : float
         High.
@@ -477,16 +478,16 @@ def total_shadow_length(O: float, H: float, L: float, C: float) -> float:
         The total length of the shadows, which is the sum of the upper and lower
         lengths.
     """
-    return upper_shadow_length(O, H, C) + lower_shadow_length(O, L, C)
+    return upper_shadow_length(OP, H, C) + lower_shadow_length(OP, L, C)
 
 
-def black_body(O: float, C: float) -> bool:
+def black_body(OP: float, C: float) -> bool:
     """
     Checks if the candle is black.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -496,16 +497,16 @@ def black_body(O: float, C: float) -> bool:
     bool
         True if open is strictly larger than close. False otherwise.
     """
-    return O > C
+    return OP > C
 
 
-def short_black_body(O: float, C: float, percentile: tuple) -> bool:
+def short_black_body(OP: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the candle is black and has a short body.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -516,24 +517,24 @@ def short_black_body(O: float, C: float, percentile: tuple) -> bool:
     -------
     bool
         True if open is strictly larger than close and length of the body is in the
-        appropiate percentile. False otherwise.
+        appropriate percentile. False otherwise.
     """
     return np.logical_and.reduce(
         (
-            O > C,
-            body_height(O, C) >= percentile[0][0],
-            body_height(O, C) < percentile[0][1],
+            OP > C,
+            body_height(OP, C) >= percentile[0][0],
+            body_height(OP, C) < percentile[0][1],
         )
     )
 
 
-def normal_black_body(O: float, C: float, percentile: tuple) -> bool:
+def normal_black_body(OP: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the candle is black and has a normal body.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -544,24 +545,24 @@ def normal_black_body(O: float, C: float, percentile: tuple) -> bool:
     -------
     bool
         True if open is strictly larger than close and length of the body is in the
-        appropiate percentile. False otherwise.
+        appropriate percentile. False otherwise.
     """
     return np.logical_and.reduce(
         (
-            O > C,
-            body_height(O, C) >= percentile[0][1],
-            body_height(O, C) < percentile[0][2],
+            OP > C,
+            body_height(OP, C) >= percentile[0][1],
+            body_height(OP, C) < percentile[0][2],
         )
     )
 
 
-def tall_black_body(O: float, C: float, percentile: tuple) -> bool:
+def tall_black_body(OP: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the candle is black and has a tall body.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -572,21 +573,21 @@ def tall_black_body(O: float, C: float, percentile: tuple) -> bool:
     -------
     bool
         True if open is strictly larger than close and length of the body is in the
-        appropiate percentile. False otherwise.
+        appropriate percentile. False otherwise.
     """
     return np.logical_and(
-        O > C,
-        body_height(O, C) >= percentile[0][2],
+        OP > C,
+        body_height(OP, C) >= percentile[0][2],
     )
 
 
-def white_body(O: float, C: float) -> bool:
+def white_body(OP: float, C: float) -> bool:
     """
     Checks if the candle is white.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -596,16 +597,16 @@ def white_body(O: float, C: float) -> bool:
     bool
         True if open is strictly smaller than close. False otherwise.
     """
-    return O < C
+    return OP < C
 
 
-def short_white_body(O: float, C: float, percentile: tuple) -> bool:
+def short_white_body(OP: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the candle is white and the body is short.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -616,32 +617,32 @@ def short_white_body(O: float, C: float, percentile: tuple) -> bool:
     -------
     bool
         True if open is strictly smaller than close and length of the body is in the
-        appropiate percentile. False otherwise.
+        appropriate percentile. False otherwise.
     """
     if len(percentile) == 3:
         return np.logical_and.reduce(
             (
-                O < C,
-                body_height(O, C) >= percentile[0][0],
-                body_height(O, C) < percentile[0][1],
+                OP < C,
+                body_height(OP, C) >= percentile[0][0],
+                body_height(OP, C) < percentile[0][1],
             )
         )
     return np.logical_and.reduce(
         (
-            O < C,
-            body_height(O, C) >= percentile[1][0],
-            body_height(O, C) < percentile[1][1],
+            OP < C,
+            body_height(OP, C) >= percentile[1][0],
+            body_height(OP, C) < percentile[1][1],
         )
     )
 
 
-def normal_white_body(O: float, C: float, percentile: tuple) -> bool:
+def normal_white_body(OP: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the candle is white and the body is normal.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -652,32 +653,32 @@ def normal_white_body(O: float, C: float, percentile: tuple) -> bool:
     -------
     bool
         True if open is strictly smaller than close and length of the body is in the
-        appropiate percentile. False otherwise.
+        appropriate percentile. False otherwise.
     """
     if len(percentile) == 3:
         return np.logical_and.reduce(
             (
-                O < C,
-                body_height(O, C) >= percentile[0][1],
-                body_height(O, C) < percentile[0][2],
+                OP < C,
+                body_height(OP, C) >= percentile[0][1],
+                body_height(OP, C) < percentile[0][2],
             )
         )
     return np.logical_and.reduce(
         (
-            O < C,
-            body_height(O, C) >= percentile[1][1],
-            body_height(O, C) < percentile[1][2],
+            OP < C,
+            body_height(OP, C) >= percentile[1][1],
+            body_height(OP, C) < percentile[1][2],
         )
     )
 
 
-def tall_white_body(O: float, C: float, percentile: tuple) -> bool:
+def tall_white_body(OP: float, C: float, percentile: tuple) -> bool:
     """
     Checks if the candle is white and the body is tall.
 
     Parameters
     ----------
-    O : float
+    OP : float
         Open.
     C : float
         Close.
@@ -688,13 +689,13 @@ def tall_white_body(O: float, C: float, percentile: tuple) -> bool:
     -------
     bool
         True if open is strictly smaller than close and length of the body is in the
-        appropiate percentile. False otherwise.
+        appropriate percentile. False otherwise.
     """
     if len(percentile) == 3:
-        return np.logical_and(O < C, body_height(O, C) >= percentile[0][2])
+        return np.logical_and(OP < C, body_height(OP, C) >= percentile[0][2])
     return np.logical_and(
-        O < C,
-        body_height(O, C) >= percentile[1][2],
+        OP < C,
+        body_height(OP, C) >= percentile[1][2],
     )
 
 

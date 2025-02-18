@@ -56,7 +56,7 @@ def make_summary(filename: str) -> None:
     ]:
         for div, pattern in enumerate(os.listdir(f"data/patterns/{number}")):
             row = [
-                f"{pattern.removesuffix(".parquet").replace("_"," ").strip()}",
+                f"{pattern.removesuffix('.parquet').replace('_', ' ').strip()}",
                 w2n.word_to_num(number),
                 int(
                     pq.read_table(f"data/patterns/{number}/{pattern}")
@@ -187,7 +187,7 @@ def make_summary(filename: str) -> None:
                 [
                     f"{float(x):.4f}" if x != "/" else "/"
                     for x in pq.read_table(f"data/evaluation/{number}/{pattern}")
-                    .to_pandas()[["uptest", "downtest"]]
+                    .to_pandas()[["up_test", "down_test"]]
                     .iloc[0]
                     .values
                 ]

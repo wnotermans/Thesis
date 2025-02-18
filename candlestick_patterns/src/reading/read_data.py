@@ -16,11 +16,11 @@ def read_and_preprocess(
     """
     Read the data from disk and perform some basic operations on it.
 
-    Reads data in `.parquet` format and sets a datetimeindex, which is useful for time
+    Read data in `.parquet` format and sets a DateTimeIndex, which is useful for time
     filtering or making plots with mplfinance. Filters data to US market time
     (09:30-16:00). Next, if the parameter for aggregation is passed, aggregates the
     data. Calculates gaps in the data and splits it into a reference and main set.
-    Calculates percentiles of body and shadow length on the referce set.
+    Calculates percentiles of body and shadow length on the reference set.
     Finally, calculates moving averages and trend.
 
     Parameters
@@ -119,9 +119,9 @@ def calculate_missing(df: pd.DataFrame, time_idx: pd.DatetimeIndex) -> str:
         Percentage of missing data.
     """
     time_filtered_df = df.reindex(time_idx).dropna()
-    time_filtered_df["unixtime"] = time_filtered_df.index.astype(np.int64) // 10**9
+    time_filtered_df["unix_time"] = time_filtered_df.index.astype(np.int64) // 10**9
     minute_gaps = np.array(
-        (time_filtered_df["unixtime"] - time_filtered_df["unixtime"].shift(1)) // 60
+        (time_filtered_df["unix_time"] - time_filtered_df["unix_time"].shift(1)) // 60
     )
     allowed_gaps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1050, 1051, 2490, 3930, 5370]
     missing_data_points = np.logical_not(np.isin(minute_gaps, allowed_gaps)).sum()

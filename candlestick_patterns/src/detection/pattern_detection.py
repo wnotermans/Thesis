@@ -178,7 +178,7 @@ def handle_gaps(
     * "exclude": excludes patterns where there are gaps inbetween the candles that make
     up the pattern.
     * "ignore": ignore any gaps, replace any NaNs in the data with False.
-    * "only": only consideres patterns with gaps inbetween the candles.
+    * "only": only considers patterns with gaps between the candles.
 
     Parameters
     ----------
