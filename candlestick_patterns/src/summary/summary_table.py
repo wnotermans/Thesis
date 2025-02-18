@@ -54,7 +54,7 @@ def make_summary(filename: str) -> None:
         "twelve",
         "thirteen",
     ]:
-        for div, pattern in enumerate(os.listdir(f"data/patterns/{number}")):
+        for pattern in os.listdir(f"data/patterns/{number}"):
             row = [
                 f"{pattern.removesuffix('.parquet').replace('_', ' ').strip()}",
                 w2n.word_to_num(number),
