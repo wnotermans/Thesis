@@ -25,7 +25,7 @@ def wiener(N: int, mu: float = 0) -> list:
     return np.cumsum(np.insert(np.random.normal(mu, 1, N - 1), 0, 0))
 
 
-np.random.seed(0)
+np.random.seed(1)
 
 time_idx = pd.concat(
     [
@@ -37,8 +37,8 @@ time_idx = pd.concat(
 )
 
 ser = pd.Series(wiener(len(time_idx)), time_idx)
-# ser = pd.Series(wiener(len(time_idx), 1 / (6.5 * 60 * 60)), time_idx)
+# ser = pd.Series(wiener(len(time_idx), 1 / (6.5 * 60 * 60)), time_idx)  # drift
 df = ser.resample("1min", label="right").ohlc()
 df["datetime"] = df.index
 df["volume"] = 0
-df.to_parquet("data/Wiener.parquet", compression="lz4")
+df.to_parquet("../data/Wiener.parquet", compression="lz4")
