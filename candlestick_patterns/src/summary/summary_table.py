@@ -2,6 +2,7 @@ import csv
 import os
 import time
 
+import pandas as pd
 import pyarrow.parquet as pq
 from word2number import w2n
 
@@ -29,18 +30,17 @@ def make_summary(filename: str) -> None:
     t = time.perf_counter()
     print("Making summary table", end="\r")
 
-    table = []
-    table.append(
-        [
-            "Pattern",
-            "Number of candlesticks",
-            "Number detected",
-            "Signal type",
-            "Buy evaluation",
-            "Binomial test >",
-            "Binomial test <",
-        ]
-    )
+    COLS = [
+        "Pattern",
+        "Number of candlesticks",
+        "Number detected",
+        "Signal type",
+        "Buy evaluation",
+        "Binomial test >",
+        "Binomial test <",
+    ]
+
+    table = pd.DataFrame(columns=COLS)
 
     for number in [
         "one",
@@ -185,17 +185,48 @@ def make_summary(filename: str) -> None:
             )
             row.extend(
                 [
-                    f"{float(x):.4f}" if x != "/" else "/"
+                    f"{float(x)}" if x != "/" else 2
                     for x in pq.read_table(f"data/evaluation/{number}/{pattern}")
                     .to_pandas()[["up_test", "down_test"]]
                     .iloc[0]
                     .values
                 ]
             )
-            table.append(row)
+            table = pd.concat([table, pd.DataFrame([row], columns=COLS)])
+    table = table.reset_index(drop=True)
+    significant_buy = (table["Binomial test >"].astype(float) < 0.05).sum()
+    significant_sell = (table["Binomial test <"].astype(float) < 0.05).sum()
+    best_indices = table[["Binomial test >", "Binomial test <"]].astype(float).idxmin()
+    best_buy, best_sell = table.iloc[best_indices]["Pattern"].values
+    best_buy_pvalue = table.iloc[best_indices.iloc[0]]["Binomial test >"]
+    best_sell_pvalue = table.iloc[best_indices.iloc[1]]["Binomial test <"]
+    total_detected = (table["Number detected"].astype(int)).sum()
+    table = pd.concat([table, pd.DataFrame([[""] * 7], columns=COLS)])
+    table = pd.concat(
+        [
+            table,
+            pd.DataFrame(
+                [
+                    [
+                        f"Significant buy signals: {significant_buy}",
+                        f"Significant sell signals: {significant_sell}",
+                        "Best buy performance: "
+                        + f"{best_buy}, {float(best_buy_pvalue):.4f}",
+                        "Best sell performance: "
+                        + f"{best_sell}, {float(best_sell_pvalue):.4f}",
+                        f"Patterns detected: {total_detected}",
+                        "",
+                        "",
+                    ]
+                ],
+                columns=COLS,
+            ),
+        ]
+    )
+
     with open(f"data/summaries/{filename}.csv", "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerows(table)
+        writer.writerows(table.to_numpy())
 
     print(
         f"Making summary table done in {round(time.perf_counter() - t, 2):>3.2f}s",
