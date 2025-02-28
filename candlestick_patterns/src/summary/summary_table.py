@@ -10,12 +10,12 @@ from word2number import w2n
 def make_summary(filename: str) -> None:
     """
     Aggregates data into a summary table. The following data is included:
-     - Pattern name
-     - Number of candlesticks
-     - Number of patterns detected
-     - Type of pattern signal (buy/sell/any/hold)
-     - Buy evaluation (win %, average profit), sell evaluation is the opposite
-     - binomial tests: "greater", "less"
+    - Pattern name
+    - Number of candlesticks
+    - Number of patterns detected
+    - Type of pattern signal (buy/sell/any/hold)
+    - Buy evaluation (win %, average profit), sell evaluation is the opposite
+    - binomial tests: "greater", "less"
 
     Parameters
     ----------
