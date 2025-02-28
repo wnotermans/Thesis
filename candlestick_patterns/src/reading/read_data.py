@@ -10,7 +10,7 @@ pd.set_option("mode.copy_on_write", True)
 
 
 def read_and_preprocess(
-    filename: str, interval_minutes: int = 1
+    filename: str, interval_minutes: int = 1, print_missing: bool = False
 ) -> pd.DataFrame | tuple:
     """
     Read the data from disk and perform some basic operations on it.
@@ -29,6 +29,8 @@ def read_and_preprocess(
     interval_minutes : int, optional, default 1:
         Number of minutes over which the data will be aggregated. The default, 1,
         performs no aggregation.
+    print_missing : bool, optional, default False
+        Whether to print information about missing data.
 
     Returns
     -------
@@ -41,7 +43,7 @@ def read_and_preprocess(
         10th/30th/70th/90th percentiles for upper and lower shadow length, respectively.
     """
     print(
-        f"Reading and handling dataset {filename}"
+        f"Reading and handling dataset {filename} "
         + f"with {interval_minutes} minute aggregation"
     )
     t = time.perf_counter()
@@ -60,7 +62,8 @@ def read_and_preprocess(
         ]
     )
 
-    print(calculate_missing(df, time_idx))
+    if print_missing:
+        print(calculate_missing(df, time_idx))
 
     df = (
         df.reindex(time_idx)  # filters to US market time and adds NaNs for missing data
