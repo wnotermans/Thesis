@@ -5,7 +5,6 @@ import pandas as pd
 
 from aggregation import aggregate
 from calibration import calibration
-from trend import trend_calculation
 
 pd.set_option("mode.copy_on_write", True)
 
@@ -79,19 +78,6 @@ def read_and_preprocess(
     reference_set, main_set = split_data(df, unique_dates)
 
     percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
-
-    main_set["5_MA"] = main_set["close"].rolling(5).mean()
-    # 7 consecutive increases/decreases in moving average for trend to be defined
-    main_set["trend"] = (
-        main_set["5_MA"]
-        .rolling(7)
-        .apply(
-            trend_calculation.monotonic,
-            raw=True,
-            engine="numba",
-        )
-    )
-    del main_set["5_MA"]
 
     print(
         f"Reading and handling dataset {filename} done in {
