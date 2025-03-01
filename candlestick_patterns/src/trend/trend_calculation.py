@@ -33,6 +33,12 @@ def calculate_rolling_average(
     ValueError
         If an unknown averaging method is given.
     """
+    if averaging_method not in ("MA", "WMA", "EWMA"):
+        raise ValueError(
+            f"averaging method '{averaging_method}' not recognized, "
+            "must be 'MA', 'WMA' or 'EWMA' "
+        )
+
     if averaging_method == "MA":
         return ser.rolling(span).mean()
     if averaging_method == "WMA":
@@ -84,6 +90,10 @@ def calculate_trend(
     ValueError
         When an unknown decision method is passed.
     """
+    valid_decision_methods = globals()
+    if decision_method not in valid_decision_methods:
+        raise ValueError("Incorrect decision method")
+
     t = time.perf_counter()
 
     consecutive = kwargs.get("consecutive", 7)
