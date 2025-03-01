@@ -194,13 +194,17 @@ def make_summary(filename: str) -> None:
             )
             table = pd.concat([table, pd.DataFrame([row], columns=COLS)])
     table = table.reset_index(drop=True)
-    significant_buy = (table["Binomial test >"].astype(float) < 0.05).sum()
-    significant_sell = (table["Binomial test <"].astype(float) < 0.05).sum()
+    significant_buy_signals = (table["Binomial test >"].astype(float) < 0.05).sum()
+    significant_sell_signals = (table["Binomial test <"].astype(float) < 0.05).sum()
     best_indices = table[["Binomial test >", "Binomial test <"]].astype(float).idxmin()
-    best_buy, best_sell = table.iloc[best_indices]["Pattern"].values
-    best_buy_pvalue = table.iloc[best_indices.iloc[0]]["Binomial test >"]
-    best_sell_pvalue = table.iloc[best_indices.iloc[1]]["Binomial test <"]
-    total_detected = (table["Number detected"].astype(int)).sum()
+    best_buy_pattern, best_sell_pattern = table.iloc[best_indices]["Pattern"].values
+    best_buy_pvalue = float(table.iloc[best_indices.iloc[0]]["Binomial test >"])
+    best_sell_pvalue = float(table.iloc[best_indices.iloc[1]]["Binomial test <"])
+    best_buy_win_rate, best_sell_win_rate = (
+        table.iloc[best_indices.iloc[0]]["Buy evaluation"],
+        table.iloc[best_indices.iloc[1]]["Buy evaluation"],
+    )
+    total_patterns_detected = (table["Number detected"].astype(int)).sum()
     table = pd.concat([table, pd.DataFrame([[""] * 7], columns=COLS)])
     table = pd.concat(
         [
@@ -208,13 +212,13 @@ def make_summary(filename: str) -> None:
             pd.DataFrame(
                 [
                     [
-                        f"Significant buy signals: {significant_buy}",
-                        f"Significant sell signals: {significant_sell}",
-                        "Best buy performance: "
-                        + f"{best_buy}, {float(best_buy_pvalue):.4f}",
-                        "Best sell performance: "
-                        + f"{best_sell}, {float(best_sell_pvalue):.4f}",
-                        f"Patterns detected: {total_detected}",
+                        f"{significant_buy_signals = :d}",
+                        f"{significant_sell_signals = :d}",
+                        f"{best_buy_pattern = }, {best_buy_pvalue = :.5g}, "
+                        + f"{best_buy_win_rate = }",
+                        f"{best_sell_pattern = }, {best_sell_pvalue = :.5g}, "
+                        + f"{best_sell_win_rate = }",
+                        f"{total_patterns_detected = :d}",
                         "",
                         "",
                     ]
