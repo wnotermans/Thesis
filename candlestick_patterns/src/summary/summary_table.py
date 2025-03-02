@@ -1,4 +1,3 @@
-import csv
 import os
 import time
 
@@ -228,9 +227,7 @@ def make_summary(filename: str) -> None:
         ]
     )
 
-    with open(f"data/summaries/{filename}.csv", "w", newline="") as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerows(table.to_numpy())
+    table.to_csv(f"data/summaries/{filename}.csv", index=False)
 
     print(
         f"Making summary table done in {round(time.perf_counter() - t, 2):>3.2f}s",
