@@ -99,6 +99,7 @@ def calculate_trend(
     t = time.perf_counter()
 
     consecutive = kwargs.get("consecutive", 7)
+    fraction = kwargs.get("fraction", 0.7)
 
     print(
         f"Calculating trend: {averaging_method=}, "
@@ -110,10 +111,13 @@ def calculate_trend(
     )
 
     decision_method_function_call = globals()[decision_method]
+    decision_method_kwargs = {}
+    if decision_method == "counting":
+        decision_method_kwargs = {"fraction": fraction}
     df["trend"] = (
         df["rolling_average"]
         .rolling(consecutive)
-        .apply(decision_method_function_call, raw=True, engine="numba")
+        .apply(decision_method_function_call, kwargs=decision_method_kwargs, raw=True)
     )
 
     del df["rolling_average"]
