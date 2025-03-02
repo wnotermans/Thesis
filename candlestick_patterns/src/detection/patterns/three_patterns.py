@@ -453,6 +453,78 @@ def doji_star_collapsing_opp_trend(
     )
 
 
+def doji_star_rising_(candles: np.ndarray, T: np.ndarray, percentile: tuple) -> bool:
+    """Definition: black candle, doji, white candle, each with an upward shadow gap.
+
+    Trend: down.
+
+    Prediction: reversal.
+    """
+    candle_1, candle_2, candle_3 = candles[0], candles[1], candles[2]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
+    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 2], candle_3[:, 3]
+    return np.logical_and.reduce(
+        (
+            T == -1,
+            cf.black_body(O_1, C_1),
+            cf.doji(O_2, C_2, percentile),
+            cf.white_body(O_3, C_3),
+            cf.up_shadow_gap(H_1, L_2),
+            cf.up_shadow_gap(H_2, L_3),
+        )
+    )
+
+
+def doji_star_rising_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
+    """Definition: black candle, doji, white candle, each with an upward shadow gap.
+
+    Trend: down.
+
+    Prediction: reversal.
+    """
+    candle_1, candle_2, candle_3 = candles[0], candles[1], candles[2]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
+    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 2], candle_3[:, 3]
+    return np.logical_and.reduce(
+        (
+            cf.black_body(O_1, C_1),
+            cf.doji(O_2, C_2, percentile),
+            cf.white_body(O_3, C_3),
+            cf.up_shadow_gap(H_1, L_2),
+            cf.up_shadow_gap(H_2, L_3),
+        )
+    )
+
+
+def doji_star_rising_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
+    """Definition: black candle, doji, white candle, each with an upward shadow gap.
+
+    Trend: down.
+
+    Prediction: reversal.
+    """
+    candle_1, candle_2, candle_3 = candles[0], candles[1], candles[2]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
+    O_2, H_2, L_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 2], candle_2[:, 3]
+    O_3, L_3, C_3 = candle_3[:, 0], candle_3[:, 2], candle_3[:, 3]
+    return np.logical_and.reduce(
+        (
+            T == 1,
+            cf.black_body(O_1, C_1),
+            cf.doji(O_2, C_2, percentile),
+            cf.white_body(O_3, C_3),
+            cf.up_shadow_gap(H_1, L_2),
+            cf.up_shadow_gap(H_2, L_3),
+        )
+    )
+
+
 def downside_gap_three_methods_(
     candles: np.ndarray, T: np.ndarray, percentile: tuple
 ) -> bool:
@@ -2300,6 +2372,92 @@ def unique_three_river_bottom_opp_trend(
             C_1 < C_2,
             cf.long_ls(O_2, L_2, C_2, percentile),
             L_1 > L_2,
+        )
+    )
+
+
+def unique_three_river_top_(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
+    """Definition: tall white candle, white candle inside the previous body with a long
+    upper shadow above the prior high. Short black candle with an upwards body gap.
+
+    Trend: up.
+
+    Prediction: reversal.
+    """
+    candle_1, candle_2, candle_3 = candles[0], candles[1], candles[2]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    return np.logical_and.reduce(
+        (
+            T == 1,
+            cf.tall_white_body(O_1, C_1, percentile),
+            cf.white_body(O_2, C_2),
+            cf.short_black_body(O_3, C_3, percentile),
+            cf.up_body_gap(O_2, C_2, O_3, C_3),
+            O_1 < O_2,
+            C_1 > C_2,
+            cf.long_us(O_2, H_2, C_2, percentile),
+            H_1 < H_2,
+        )
+    )
+
+
+def unique_three_river_top_no_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
+    """Definition: tall white candle, white candle inside the previous body with a long
+    upper shadow above the prior high. Short black candle with an upwards body gap.
+
+    Trend: up.
+
+    Prediction: reversal.
+    """
+    candle_1, candle_2, candle_3 = candles[0], candles[1], candles[2]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    return np.logical_and.reduce(
+        (
+            cf.tall_white_body(O_1, C_1, percentile),
+            cf.white_body(O_2, C_2),
+            cf.short_black_body(O_3, C_3, percentile),
+            cf.up_body_gap(O_2, C_2, O_3, C_3),
+            O_1 < O_2,
+            C_1 > C_2,
+            cf.long_us(O_2, H_2, C_2, percentile),
+            H_1 < H_2,
+        )
+    )
+
+
+def unique_three_river_top_opp_trend(
+    candles: np.ndarray, T: np.ndarray, percentile: tuple
+) -> bool:
+    """Definition: tall white candle, white candle inside the previous body with a long
+    upper shadow above the prior high. Short black candle with an upwards body gap.
+
+    Trend: up.
+
+    Prediction: reversal.
+    """
+    candle_1, candle_2, candle_3 = candles[0], candles[1], candles[2]
+    O_1, H_1, C_1 = candle_1[:, 0], candle_1[:, 1], candle_1[:, 3]
+    O_2, H_2, C_2 = candle_2[:, 0], candle_2[:, 1], candle_2[:, 3]
+    O_3, C_3 = candle_3[:, 0], candle_3[:, 3]
+    return np.logical_and.reduce(
+        (
+            T == -1,
+            cf.tall_white_body(O_1, C_1, percentile),
+            cf.white_body(O_2, C_2),
+            cf.short_black_body(O_3, C_3, percentile),
+            cf.up_body_gap(O_2, C_2, O_3, C_3),
+            O_1 < O_2,
+            C_1 > C_2,
+            cf.long_us(O_2, H_2, C_2, percentile),
+            H_1 < H_2,
         )
     )
 
