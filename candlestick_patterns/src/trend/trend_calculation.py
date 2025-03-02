@@ -42,7 +42,7 @@ def calculate_rolling_average(
         return ser.rolling(span).mean()
     if averaging_method == "WMA":
         weights = np.arange(span, 0, -1)
-        sum_weights = sum(weights)
+        sum_weights = np.sum(weights)
         return ser.rolling(span).apply(
             lambda x: np.sum(weights * x) / sum_weights, raw=True
         )
@@ -142,7 +142,7 @@ def monotonic(C: list) -> int:
     """
     increasing, decreasing = False, False
 
-    for i in range(len(C)):
+    for i in range(len(C) - 1):
         if C[i + 1] > C[i]:
             increasing = True
         elif C[i + 1] < C[i]:
