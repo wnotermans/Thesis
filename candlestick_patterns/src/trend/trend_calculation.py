@@ -1,6 +1,5 @@
 import time
 
-import numba
 import numpy as np
 import pandas as pd
 
@@ -120,7 +119,6 @@ def calculate_trend(
     return df
 
 
-@numba.jit
 def monotonic(C: list) -> int:
     """
     Trend calculation based on strict in/decreases.
