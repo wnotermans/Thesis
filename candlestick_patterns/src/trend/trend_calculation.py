@@ -75,7 +75,10 @@ def calculate_trend(
         Method that decides the trend.
         - `"monotonic"`: based on consecutive in/decreases of the short-term average.
         Additional kwarg `consecutive` can be passed to decide the number of needed
-        in/decreases.
+        in/decreases. `consecutive` is 7 by default.
+        - `"counting"`: counts the amount of in/decreases of the short-term average.
+        Additional kwarg `fraction` controls what fraction of the data needs to be
+        in/decreasing. `fraction` is 0.7 by default.
     **kwargs : dict, optional
         Additional arguments to be passed into the decision method.
 
@@ -121,7 +124,7 @@ def calculate_trend(
 
 def monotonic(C: list) -> int:
     """
-    Trend calculation based on strict in/decreases.
+    Trend calculation based on consecutive strict in/decreases.
 
     Parameters
     ----------
