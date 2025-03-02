@@ -150,3 +150,35 @@ def monotonic(C: list) -> int:
         return 1
     elif decreasing:
         return -1
+
+
+def counting(C: list, *, fraction: float = 0.7) -> int:
+    """
+    Trend calculation based on counting in/decreases. `fraction` controls how many
+    in/decreases there need to be.
+
+    Parameters
+    ----------
+    C : list
+        List of closes.
+    fraction : float, optional, default 0.7
+        What fraction of the data needs to be in/decreasing.
+
+    Returns
+    -------
+    int
+        1 if `fraction` of the list is increasing, -1 if decreasing, 0 otherwise.
+    """
+    count_increase, count_decrease = 0, 0
+
+    for i in range(len(C) - 1):
+        if C[i + 1] > C[i]:
+            count_increase += 1
+        elif C[i + 1] < C[i]:
+            count_decrease += 1
+
+    if count_increase >= fraction * len(C):
+        return 1
+    if count_decrease >= fraction * len(C):
+        return -1
+    return 0
