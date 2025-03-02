@@ -72,7 +72,7 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
     twelve_candle = [candle_dict[f"candle_minus_{n}"] for n in range(11, -1, -1)]
     thirteen_candle = [candle_dict[f"candle_minus_{n}"] for n in range(12, -1, -1)]
 
-    NUM_PATTERNS = 309
+    NUM_PATTERNS = 315
     i = 0
 
     for number in [

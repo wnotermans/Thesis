@@ -32,7 +32,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
     MARGIN_PERCENT = 1
 
     total_time = time.perf_counter()
-    NUM_PATTERNS = 309
+    NUM_PATTERNS = 315
     i = 0
     for number in [
         "one",
