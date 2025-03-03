@@ -17,10 +17,10 @@ def read_and_preprocess(
 
     Read data in `.parquet` format and sets a DateTimeIndex, which is useful for time
     filtering or making plots with mplfinance. Filters data to US market time
-    (09:30-16:00). Next, if the parameter for aggregation is passed, aggregates the
-    data. Calculates gaps in the data and splits it into a reference and main set.
+    (09:30-16:00) by default, can be changed by passing `start_time` and `end_time`.
+    Next, if the parameter for aggregation is passed, aggregates the data.
+    Calculates gaps in the data and splits it into a reference and main set.
     Calculates percentiles of body and shadow length on the reference set.
-    Finally, calculates moving averages and trend.
 
     Parameters
     ----------
@@ -31,12 +31,16 @@ def read_and_preprocess(
         performs no aggregation.
     print_missing : bool, optional, default False
         Whether to print information about missing data.
+    start_time : str, optional, default '09:30:00'
+        Starting time of the filtering operation.
+    end_time : str, optional, default '16:00:00'
+        Ending time of the filtering operation.
 
     Returns
     -------
     pd.DataFrame
-        The main dataset (starting 01/01/2007) with datetime index, with added "trend"
-        and "gap" columns.
+        The main dataset (starting 01/01/2007) or according to the rules of `split_data`
+        with datetime index and "gap" column.
     tuple
         A tuple with the 10th/30th/70th percentiles of the real body (split between
         black and white if it fails the Kolmogorov-Smirnov test);
