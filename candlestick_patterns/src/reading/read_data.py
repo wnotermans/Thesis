@@ -10,7 +10,11 @@ pd.set_option("mode.copy_on_write", True)
 
 
 def read_and_preprocess(
-    filename: str, interval_minutes: int = 1, print_missing: bool = False
+    filename: str,
+    interval_minutes: int = 1,
+    print_missing: bool = False,
+    start_time: str = "09:30:00",
+    end_time: str = "16:00:00",
 ) -> pd.DataFrame | tuple:
     """
     Read the data from disk and perform some basic operations on it.
@@ -60,7 +64,7 @@ def read_and_preprocess(
     time_idx = pd.concat(
         [
             pd.date_range(
-                start=f"{date} 09:30:00", end=f"{date} 16:00:00", freq="min"
+                start=f"{date} {start_time}", end=f"{date} {end_time}", freq="min"
             ).to_series()
             for date in unique_dates
         ]
