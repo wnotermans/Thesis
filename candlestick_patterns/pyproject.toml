@@ -21,7 +21,7 @@ dev = [
 ]
 
 [tool.ruff.lint]
-select = [    
+select = [
     "E", # pycodestyle
     "F", # Pyflakes
     "UP", # pyupgrade
