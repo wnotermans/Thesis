@@ -87,14 +87,12 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
         "twelve",
         "thirteen",
     ]:
+        for file in os.listdir(f"data/patterns/{number}"):
+            os.remove(f"data/patterns/{number}/{file}")
+
         func_name_list = extract_func_names(number_candles=number)
 
         for func_name in func_name_list:
-            try:
-                os.remove(f"data/patterns/{number}/{func_name}.parquet")
-            except FileNotFoundError:
-                pass
-
             print_status_bar(func_name, i, NUM_PATTERNS)
 
             i += 1

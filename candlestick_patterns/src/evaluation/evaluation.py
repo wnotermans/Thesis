@@ -46,12 +46,10 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
         "twelve",
         "thirteen",
     ]:
-        for pattern in os.listdir(f"data/patterns/{number}"):
-            try:
-                os.remove(f"data/evaluation/{number}/{pattern}")
-            except FileNotFoundError:
-                pass
+        for file in os.listdir(f"data/evaluation/{number}"):
+            os.remove(f"data/evaluation/{number}/{file}")
 
+        for pattern in os.listdir(f"data/patterns/{number}"):
             print_status_bar(pattern, i, NUM_PATTERNS)
 
             i += 1
@@ -208,11 +206,6 @@ def n_holding_periods(df):
         t = time.perf_counter()
 
         for pattern in os.listdir(f"../data/patterns/{number}"):
-            try:
-                os.remove(f"../data/evaluation/{number}/{pattern}")
-            except FileNotFoundError:
-                pass
-
             print(
                 f"Evaluating {pattern:<54} | "
                 + f"{'#' * (50 * i // n):<50} "
