@@ -4,14 +4,16 @@ repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-    -   id: check-yaml
-        name: Check YAML syntax
-    -   id: check-toml
-        name: Check TOML syntax
     -   id: check-added-large-files
         name: Check for large files
+    -   id: check-toml
+        name: Check TOML syntax
+    -   id: check-yaml
+        name: Check YAML syntax
     -   id: end-of-file-fixer
         name: Fix EOF
+    -   id: mixed-line-ending
+        name: Homogenize line endings
     -   id: trailing-whitespace
         name: Trim trailing whitespace
 -   repo: https://github.com/astral-sh/ruff-pre-commit
