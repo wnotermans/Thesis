@@ -266,11 +266,11 @@ def n_holding_periods(df):
 
                 buy_eval = list(
                     (mean_buy_profit[key], buy_winning_rate[key])
-                    for key in mean_buy_profit.keys()
+                    for key in mean_buy_profit
                 )
                 sell_eval = list(
                     (mean_sell_profit[key], sell_winning_rate[key])
-                    for key in mean_sell_profit.keys()
+                    for key in mean_sell_profit
                 )
 
             pa.parquet.write_table(
