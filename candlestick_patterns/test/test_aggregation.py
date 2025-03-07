@@ -3,8 +3,8 @@ import pandas as pd
 from src.aggregation import aggregate
 
 
-def test_no_aggregation():
-    df = pd.DataFrame(
+def test_no_aggregation() -> None:
+    expected = pd.DataFrame(
         {
             "open": 0,
             "high": 1,
@@ -14,11 +14,11 @@ def test_no_aggregation():
         },
         index=[pd.Timestamp("1/1/1970 00:00:00")],
     )
-    assert aggregate.aggregate(df, interval_minutes=1).equals(df)
+    assert aggregate.aggregate(expected, interval_minutes=1).equals(expected)
 
 
-def test_aggregation():
-    df = pd.DataFrame(
+def test_aggregation() -> None:
+    input_df = pd.DataFrame(
         {
             "open": [0, 1],
             "high": [1, 2],
@@ -38,11 +38,11 @@ def test_aggregation():
         },
         index=[pd.Timestamp("1/1/1970 00:02:00")],
     )
-    assert aggregate.aggregate(df, interval_minutes=2).equals(expected)
+    assert aggregate.aggregate(input_df, interval_minutes=2).equals(expected)
 
 
-def test_aggregation_5_minutes():
-    df = pd.DataFrame(
+def test_aggregation_5_minutes() -> None:
+    input_df = pd.DataFrame(
         {
             "open": [0, 1, 4, 3, 7],
             "high": [1, 2, 5, 3, 7],
@@ -62,4 +62,4 @@ def test_aggregation_5_minutes():
         },
         index=[pd.Timestamp("1/1/1970 00:05:00")],
     )
-    assert aggregate.aggregate(df).equals(expected)
+    assert aggregate.aggregate(input_df).equals(expected)

@@ -1,5 +1,7 @@
 import numpy as np
 
+UNIFIED_PERCENTILE_LENGTH = 3
+
 
 def body_height(OP: float, C: float) -> float:
     """
@@ -37,7 +39,7 @@ def near(x: float, y: float, percentile: tuple) -> bool:
         True if x and y are near, which is defined through a percentile.
         False otherwise.
     """
-    if len(percentile) == 3:
+    if len(percentile) == UNIFIED_PERCENTILE_LENGTH:
         return np.abs(x - y) / np.maximum(x, y) < percentile[0][1]
     return np.abs(x - y) / np.maximum(x, y) < (percentile[0][1] + percentile[1][1]) / 2
 
@@ -80,7 +82,7 @@ def doji(OP: float, C: float, percentile: tuple) -> bool:
     bool
         True if length of the body is in the appropriate percentile. False otherwise.
     """
-    if len(percentile) == 3:
+    if len(percentile) == UNIFIED_PERCENTILE_LENGTH:
         return body_height(OP, C) < percentile[0][0]
     return body_height(OP, C) < (percentile[0][0] + percentile[1][0]) / 2
 
@@ -104,7 +106,7 @@ def short_body(OP: float, C: float, percentile: tuple) -> bool:
         True if length of the body is between the appropriate percentiles.
         False otherwise.
     """
-    if len(percentile) == 3:
+    if len(percentile) == UNIFIED_PERCENTILE_LENGTH:
         return np.logical_and(
             body_height(OP, C) >= percentile[0][0],
             body_height(OP, C) < percentile[0][1],
@@ -619,7 +621,7 @@ def short_white_body(OP: float, C: float, percentile: tuple) -> bool:
         True if open is strictly smaller than close and length of the body is in the
         appropriate percentile. False otherwise.
     """
-    if len(percentile) == 3:
+    if len(percentile) == UNIFIED_PERCENTILE_LENGTH:
         return np.logical_and.reduce(
             (
                 OP < C,
@@ -655,7 +657,7 @@ def normal_white_body(OP: float, C: float, percentile: tuple) -> bool:
         True if open is strictly smaller than close and length of the body is in the
         appropriate percentile. False otherwise.
     """
-    if len(percentile) == 3:
+    if len(percentile) == UNIFIED_PERCENTILE_LENGTH:
         return np.logical_and.reduce(
             (
                 OP < C,
@@ -691,7 +693,7 @@ def tall_white_body(OP: float, C: float, percentile: tuple) -> bool:
         True if open is strictly smaller than close and length of the body is in the
         appropriate percentile. False otherwise.
     """
-    if len(percentile) == 3:
+    if len(percentile) == UNIFIED_PERCENTILE_LENGTH:
         return np.logical_and(OP < C, body_height(OP, C) >= percentile[0][2])
     return np.logical_and(
         OP < C,

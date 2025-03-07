@@ -205,3 +205,4 @@ def handle_gaps(
         return np.logical_and(pattern, np.logical_not(gap_number_candles_adjusted))
     if mode == "only":
         return np.logical_and(pattern, gap_number_candles_adjusted)
+    return None

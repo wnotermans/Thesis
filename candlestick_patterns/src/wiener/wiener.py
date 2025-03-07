@@ -36,9 +36,9 @@ time_idx = pd.concat(
     ]
 )
 
-ser = pd.Series(wiener(len(time_idx)), time_idx)
+Wiener_series = pd.Series(wiener(len(time_idx)), time_idx)
 # ser = pd.Series(wiener(len(time_idx), 1 / (6.5 * 60 * 60)), time_idx)  # drift
-df = ser.resample("1min", label="right").ohlc()
-df["datetime"] = df.index
-df["volume"] = 0
-df.to_parquet("../data/Wiener.parquet", compression="lz4")
+Wiener_df = Wiener_series.resample("1min", label="right").ohlc()
+Wiener_df["datetime"] = Wiener_df.index
+Wiener_df["volume"] = 0
+Wiener_df.to_parquet("../data/Wiener.parquet", compression="lz4")

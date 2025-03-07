@@ -5,6 +5,8 @@ import pandas as pd
 import pyarrow.parquet as pq
 from word2number import w2n
 
+SIGNIFICANCE_VALUE = 0.05
+
 
 def make_summary(filename: str) -> None:
     """
@@ -61,7 +63,7 @@ def make_summary(filename: str) -> None:
                     pq.read_table(f"data/patterns/{number}/{pattern}")
                     .to_pandas()
                     .sum()
-                    .values[0]
+                    .to_numpy()[0]
                 ),
             ]
             name = (
@@ -188,15 +190,19 @@ def make_summary(filename: str) -> None:
                     for x in pq.read_table(f"data/evaluation/{number}/{pattern}")
                     .to_pandas()[["up_test", "down_test"]]
                     .iloc[0]
-                    .values
+                    .to_numpy()
                 ]
             )
             table = pd.concat([table, pd.DataFrame([row], columns=COLS)])
     table = table.reset_index(drop=True)
-    significant_buy_signals = (table["Binomial test >"].astype(float) < 0.05).sum()
-    significant_sell_signals = (table["Binomial test <"].astype(float) < 0.05).sum()
+    significant_buy_signals = (
+        table["Binomial test >"].astype(float) < SIGNIFICANCE_VALUE
+    ).sum()
+    significant_sell_signals = (
+        table["Binomial test <"].astype(float) < SIGNIFICANCE_VALUE
+    ).sum()
     best_indices = table[["Binomial test >", "Binomial test <"]].astype(float).idxmin()
-    best_buy_pattern, best_sell_pattern = table.iloc[best_indices]["Pattern"].values
+    best_buy_pattern, best_sell_pattern = table.iloc[best_indices]["Pattern"].to_numpy()
     best_buy_pvalue = float(table.iloc[best_indices.iloc[0]]["Binomial test >"])
     best_sell_pvalue = float(table.iloc[best_indices.iloc[1]]["Binomial test <"])
     best_buy_win_rate, best_sell_win_rate = (
@@ -214,9 +220,9 @@ def make_summary(filename: str) -> None:
                         f"{significant_buy_signals = :d}",
                         f"{significant_sell_signals = :d}",
                         f"{best_buy_pattern = }, {best_buy_pvalue = :.5g}, "
-                        + f"{best_buy_win_rate = }",
+                        f"{best_buy_win_rate = }",
                         f"{best_sell_pattern = }, {best_sell_pvalue = :.5g}, "
-                        + f"{best_sell_win_rate = }",
+                        f"{best_sell_win_rate = }",
                         f"{total_patterns_detected = :d}",
                         "",
                         "",

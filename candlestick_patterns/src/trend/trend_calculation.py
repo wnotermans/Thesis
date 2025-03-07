@@ -48,6 +48,7 @@ def calculate_rolling_average(
         )
     if averaging_method == "EWMA":
         return ser.ewm(span=span).mean()
+    return None
 
 
 def calculate_trend(
@@ -55,7 +56,7 @@ def calculate_trend(
     averaging_method: str = "MA",
     span: int = 5,
     decision_method: str = "monotonic",
-    **kwargs,
+    **kwargs: dict,
 ) -> pd.DataFrame:
     """
     Calculate short-term trend of data.
@@ -103,7 +104,7 @@ def calculate_trend(
 
     print(
         f"Calculating trend: {averaging_method=}, "
-        + f"{decision_method=}, {span=}, {consecutive=}"
+        f"{decision_method=}, {span=}, {consecutive=}"
     )
 
     df["rolling_average"] = calculate_rolling_average(
@@ -155,8 +156,9 @@ def monotonic(C: list) -> int:
 
     if increasing:
         return 1
-    elif decreasing:
+    if decreasing:
         return -1
+    return 0
 
 
 def counting(C: list, *, fraction: float = 0.7) -> int:

@@ -63,7 +63,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
             df.iloc[0, 4] = False
             num_detected = df["pat"].sum()
 
-            if num_detected == 0 or num_detected == 1:
+            if num_detected in (0, 1):
                 pa.parquet.write_table(
                     pa.table({"evaluation": "/", "up_test": "/", "down_test": "/"}),
                     f"data/evaluation/{number}/{pattern}",
@@ -165,7 +165,9 @@ def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
 
 
 @numba.jit
-def find_first_breakthrough(HL_array, OP, open_index, limit, percent):
+def find_first_breakthrough(
+    HL_array: np.ndarray, OP: float, open_index: int, limit: int, percent: float
+) -> float:
     if OP < 0:
         percent = -percent
     for idx in range(open_index, limit):
@@ -180,11 +182,16 @@ def find_first_breakthrough(HL_array, OP, open_index, limit, percent):
     return np.nan
 
 
-def n_holding_periods(df):
-    del df["high"], df["low"], df["volume"]
-    df = df.rename(columns={"close": "close_0"})
-    shifted_closes = {f"close_{n}": df["close_0"].shift(-n) for n in range(1, 10)}
-    df = pd.concat([df, pd.DataFrame(shifted_closes, index=df.index)], axis=1)
+def n_holding_periods(df_single_close: pd.DataFrame) -> None:
+    del df_single_close["high"], df_single_close["low"], df_single_close["volume"]
+    df_single_close = df_single_close.rename(columns={"close": "close_0"})
+    shifted_closes = {
+        f"close_{n}": df_single_close["close_0"].shift(-n) for n in range(1, 10)
+    }
+    df_all_closes = pd.concat(
+        [df_single_close, pd.DataFrame(shifted_closes, index=df_single_close.index)],
+        axis=1,
+    )
 
     total_time = time.perf_counter()
 
@@ -207,9 +214,7 @@ def n_holding_periods(df):
 
         for pattern in os.listdir(f"../data/patterns/{number}"):
             print(
-                f"Evaluating {pattern:<54} | "
-                + f"{'#' * (50 * i // n):<50} "
-                + f"({i:>3}/{n})",
+                f"Evaluating {pattern:<54} | {'#' * (50 * i // n):<50} ({i:>3}/{n})",
                 end="\r",
             )
 
@@ -217,21 +222,21 @@ def n_holding_periods(df):
                 pq.read_table(f"../data/patterns/{number}/{pattern}")
                 .to_pandas()
                 .sum()
-                .values[0]
+                .to_numpy()[0]
                 == 0
             ):
-                buy_eval = list(("/", "/") for _ in range(10))
-                sell_eval = list(("/", "/") for _ in range(10))
+                buy_eval = [("/", "/") for _ in range(10)]
+                sell_eval = [("/", "/") for _ in range(10)]
 
             else:
-                df["pat"] = (
+                df_all_closes["pat"] = (
                     pq.read_table(f"../data/patterns/{number}/{pattern}")
                     .to_pandas()
-                    .set_index(df.index)
+                    .set_index(df_all_closes.index)
                     .shift(1)
                 )
 
-                subset = df[df["pat"]]
+                subset = df_all_closes[df_all_closes["pat"]]
 
                 mean_buy_profit = {
                     f"{n + 1}_holding_periods": np.format_float_positional(
@@ -264,14 +269,14 @@ def n_holding_periods(df):
                     for n in range(10)
                 }
 
-                buy_eval = list(
+                buy_eval = [
                     (mean_buy_profit[key], buy_winning_rate[key])
                     for key in mean_buy_profit
-                )
-                sell_eval = list(
+                ]
+                sell_eval = [
                     (mean_sell_profit[key], sell_winning_rate[key])
                     for key in mean_sell_profit
-                )
+                ]
 
             pa.parquet.write_table(
                 pa.table({"buy": buy_eval, "sell": sell_eval}),
@@ -284,7 +289,7 @@ def n_holding_periods(df):
         print()
         print(
             f"Evaluating patterns with {number} candlestick(s): "
-            + f"Done in {round(time.perf_counter() - t, 2):<3.2f}s.",
+            f"Done in {round(time.perf_counter() - t, 2):<3.2f}s.",
             end="\n\n",
         )
 

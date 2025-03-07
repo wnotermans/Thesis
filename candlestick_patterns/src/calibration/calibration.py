@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.stats import ks_2samp
 
+SIGNIFICANCE_VALUE = 0.05
+
 
 def calculate_percentiles(df: np.ndarray) -> tuple:
     """
@@ -47,16 +49,15 @@ def calculate_percentiles(df: np.ndarray) -> tuple:
     black_length = body_length(OP[black_idx], C[black_idx])
     white_length = body_length(OP[white_idx], C[white_idx])
 
-    if ks_2samp(black_length, white_length).pvalue < 0.05:
+    if ks_2samp(black_length, white_length).pvalue < SIGNIFICANCE_VALUE:
         return (
             np.percentile(black_length, [10, 30, 70]),
             np.percentile(white_length, [10, 30, 70]),
             np.percentile(upper_shadow_length(OP, H, C), [10, 30, 70, 90]),
             np.percentile(lower_shadow_length(OP, L, C), [10, 30, 70, 90]),
         )
-    else:
-        return (
-            np.percentile(body_length(OP, C), [10, 30, 70]),
-            np.percentile(upper_shadow_length(OP, H, C), [10, 30, 70, 90]),
-            np.percentile(lower_shadow_length(OP, L, C), [10, 30, 70, 90]),
-        )
+    return (
+        np.percentile(body_length(OP, C), [10, 30, 70]),
+        np.percentile(upper_shadow_length(OP, H, C), [10, 30, 70, 90]),
+        np.percentile(lower_shadow_length(OP, L, C), [10, 30, 70, 90]),
+    )

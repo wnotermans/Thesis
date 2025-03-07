@@ -6,15 +6,17 @@ import pandas as pd
 from aggregation import aggregate
 from calibration import calibration
 
-pd.set_option("mode.copy_on_write", True)
+pd.options.mode.copy_on_write = True
+MIN_YEARS = 15
 
 
 def read_and_preprocess(
     filename: str,
     interval_minutes: int = 1,
-    print_missing: bool = False,
     start_time: str = "09:30:00",
     end_time: str = "16:00:00",
+    *,
+    print_missing: bool = False,
 ) -> pd.DataFrame | tuple:
     """
     Read the data from disk and perform some basic operations on it.
@@ -52,15 +54,15 @@ def read_and_preprocess(
     """
     print(
         f"Reading and handling dataset {filename} "
-        + f"with {interval_minutes} minute aggregation"
+        f"with {interval_minutes} minute aggregation"
     )
     t = time.perf_counter()
 
-    df = pd.read_parquet(f"data/{filename}.parquet")
-    df["datetime"] = pd.to_datetime(df["datetime"])
-    df = df.set_index("datetime")
+    ohlc_df = pd.read_parquet(f"data/{filename}.parquet")
+    ohlc_df["datetime"] = pd.to_datetime(ohlc_df["datetime"])
+    datetime_ohlc_df = ohlc_df.set_index("datetime")
 
-    unique_dates = sorted(set(df.index.date))
+    unique_dates = sorted(set(datetime_ohlc_df.index.date))
     time_idx = pd.concat(
         [
             pd.date_range(
@@ -71,22 +73,26 @@ def read_and_preprocess(
     )
 
     if print_missing:
-        print(calculate_missing(df, time_idx))
+        print(calculate_missing(datetime_ohlc_df, time_idx))
 
-    df = (
-        df.reindex(time_idx)  # filters to US market time and adds NaNs for missing data
+    reindexed_df = (
+        datetime_ohlc_df.reindex(
+            time_idx
+        )  # filters to US market time and adds NaNs for missing data
         .interpolate(method="linear")
         .round({"open": 3, "high": 3, "low": 3, "close": 3, "volume": 0})
         .bfill()
         .ffill()
     )
 
-    df = aggregate.aggregate(df, interval_minutes)
+    aggregated_df = aggregate.aggregate(reindexed_df, interval_minutes)
 
-    df["gap"] = df.index.astype(np.int64) // 10**9
-    df["gap"] = (df["gap"] - df["gap"].shift(1)) // 60 > interval_minutes
+    aggregated_df["gap"] = aggregated_df.index.astype(np.int64) // 10**9
+    aggregated_df["gap"] = (
+        aggregated_df["gap"] - aggregated_df["gap"].shift(1)
+    ) // 60 > interval_minutes
 
-    reference_set, main_set = split_data(df, unique_dates)
+    reference_set, main_set = split_data(aggregated_df, unique_dates)
 
     percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
 
@@ -157,7 +163,7 @@ def split_data(
     print(f"End date: {last_day}")
     date_diff = last_day - first_day
     num_years = (date_diff.days + date_diff.seconds / 86400) / 365.25
-    if num_years <= 15:
+    if num_years <= MIN_YEARS:
         split_date = first_day + date_diff / 3
     else:
         split_date = max(first_day + pd.DateOffset(years=5), pd.Timestamp(2007, 1, 1))
