@@ -16,11 +16,23 @@ dependencies = [
 [dependency-groups]
 dev = ["cz-conventional-gitmoji>=0.6.1", "pytest-cov>=6.0.0"]
 
+[tool.commitizen]
+name = "cz_gitmoji"
+
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle
-    "F",  # Pyflakes
-    "UP", # pyupgrade
-    "B",  # flake8-bugbear
-    "I",  # isort
+    "A",   # avoid shadowing builtins
+    "ANN", # type annotations
+    "B",   # possible bugs and design problems
+    "C4",  # comprehensions
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "FBT", # Boolean trap
+    "PD",  # pandas
+    "PL",  # pylint
+    "I",   # isort
+    "ISC", # implicit string concatenation
+    "RET", # return statements
+    "SIM", # simplify
+    "UP",  # pyupgrade
 ]
