@@ -115,11 +115,18 @@ def calculate_trend(
     decision_method_kwargs = {}
     if decision_method == "counting":
         decision_method_kwargs = {"fraction": fraction}
-    df["trend"] = (
-        df["rolling_average"]
-        .rolling(consecutive)
-        .apply(decision_method_function_call, kwargs=decision_method_kwargs, raw=True)
-    )
+    if decision_method == "high_low":
+        df["trend"] = decision_method_function_call(
+            df["high"].to_numpy(), df["low"].to_numpy()
+        )
+    else:
+        df["trend"] = (
+            df["rolling_average"]
+            .rolling(consecutive)
+            .apply(
+                decision_method_function_call, kwargs=decision_method_kwargs, raw=True
+            )
+        )
 
     del df["rolling_average"]
 
@@ -191,3 +198,31 @@ def counting(C: list, *, fraction: float = 0.7) -> int:
     if count_decrease >= fraction * len(C):
         return -1
     return 0
+
+
+def high_low(H: np.ndarray, L: np.ndarray) -> np.ndarray:
+    """
+    Trend calculation based on simultaneous in/decreases of the high and low.
+
+    _extended_summary_ test
+
+    Parameters
+    ----------
+    H : np.ndarray
+        _description_
+    L : np.ndarray
+        _description_
+
+    Returns
+    -------
+    np.ndarray
+        _description_
+    """
+    H_diff_sign = np.sign(np.diff(H))
+    L_diff_sign = np.sign(np.diff(L))
+    return np.concat(
+        [
+            [0],
+            np.where((H_diff_sign == L_diff_sign) & (H_diff_sign != 0), H_diff_sign, 0),
+        ]
+    )
