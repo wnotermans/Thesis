@@ -204,19 +204,18 @@ def high_low(H: np.ndarray, L: np.ndarray) -> np.ndarray:
     """
     Trend calculation based on simultaneous in/decreases of the high and low.
 
-    _extended_summary_ test
-
     Parameters
     ----------
     H : np.ndarray
-        _description_
+        Highs.
     L : np.ndarray
-        _description_
+        Lows.
 
     Returns
     -------
     np.ndarray
-        _description_
+        Trend array, with -1 for simultaneous decrease, 1 for simultaneous increase,
+        0 otherwise.
     """
     H_diff_sign = np.sign(np.diff(H))
     L_diff_sign = np.sign(np.diff(L))
