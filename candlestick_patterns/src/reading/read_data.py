@@ -5,6 +5,7 @@ import pandas as pd
 
 from aggregation import aggregate
 from calibration import calibration
+from news import news
 
 pd.options.mode.copy_on_write = True
 MIN_YEARS = 15
@@ -95,6 +96,9 @@ def read_and_preprocess(
     reference_set, main_set = split_data(aggregated_df, unique_dates)
 
     percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
+
+    news_df = news.get_news_df()
+    main_set["news"] = news_df["Impact"]
 
     print(
         f"Reading and handling dataset {filename} done in {
