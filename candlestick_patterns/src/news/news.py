@@ -11,7 +11,7 @@ def read_and_clean_data(filename: str, exclude: tuple) -> pd.DataFrame:
     ----------
     filename : str
         Filename of the target file.
-    exclude : tuple
+    exclude_impact : tuple
         Which impact levels to exclude.
 
     Returns
@@ -65,8 +65,10 @@ def get_news_df(exclude: tuple = ("NONE", "LOW")) -> pd.DataFrame:
 
     Parameters
     ----------
-    exclude : tuple, optional, default ("NONE","LOW")
+    exclude_impact : tuple, optional, default ("NONE","LOW")
         Which impact levels to exclude.
+    minutes_after : int, optional, default 60
+        How many minutes of NaNs to include after the news event (for filtering).
 
     Returns
     -------

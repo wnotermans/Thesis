@@ -36,12 +36,16 @@ def read_and_preprocess(
     interval_minutes : int, optional, default 1:
         Number of minutes over which the data will be aggregated. The default, 1,
         performs no aggregation.
-    print_missing : bool, optional, default False
-        Whether to print information about missing data.
     start_time : str, optional, default '09:30:00'
         Starting time of the filtering operation.
     end_time : str, optional, default '16:00:00'
         Ending time of the filtering operation.
+    exclude_impact : tuple, optional, default ("NONE","LOW")
+        Which impact levels to exclude.
+    minutes_after : int, optional, default 60
+        How many minutes of NaNs to include after the news event (for filtering).
+    print_missing : bool, optional, default False
+        Whether to print information about missing data.
 
     Returns
     -------
