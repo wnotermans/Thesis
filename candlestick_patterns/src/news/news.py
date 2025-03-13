@@ -1,9 +1,10 @@
 import os
 
+import numpy as np
 import pandas as pd
 
 
-def read_and_clean_data(filename: str, exclude: tuple) -> pd.DataFrame:
+def read_and_clean_data(filename: str, exclude_impact: tuple) -> pd.DataFrame:
     """
     Read the data from disk and clean it up into a DataFrame.
 
@@ -24,7 +25,7 @@ def read_and_clean_data(filename: str, exclude: tuple) -> pd.DataFrame:
     raw["Start"] = pd.to_datetime(raw["Start"])
     sorted_df = custom_sort(raw)
     sorted_df = sorted_df.drop_duplicates(["Start"])
-    return sorted_df[~sorted_df["Impact"].isin(exclude)]
+    return sorted_df[~sorted_df["Impact"].isin(exclude_impact)]
 
 
 def custom_sort(raw: pd.DataFrame) -> pd.DataFrame:
@@ -54,7 +55,9 @@ def custom_sort(raw: pd.DataFrame) -> pd.DataFrame:
     return sorted_df
 
 
-def get_news_df(exclude: tuple = ("NONE", "LOW")) -> pd.DataFrame:
+def get_news_df(
+    exclude_impact: tuple = ("NONE", "LOW"), minutes_after: int = 60
+) -> pd.DataFrame:
     """
     Get a DataFrame of economic news events.
 
@@ -75,8 +78,16 @@ def get_news_df(exclude: tuple = ("NONE", "LOW")) -> pd.DataFrame:
     pd.DataFrame
         A DataFrame with a DateTimeIndex and the corresponding economic news events.
     """
-    news_df = pd.DataFrame()
-    files = os.listdir("data/news")
-    for file in files:
-        news_df = pd.concat([news_df, read_and_clean_data(file, exclude)])
-    return news_df.set_index("Start")
+    news_df_list = [
+        read_and_clean_data(file, exclude_impact)
+        for file in os.listdir("data/news")
+        if file.endswith(".csv")
+    ]
+    news_df = pd.concat(news_df_list, ignore_index=True)
+    news_df = news_df.set_index("Start")
+    timestamps = news_df.index.to_numpy()
+    time_index = pd.to_datetime(np.repeat(timestamps, minutes_after)) + pd.to_timedelta(
+        np.tile(np.arange(minutes_after), len(timestamps)), unit="m"
+    )
+    time_index = pd.DatetimeIndex(time_index).drop_duplicates()
+    return news_df.reindex(time_index)

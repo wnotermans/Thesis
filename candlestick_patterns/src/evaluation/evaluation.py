@@ -26,7 +26,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
     None
         Win %, "less" and "greater" binomial tests to disk.
     """
-    del df["close"], df["trend"], df["volume"]
+    del df["close"], df["trend"], df["volume"], df["news"]
 
     HL_ARRAY = df[["high", "low"]].to_numpy()
     MARGIN_PERCENT = 1
