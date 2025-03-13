@@ -68,10 +68,10 @@ def get_news_df(
 
     Parameters
     ----------
-    exclude_impact : tuple, optional, default ("NONE","LOW")
+    exclude_impact : tuple
         Which impact levels to exclude.
-    minutes_after : int, optional, default 60
-        How many minutes of NaNs to include after the news event (for filtering).
+    minutes_after : int
+        How many minutes of NaNs to include after the news events (for filtering).
 
     Returns
     -------
