@@ -26,7 +26,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
     None
         Win %, "less" and "greater" binomial tests to disk.
     """
-    del df["close"], df["trend"], df["volume"], df["news"]
 
     HL_ARRAY = df[["high", "low"]].to_numpy()
     MARGIN_PERCENT = 1
@@ -60,7 +59,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                 .set_index(df.index)
                 .shift(1)
             )
-            df.iloc[0, 4] = False
+            df.loc[df.index[0], "pat"] = False
             num_detected = df["pat"].sum()
 
             if num_detected in (0, 1):

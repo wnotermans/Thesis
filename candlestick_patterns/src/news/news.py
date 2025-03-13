@@ -56,8 +56,8 @@ def custom_sort(raw: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_news_df(
-    exclude_impact: tuple = ("NONE", "LOW"), minutes_after: int = 60
-) -> pd.DataFrame:
+    exclude_impact: tuple, minutes_after: int
+) -> tuple[pd.DataFrame, pd.DatetimeIndex]:
     """
     Get a DataFrame of economic news events.
 
@@ -86,8 +86,8 @@ def get_news_df(
     news_df = pd.concat(news_df_list, ignore_index=True)
     news_df = news_df.set_index("Start")
     timestamps = news_df.index.to_numpy()
-    time_index = pd.to_datetime(np.repeat(timestamps, minutes_after)) + pd.to_timedelta(
-        np.tile(np.arange(minutes_after), len(timestamps)), unit="m"
-    )
-    time_index = pd.DatetimeIndex(time_index).drop_duplicates()
-    return news_df.reindex(time_index)
+    filter_index = pd.to_datetime(
+        np.repeat(timestamps, minutes_after)
+    ) + pd.to_timedelta(np.tile(np.arange(minutes_after), len(timestamps)), unit="min")
+    filter_index = pd.DatetimeIndex(filter_index).drop_duplicates()
+    return news_df, filter_index

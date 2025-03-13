@@ -16,10 +16,10 @@ def read_and_preprocess(  # noqa: PLR0913
     interval_minutes: int = 1,
     start_time: str = "09:30:00",
     end_time: str = "16:00:00",
-    exclude_impact: tuple = ("NONE", "LOW"),
-    minutes_after: int = 60,
     *,
     print_missing: bool = False,
+    filter_news: bool = False,
+    **kwargs: dict,
 ) -> pd.DataFrame | tuple:
     """
     Read the data from disk and perform some basic operations on it.
@@ -107,8 +107,12 @@ def read_and_preprocess(  # noqa: PLR0913
 
     percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
 
-    news_df = news.get_news_df(exclude_impact, minutes_after)
-    main_set["news"] = news_df["Impact"]
+    if filter_news:
+        exclude_impact = kwargs.get("exclude_impact", ("NONE", "LOW"))
+        minutes_after = kwargs.get("minutes_after", 60)
+        news_df, filter_index = news.get_news_df(exclude_impact, minutes_after)
+        main_set["news"] = news_df["Impact"]
+        main_set = main_set[main_set.index.isin(filter_index)]
 
     print(
         f"Reading and handling dataset {filename} done in {
