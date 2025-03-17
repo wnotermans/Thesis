@@ -1,7 +1,7 @@
 [project]
 name = "candlestick_patterns"
 version = "1.0.0"
-description = "Source code for my thesis 'Performance of candlestick pattens on intraday market data'."
+description = "Source code for my thesis 'Performance of Candlestick Patterns on intraday market data'."
 readme = "README.md"
 authors = [{ name = "wnotermans", email = "woutnotermans1@gmail.com" }]
 requires-python = ">=3.13"
