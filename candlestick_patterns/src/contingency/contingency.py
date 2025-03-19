@@ -19,6 +19,19 @@ def get_buy_sell(file_path: str) -> tuple[int, int] | tuple[None, None]:
 
 
 def list_csv_files(directory: str) -> list[str] | list:
+    """
+    List all csv files in `directory`. Recurses into subdirectories as well.
+
+    Parameters
+    ----------
+    directory : str
+        Name of the directory to search.
+
+    Returns
+    -------
+    list[str] | list
+        List of the filepaths of the csvs.
+    """
     csv_files = []
     for root, _, files in os.walk(directory):
         for file in files:
