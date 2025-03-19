@@ -7,10 +7,10 @@ def get_buy_sell(file_path: str) -> tuple[int, int] | tuple[None, None]:
     last_line = pd.read_csv(file_path).iloc[-1]
     return (
         (
-            "".join(filter(str.isnumeric, last_line[0])),
-            "".join(filter(str.isnumeric, last_line[1])),
+            int("".join(filter(str.isnumeric, last_line.iloc[0]))),
+            int("".join(filter(str.isnumeric, last_line.iloc[1]))),
         )
-        if last_line
+        if str(last_line)
         else (
             None,
             None,
