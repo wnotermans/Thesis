@@ -80,6 +80,8 @@ def calculate_trend(
         - `"counting"`: counts the amount of in/decreases of the short-term average.
         Additional kwarg `fraction` controls what fraction of the data needs to be
         in/decreasing. `fraction` is 0.7 by default.
+        - `"high_low"`: based on simultaneous increases of the high and low.
+        No additional kwargs.
     **kwargs : dict, optional
         Additional arguments to be passed into the decision method.
 
