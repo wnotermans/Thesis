@@ -9,6 +9,15 @@ import pyarrow.parquet as pq
 from scipy.stats import binomtest
 
 
+def evaluation(
+    df: pd.DataFrame, detection_method: str = "stop_loss_take_profit"
+) -> None:
+    if detection_method == "stop_loss_take_profit":
+        stop_loss_take_profit_evaluation(df)
+    if detection_method == "n_holding_periods":
+        n_holding_periods(df)
+
+
 def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
     """
     Stop loss/take profit-based candlestick pattern evaluation.
