@@ -12,6 +12,16 @@ from scipy.stats import binomtest
 def evaluation(
     df: pd.DataFrame, detection_method: str = "stop_loss_take_profit"
 ) -> None:
+    """
+    Performs evaluation of the patterns.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame to be analyzed
+    detection_method : str, optional, default "stop_loss_take_profit"
+        Which detection method to use.
+    """
     if detection_method == "stop_loss_take_profit":
         stop_loss_take_profit_evaluation(df)
     if detection_method == "n_holding_periods":
