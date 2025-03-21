@@ -6,6 +6,8 @@ import pyarrow.parquet as pq
 from word2number import w2n
 
 SIGNIFICANCE_VALUE = 0.05
+LOW_COUNT = 100
+NUM_PATTERNS = 315
 COLS = [
     "Pattern",
     "Number of candlesticks",
@@ -204,6 +206,13 @@ def make_summary(filename: str) -> None:
     significant_sell_signals = (
         table["Binomial test <"].astype(float) < SIGNIFICANCE_VALUE
     ).sum()
+    low_count_signals = (table["Number detected"].astype(int) <= LOW_COUNT).sum()
+    non_significant_signals = (
+        NUM_PATTERNS
+        - significant_buy_signals
+        - significant_sell_signals
+        - low_count_signals
+    )
     best_indices = table[["Binomial test >", "Binomial test <"]].astype(float).idxmin()
     best_buy_pattern, best_sell_pattern = table.iloc[best_indices]["Pattern"].to_numpy()
     best_buy_pvalue = float(table.iloc[best_indices.iloc[0]]["Binomial test >"])
@@ -222,12 +231,12 @@ def make_summary(filename: str) -> None:
                     [
                         f"{significant_buy_signals = :d}",
                         f"{significant_sell_signals = :d}",
+                        f"{non_significant_signals = :d}",
                         f"{best_buy_pattern = }, {best_buy_pvalue = :.5g}, "
                         f"{best_buy_win_rate = }",
                         f"{best_sell_pattern = }, {best_sell_pvalue = :.5g}, "
                         f"{best_sell_win_rate = }",
                         f"{total_patterns_detected = :d}",
-                        "",
                         "",
                     ]
                 ],
