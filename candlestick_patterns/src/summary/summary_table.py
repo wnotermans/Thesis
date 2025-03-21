@@ -6,6 +6,123 @@ import pyarrow.parquet as pq
 from word2number import w2n
 
 SIGNIFICANCE_VALUE = 0.05
+COLS = [
+    "Pattern",
+    "Number of candlesticks",
+    "Number detected",
+    "Signal type",
+    "Buy evaluation",
+    "Binomial test >",
+    "Binomial test <",
+]
+PATTERN_NUMBERS = [
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "eight",
+    "ten",
+    "eleven",
+    "twelve",
+    "thirteen",
+]
+BUY_NAMES = [
+    "belt hold bullish",
+    "doji southern",
+    "hammer",
+    "takuri line",
+    "above the stomach",
+    "doji star bullish",
+    "engulfing bullish",
+    "hammer inverted",
+    "harami bullish",
+    "harami cross bullish",
+    "homing pigeon",
+    "last engulfing bottom",
+    "matching low",
+    "meeting lines bullish",
+    "piercing pattern",
+    "tweezers bottom",
+    "abandoned baby bullish",
+    "morning doji star",
+    "morning star",
+    "stick sandwich",
+    "three inside up",
+    "three outside up",
+    "three stars in the south",
+    "three white soldiers",
+    "tri star bullish",
+    "unique three river bottom",
+    "concealing baby swallow",
+    "breakaway bullish",
+    "ladder bottom",
+]
+SELL_NAMES = [
+    "belt hold bearish",
+    "doji northern",
+    "hanging man",
+    "shooting star one candle",
+    "below the stomach",
+    "dark cloud cover",
+    "doji star bearish",
+    "engulfing bearish",
+    "harami bearish",
+    "harami cross bearish",
+    "last engulfing top",
+    "meeting lines bearish",
+    "shooting star two candle",
+    "tweezers top",
+    "abandoned baby bearish",
+    "advance block",
+    "deliberation",
+    "doji star collapsing",
+    "evening doji star",
+    "evening star",
+    "identical three crows",
+    "three black crows",
+    "three inside down",
+    "three outside down",
+    "tri star bearish",
+    "two crows",
+    "upside gap two crows",
+    "breakaway bearish",
+    "eight new price lines",
+    "ten new price lines",
+    "twelve new price lines",
+    "thirteen new price lines",
+]
+HOLD_NAMES = [
+    "marubozu black",
+    "marubozu closing black",
+    "marubozu closing white",
+    "marubozu opening black",
+    "marubozu opening white",
+    "marubozu white",
+    "doji gapping down",
+    "doji gapping up",
+    "in neck",
+    "on neck",
+    "separating lines bearish",
+    "separating lines bullish",
+    "thrusting",
+    "window falling",
+    "window rising",
+    "downside gap three methods",
+    "downside tasuki gap",
+    "side by side white lines bearish",
+    "side by side white lines bullish",
+    "two black gapping candles",
+    "upside gap three methods",
+    "upside tasuki gap",
+    "three line strike bearish",
+    "three line strike bullish",
+    "falling three methods",
+    "mat hold",
+    "rising three methods",
+    "long black day",
+    "long white day",
+]
 
 
 def make_summary(filename: str) -> None:
@@ -31,36 +148,15 @@ def make_summary(filename: str) -> None:
     t = time.perf_counter()
     print("Making summary table", end="\r")
 
-    COLS = [
-        "Pattern",
-        "Number of candlesticks",
-        "Number detected",
-        "Signal type",
-        "Buy evaluation",
-        "Binomial test >",
-        "Binomial test <",
-    ]
-
     table = pd.DataFrame(columns=COLS)
 
-    for number in [
-        "one",
-        "two",
-        "three",
-        "four",
-        "five",
-        "eight",
-        "ten",
-        "eleven",
-        "twelve",
-        "thirteen",
-    ]:
-        for pattern in os.listdir(f"data/patterns/{number}"):
+    for number_str in PATTERN_NUMBERS:
+        for pattern in os.listdir(f"data/patterns/{number_str}"):
             row = [
                 f"{pattern.removesuffix('.parquet').replace('_', ' ').strip()}",
-                w2n.word_to_num(number),
+                w2n.word_to_num(number_str),
                 int(
-                    pq.read_table(f"data/patterns/{number}/{pattern}")
+                    pq.read_table(f"data/patterns/{number_str}/{pattern}")
                     .to_pandas()
                     .sum()
                     .to_numpy()[0]
@@ -75,104 +171,11 @@ def make_summary(filename: str) -> None:
                 .removesuffix(" down trend")
                 .rstrip()
             )
-            if name in [
-                "belt hold bullish",
-                "doji southern",
-                "hammer",
-                "takuri line",
-                "above the stomach",
-                "doji star bullish",
-                "engulfing bullish",
-                "hammer inverted",
-                "harami bullish",
-                "harami cross bullish",
-                "homing pigeon",
-                "last engulfing bottom",
-                "matching low",
-                "meeting lines bullish",
-                "piercing pattern",
-                "tweezers bottom",
-                "abandoned baby bullish",
-                "morning doji star",
-                "morning star",
-                "stick sandwich",
-                "three inside up",
-                "three outside up",
-                "three stars in the south",
-                "three white soldiers",
-                "tri star bullish",
-                "unique three river bottom",
-                "concealing baby swallow",
-                "breakaway bullish",
-                "ladder bottom",
-            ]:
+            if name in BUY_NAMES:
                 row.append("Buy")
-            elif name in [
-                "belt hold bearish",
-                "doji northern",
-                "hanging man",
-                "shooting star one candle",
-                "below the stomach",
-                "dark cloud cover",
-                "doji star bearish",
-                "engulfing bearish",
-                "harami bearish",
-                "harami cross bearish",
-                "last engulfing top",
-                "meeting lines bearish",
-                "shooting star two candle",
-                "tweezers top",
-                "abandoned baby bearish",
-                "advance block",
-                "deliberation",
-                "doji star collapsing",
-                "evening doji star",
-                "evening star",
-                "identical three crows",
-                "three black crows",
-                "three inside down",
-                "three outside down",
-                "tri star bearish",
-                "two crows",
-                "upside gap two crows",
-                "breakaway bearish",
-                "eight new price lines",
-                "ten new price lines",
-                "twelve new price lines",
-                "thirteen new price lines",
-            ]:
+            elif name in SELL_NAMES:
                 row.append("Sell")
-            elif name in [
-                "marubozu black",
-                "marubozu closing black",
-                "marubozu closing white",
-                "marubozu opening black",
-                "marubozu opening white",
-                "marubozu white",
-                "doji gapping down",
-                "doji gapping up",
-                "in neck",
-                "on neck",
-                "separating lines bearish",
-                "separating lines bullish",
-                "thrusting",
-                "window falling",
-                "window rising",
-                "downside gap three methods",
-                "downside tasuki gap",
-                "side by side white lines bearish",
-                "side by side white lines bullish",
-                "two black gapping candles",
-                "upside gap three methods",
-                "upside tasuki gap",
-                "three line strike bearish",
-                "three line strike bullish",
-                "falling three methods",
-                "mat hold",
-                "rising three methods",
-                "long black day",
-                "long white day",
-            ]:
+            elif name in HOLD_NAMES:
                 row.append("Hold")
             else:
                 row.append("Any")
@@ -180,14 +183,14 @@ def make_summary(filename: str) -> None:
                 [
                     x.strip("[']")
                     for x in pq.read_table(
-                        f"data/evaluation/{number}/{pattern}"
+                        f"data/evaluation/{number_str}/{pattern}"
                     ).to_pandas()["evaluation"]
                 ]
             )
             row.extend(
                 [
                     f"{float(x)}" if x != "/" else 2
-                    for x in pq.read_table(f"data/evaluation/{number}/{pattern}")
+                    for x in pq.read_table(f"data/evaluation/{number_str}/{pattern}")
                     .to_pandas()[["up_test", "down_test"]]
                     .iloc[0]
                     .to_numpy()
