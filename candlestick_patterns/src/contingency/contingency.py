@@ -1,26 +1,113 @@
 import os
 
+import numpy as np
 import pandas as pd
+from scipy.stats import fisher_exact
+
+ONE_PARAMETER_DIFFERENT = 2
 
 
-def get_buy_sell(file_path: str) -> tuple[int, int] | tuple[None, None]:
+def print_all_tables(directory: str) -> None:
+    """
+    Print all (2x2) contingency tables.
+
+    A table is constructed and printed when exactly one parameter is different.
+
+    Parameters
+    ----------
+    directory : str
+        Directory containing summaries. Recurses into subdirectories.
+    """
+    csv_filepaths = list_csv_filepaths(directory)
+    parameter_list = [
+        file.removeprefix("../data/summaries\\").removesuffix(".csv").split("_")
+        for file in csv_filepaths
+    ]
+    for i in range(1, len(parameter_list)):
+        for j in range(i):
+            symmetric_difference = set(parameter_list[i]) ^ set(parameter_list[j])
+            if len(symmetric_difference) == ONE_PARAMETER_DIFFERENT:
+                print_contingency_table(
+                    csv_filepaths, parameter_list, symmetric_difference, i, j
+                )
+
+
+def print_contingency_table(
+    csv_filepaths: list[str],
+    parameter_list: list[list[str]],
+    symmetric_difference: set[str],
+    i: int,
+    j: int,
+) -> None:
+    """
+    First performs the necessary computations, then prints a specific 2x2 contingency
+    table.
+
+    Parameters
+    ----------
+    csv_filepaths : list[str]
+        Filepaths of the csvs to analyze.
+    parameter_list : list[list[str]]
+        List of parameter lists.
+    symmetric_difference : set[str]
+        Symmetric difference of the parameters.
+    i : int
+        Index of first filepath/parameter list.
+    j : int
+        Index of second filepath/parameter list.
+    """
+    intersection_elements = [
+        x for x in parameter_list[i] if x in set(parameter_list[j])
+    ]
+    difference_str = " vs. ".join(map(str, list(symmetric_difference)))
+    signif1, non_signif1 = get_signif_non_signif(csv_filepaths[i])
+    signif2, non_signif2 = get_signif_non_signif(csv_filepaths[j])
+    contingency_table = np.array(
+        [
+            [signif1, signif2],
+            [non_signif1, non_signif2],
+        ]
+    )
+    box_width = max([len(x) for x in [intersection_elements, difference_str]])
+    print(f"+{'Common'.center(box_width, '-')}+")
+    for line in intersection_elements:
+        print(f"|{line:^{box_width}}|")
+    print(f"+{'Difference'.center(box_width, '-')}+")
+    print(f"|{difference_str:^{box_width}}|")
+    print(f"+{'Cont. table'.center(box_width, '-')}+")
+    for line in np.array2string(contingency_table).split("\n"):
+        print(f"|{line:^{box_width}}|")
+    print(f"+{'p-value'.center(box_width, '-')}+")
+    p_value = f"{fisher_exact(contingency_table).pvalue:.3g}"
+    print(f"|{p_value:^{box_width}}|")
+    print(f"+{'-'.center(box_width, '-')}+")
+
+
+def get_signif_non_signif(file_path: str) -> tuple[int, int]:
+    """
+    Gets the number of significant respectively non-significant patterns from a csv.
+
+    Parameters
+    ----------
+    file_path : str
+        Filepath to the csv.
+
+    Returns
+    -------
+    tuple[int, int]
+        Number of significant respectively non-significant patterns.
+    """
     last_line = pd.read_csv(file_path).iloc[-1]
     return (
-        (
-            int("".join(filter(str.isnumeric, last_line.iloc[0]))),
-            int("".join(filter(str.isnumeric, last_line.iloc[1]))),
-        )
-        if str(last_line)
-        else (
-            None,
-            None,
-        )
+        int("".join(filter(str.isnumeric, last_line.iloc[0])))
+        + int("".join(filter(str.isnumeric, last_line.iloc[1]))),
+        int("".join(filter(str.isnumeric, last_line.iloc[2]))),
     )
 
 
-def list_csv_files(directory: str) -> list[str] | list:
+def list_csv_filepaths(directory: str) -> list[str]:
     """
-    List all csv files in `directory`. Recurses into subdirectories as well.
+    List all csv filepaths in `directory`. Recurses into subdirectories as well.
 
     Parameters
     ----------
@@ -29,7 +116,7 @@ def list_csv_files(directory: str) -> list[str] | list:
 
     Returns
     -------
-    list[str] | list
+    list[str]
         List of the filepaths of the csvs.
     """
     csv_files = []
@@ -40,26 +127,5 @@ def list_csv_files(directory: str) -> list[str] | list:
     return csv_files
 
 
-def make_contingency_table(directory: str) -> pd.DataFrame:
-    csv_files = list_csv_files(directory)
-
-    # TODO filtering by name here, regex?
-
-    contingency_records = []
-
-    for filename in csv_files:
-        buy, sell = get_buy_sell(filename)
-        contingency_records.append(
-            {
-                "Filename": filename.removeprefix("../data/summaries\\"),
-                "# sign. buy signals": buy,
-                "# sign. sell signals": sell,
-            }
-        )
-    contingency_table = pd.DataFrame.from_records(contingency_records)
-    return contingency_table.set_index("Filename")
-
-
 directory = "../data/summaries"
-contingency_table = make_contingency_table(directory)
-print(contingency_table)
+contingency_table = print_all_tables(directory)
