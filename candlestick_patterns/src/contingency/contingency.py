@@ -70,7 +70,7 @@ def print_contingency_table(
             [non_signif1, non_signif2],
         ]
     )
-    box_width = max([len(x) for x in [intersection_elements, difference_str]])
+    box_width = max([len(x) for x in [*intersection_elements, difference_str]])
     print(f"+{'Common':-^{box_width}}+")
     for line in intersection_elements:
         print(f"|{line:^{box_width}}|")
