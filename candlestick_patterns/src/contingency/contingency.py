@@ -5,6 +5,9 @@ import pandas as pd
 from scipy.stats import fisher_exact
 
 ONE_PARAMETER_DIFFERENT = 2
+THREE_STAR = 0.001
+TWO_STAR = 0.01
+ONE_STAR = 0.05
 
 
 def print_all_tables(directory: str) -> None:
@@ -77,9 +80,17 @@ def print_contingency_table(
     for line in np.array2string(contingency_table).split("\n"):
         print(f"|{line:^{box_width}}|")
     print(f"+{'p-value'.center(box_width, '-')}+")
-    p_value = f"{fisher_exact(contingency_table).pvalue:.3g}"
-    print(f"|{p_value:^{box_width}}|")
-    print(f"+{'-'.center(box_width, '-')}+")
+    p_value = fisher_exact(contingency_table).pvalue
+    if p_value <= THREE_STAR:
+        p_value_str = f"{p_value:.3g} ***"
+    elif p_value <= TWO_STAR:
+        p_value_str = f"{p_value:.3g} **"
+    elif p_value <= ONE_STAR:
+        p_value_str = f"{p_value:.3g} *"
+    else:
+        p_value_str = f"{p_value:.3g}"
+    print(f"|{p_value_str:^{box_width}}|")
+    print(f"+{'-' * box_width}+")
 
 
 def get_signif_non_signif(file_path: str) -> tuple[int, int]:
