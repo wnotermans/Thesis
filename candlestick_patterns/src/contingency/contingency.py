@@ -77,8 +77,8 @@ def print_contingency_table(
     print(f"+{'Difference'.center(box_width, '-')}+")
     print(f"|{difference_str:^{box_width}}|")
     print(f"+{'Cont. table'.center(box_width, '-')}+")
-    for line in np.array2string(contingency_table).split("\n"):
-        print(f"|{line:^{box_width}}|")
+    for line in contingency_table:
+        print(f"|{' '.join(map(str, line)):^{box_width}}|")
     print(f"+{'p-value'.center(box_width, '-')}+")
     p_value = fisher_exact(contingency_table).pvalue
     if p_value <= THREE_STAR:
