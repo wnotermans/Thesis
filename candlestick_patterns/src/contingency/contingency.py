@@ -71,12 +71,12 @@ def print_contingency_table(
         ]
     )
     box_width = max([len(x) for x in [intersection_elements, difference_str]])
-    print(f"+{'Common'.center(box_width, '-')}+")
+    print(f"+{'Common':-^{box_width}}+")
     for line in intersection_elements:
         print(f"|{line:^{box_width}}|")
-    print(f"+{'Difference'.center(box_width, '-')}+")
+    print(f"+{'Difference':-^{box_width}}+")
     print(f"|{difference_str:^{box_width}}|")
-    print(f"+{'Cont. table'.center(box_width, '-')}+")
+    print(f"+{'Contingency table':-^{box_width}}+")
     for line in contingency_table:
         print(f"|{' '.join(map(str, line)):^{box_width}}|")
     print(f"+{'p-value'.center(box_width, '-')}+")
