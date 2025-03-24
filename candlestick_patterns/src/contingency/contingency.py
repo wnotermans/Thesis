@@ -20,8 +20,7 @@ def print_all_tables(directory: str) -> None:
     """
     csv_filepaths = list_csv_filepaths(directory)
     parameter_list = [
-        file.removeprefix("../data/summaries\\").removesuffix(".csv").split("_")
-        for file in csv_filepaths
+        pd.read_csv(filepath).iloc[-1].iloc[-1].split("_") for filepath in csv_filepaths
     ]
     for i in range(1, len(parameter_list)):
         for j in range(i):
