@@ -2,64 +2,72 @@ import pandas as pd
 
 from src.aggregation import aggregate
 
-
-def test_no_aggregation() -> None:
-    expected = pd.DataFrame(
-        {
-            "open": 0,
-            "high": 1,
-            "low": 2,
-            "close": 3,
-            "volume": 4,
-        },
-        index=[pd.Timestamp("1/1/1970 00:00:00")],
-    )
-    assert aggregate.aggregate(expected, interval_minutes=1).equals(expected)
+default_data = {
+    "open": [100, 105, 110, 115, 120, 125],
+    "high": [105, 110, 115, 120, 125, 130],
+    "low": [99, 104, 109, 114, 119, 124],
+    "close": [104, 109, 114, 119, 124, 129],
+    "volume": [1000, 1100, 1200, 1300, 1400, 1500],
+}
 
 
-def test_aggregation() -> None:
-    input_df = pd.DataFrame(
-        {
-            "open": [0, 1],
-            "high": [1, 2],
-            "low": [0, 1],
-            "close": [1, 3],
-            "volume": [1, 1],
-        },
-        index=pd.date_range("1/1/1970", periods=2, freq="min"),
-    )
-    expected = pd.DataFrame(
-        {
-            "open": 0,
-            "high": 2,
-            "low": 0,
-            "close": 3,
-            "volume": 2,
-        },
-        index=[pd.Timestamp("1/1/1970 00:02:00")],
-    )
-    assert aggregate.aggregate(input_df, interval_minutes=2).equals(expected)
+default_df = pd.DataFrame(
+    default_data, index=pd.date_range("1/1/1970", periods=6, freq="min")
+)
 
 
-def test_aggregation_5_minutes() -> None:
-    input_df = pd.DataFrame(
-        {
-            "open": [0, 1, 4, 3, 7],
-            "high": [1, 2, 5, 3, 7],
-            "low": [0, 1, 3, 1, 2],
-            "close": [1, 3, 4, 7, 5],
-            "volume": [1, 2, 3, 2, 1],
-        },
-        index=pd.date_range("1/1/1970", periods=5, freq="min"),
+def test_aggregate_default_interval() -> None:
+    result = aggregate.aggregate(default_df, 5)
+    assert len(result) == 2
+    assert result["open"].iloc[0] == 100
+    assert result["high"].iloc[1] == 130
+    assert result["low"].iloc[0] == 99
+    assert result["close"].iloc[1] == 129
+    assert result["volume"].iloc[0] == 6000
+
+
+def test_aggregate_1_minute_interval() -> None:
+    result = aggregate.aggregate(default_df, 1)
+    assert len(result) == len(default_df)
+    assert result["open"].iloc[0] == default_df["open"].iloc[0]
+    assert result["high"].iloc[1] == default_df["high"].iloc[1]
+    assert result["low"].iloc[2] == default_df["low"].iloc[2]
+    assert result["close"].iloc[3] == default_df["close"].iloc[3]
+    assert result["volume"].iloc[4] == default_df["volume"].iloc[4]
+
+
+def test_aggregate_different_intervals() -> None:
+    result = aggregate.aggregate(default_df, 2)
+    assert len(result) == 3
+    assert result["open"].iloc[0] == 100
+    assert result["high"].iloc[1] == 120
+    assert result["low"].iloc[2] == 119
+    assert result["close"].iloc[0] == 109
+    assert result["volume"].iloc[1] == 2500
+
+
+def test_empty_dataframe() -> None:
+    empty_df = pd.DataFrame(
+        columns=["open", "high", "low", "close", "volume"], index=pd.to_datetime([])
     )
-    expected = pd.DataFrame(
-        {
-            "open": 0,
-            "high": 7,
-            "low": 0,
-            "close": 5,
-            "volume": 9,
-        },
-        index=[pd.Timestamp("1/1/1970 00:05:00")],
-    )
-    assert aggregate.aggregate(input_df).equals(expected)
+    assert aggregate.aggregate(empty_df, interval_minutes=1).empty
+    assert aggregate.aggregate(empty_df, interval_minutes=2).empty
+    assert aggregate.aggregate(empty_df).empty
+
+
+def test_aggregate_single_row() -> None:
+    single_row_data = {
+        "open": [100],
+        "high": [105],
+        "low": [99],
+        "close": [104],
+        "volume": [1000],
+    }
+    single_row_df = pd.DataFrame(single_row_data, index=pd.to_datetime(["1/1/1970"]))
+    result = aggregate.aggregate(single_row_df, 5)
+    assert len(result) == 1
+    assert result["open"].iloc[0] == 100
+    assert result["high"].iloc[0] == 105
+    assert result["low"].iloc[0] == 99
+    assert result["close"].iloc[0] == 104
+    assert result["volume"].iloc[0] == 1000
