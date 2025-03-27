@@ -29,7 +29,7 @@ PATTERN_NUMBERS = [
     "twelve",
     "thirteen",
 ]
-BUY_NAMES = [
+BUY_NAMES = {
     "belt hold bullish",
     "doji southern",
     "hammer",
@@ -59,8 +59,9 @@ BUY_NAMES = [
     "concealing baby swallow",
     "breakaway bullish",
     "ladder bottom",
-]
-SELL_NAMES = [
+}
+
+SELL_NAMES = {
     "belt hold bearish",
     "doji northern",
     "hanging man",
@@ -93,8 +94,9 @@ SELL_NAMES = [
     "ten new price lines",
     "twelve new price lines",
     "thirteen new price lines",
-]
-HOLD_NAMES = [
+}
+
+HOLD_NAMES = {
     "marubozu black",
     "marubozu closing black",
     "marubozu closing white",
@@ -124,7 +126,7 @@ HOLD_NAMES = [
     "rising three methods",
     "long black day",
     "long white day",
-]
+}
 
 
 def make_summary(filename: str, parameters: str) -> None:
