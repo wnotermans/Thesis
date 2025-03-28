@@ -1,16 +1,16 @@
+import csv
 import os
 import time
 
 import numba
 import numpy as np
 import pandas as pd
-import pyarrow as pa
-import pyarrow.parquet as pq
+import pyarrow.parquet
 from scipy.stats import binomtest
 
 
 def evaluation(
-    df: pd.DataFrame, detection_method: str = "stop_loss_take_profit"
+    df: pd.DataFrame, detection_method: str = "stop_loss_take_profit", *, run_name: str
 ) -> None:
     """
     Performs evaluation of the patterns.
@@ -23,12 +23,12 @@ def evaluation(
         Which detection method to use.
     """
     if detection_method == "stop_loss_take_profit":
-        stop_loss_take_profit_evaluation(df)
+        stop_loss_take_profit_evaluation(df, run_name=run_name)
     if detection_method == "n_holding_periods":
-        n_holding_periods(df)
+        n_holding_periods(df, run_name=run_name)
 
 
-def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
+def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None:
     """
     Stop loss/take profit-based candlestick pattern evaluation.
 
@@ -64,16 +64,15 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
         "twelve",
         "thirteen",
     ]:
-        for file in os.listdir(f"data/evaluation/{number}"):
-            os.remove(f"data/evaluation/{number}/{file}")
-
-        for pattern in os.listdir(f"data/patterns/{number}"):
+        for pattern in os.listdir(f"data/runs/{run_name}/detection/{number}"):
             print_status_bar(pattern, i, NUM_PATTERNS)
 
             i += 1
 
             df["pat"] = (
-                pq.read_table(f"data/patterns/{number}/{pattern}")
+                pyarrow.parquet.read_table(
+                    f"data/runs/{run_name}/detection/{number}/{pattern}"
+                )
                 .to_pandas()
                 .set_index(df.index)
                 .shift(1)
@@ -82,11 +81,13 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
             num_detected = df["pat"].sum()
 
             if num_detected in (0, 1):
-                pa.parquet.write_table(
-                    pa.table({"evaluation": "/", "up_test": "/", "down_test": "/"}),
-                    f"data/evaluation/{number}/{pattern}",
-                    compression="LZ4",
-                )
+                with open(
+                    f"data/runs/{run_name}/evaluation/{number}/"
+                    f"{pattern.removesuffix('.parquet')}.csv",
+                    "w",
+                ) as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerow(["/"] * 3)
 
             else:
                 pattern_indices = df[df["pat"]].index
@@ -105,44 +106,27 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame) -> None:
                         ),
                     )
 
-                eval_str = [
-                    str(
-                        [
-                            f"{
-                                round(
-                                    100 * np.nansum(eval_list) / len(eval_list), 2
-                                ):>2.2f
-                            }%",
-                        ]
-                    )
-                ]
-                up_test = binomtest(
-                    int(np.nansum(eval_list)),
-                    len(eval_list),
-                    p=0.5,
-                    alternative="greater",
-                ).pvalue
-                up_test = [f"{up_test}"]
-
+                eval_str = f"{np.nansum(eval_list) / len(eval_list):.2%}"
                 down_test = binomtest(
                     int(np.nansum(eval_list)),
                     len(eval_list),
                     p=0.5,
                     alternative="less",
                 ).pvalue
-                down_test = [f"{down_test}"]
+                up_test = binomtest(
+                    int(np.nansum(eval_list)),
+                    len(eval_list),
+                    p=0.5,
+                    alternative="greater",
+                ).pvalue
 
-                pa.parquet.write_table(
-                    pa.table(
-                        {
-                            "evaluation": eval_str,
-                            "up_test": up_test,
-                            "down_test": down_test,
-                        }
-                    ),
-                    f"data/evaluation/{number}/{pattern}",
-                    compression="LZ4",
-                )
+                with open(
+                    f"data/runs/{run_name}/evaluation/{number}/"
+                    f"{pattern.removesuffix('.parquet')}.csv",
+                    "w",
+                ) as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerow([eval_str, down_test, up_test])
 
     print()
     print(
@@ -237,7 +221,7 @@ def n_holding_periods(df_single_close: pd.DataFrame) -> None:
             )
 
             if (
-                pq.read_table(f"../data/patterns/{number}/{pattern}")
+                pyarrow.parquet.read_table(f"../data/patterns/{number}/{pattern}")
                 .to_pandas()
                 .sum()
                 .to_numpy()[0]
@@ -248,7 +232,7 @@ def n_holding_periods(df_single_close: pd.DataFrame) -> None:
 
             else:
                 df_all_closes["pat"] = (
-                    pq.read_table(f"../data/patterns/{number}/{pattern}")
+                    pyarrow.parquet.read_table(f"../data/patterns/{number}/{pattern}")
                     .to_pandas()
                     .set_index(df_all_closes.index)
                     .shift(1)
@@ -296,8 +280,8 @@ def n_holding_periods(df_single_close: pd.DataFrame) -> None:
                     for key in mean_sell_profit
                 ]
 
-            pa.parquet.write_table(
-                pa.table({"buy": buy_eval, "sell": sell_eval}),
+            pyarrow.parquet.write_table(
+                pyarrow.table({"buy": buy_eval, "sell": sell_eval}),
                 f"../data/evaluation/{number}/{pattern}",
                 compression="LZ4",
             )
