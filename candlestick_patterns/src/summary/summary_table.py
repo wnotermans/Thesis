@@ -2,7 +2,6 @@ import os
 import time
 
 import pandas as pd
-import pyarrow.parquet as pq
 from word2number import w2n
 
 SIGNIFICANCE_VALUE = 0.05
@@ -14,8 +13,8 @@ COLS = [
     "Number detected",
     "Signal type",
     "Buy evaluation",
-    "Binomial test >",
     "Binomial test <",
+    "Binomial test >",
 ]
 PATTERN_NUMBERS = [
     "one",
@@ -129,7 +128,7 @@ HOLD_NAMES = {
 }
 
 
-def make_summary(filename: str, parameters: str) -> None:
+def make_summary(parameters: str, *, run_name: str) -> None:
     """
     Aggregates data into a summary table. The following data is included:
     - Pattern name
@@ -152,23 +151,31 @@ def make_summary(filename: str, parameters: str) -> None:
     t = time.perf_counter()
     print("Making summary table", end="\r")
 
-    table = pd.DataFrame(columns=COLS)
+    dataframe_rows = []
 
     for number_str in PATTERN_NUMBERS:
-        for pattern in os.listdir(f"data/patterns/{number_str}"):
+        for pattern in os.listdir(f"data/runs/{run_name}/evaluation/{number_str}"):
+            pattern_no_ext = pattern.removesuffix(".csv")
+            win_rate, down_test, up_test = pd.read_csv(
+                f"data/runs/{run_name}/evaluation/{number_str}/{pattern_no_ext}.csv",
+                header=None,
+            ).iloc[0]
+            down_test = down_test if down_test != "/" else 2
+            up_test = up_test if up_test != "/" else 2
+            number_detected = (
+                pd.read_parquet(
+                    f"data/runs/{run_name}/detection/{number_str}/{pattern_no_ext}.parquet"
+                )
+                .sum()
+                .iloc[0]
+            )
             row = [
-                f"{pattern.removesuffix('.parquet').replace('_', ' ').strip()}",
+                f"{pattern_no_ext.replace('_', ' ').strip()}",
                 w2n.word_to_num(number_str),
-                int(
-                    pq.read_table(f"data/patterns/{number_str}/{pattern}")
-                    .to_pandas()
-                    .sum()
-                    .to_numpy()[0]
-                ),
+                number_detected,
             ]
             name = (
-                pattern.removesuffix(".parquet")
-                .replace("_", " ")
+                pattern_no_ext.replace("_", " ")
                 .removesuffix(" no trend")
                 .removesuffix(" opp trend")
                 .removesuffix(" up trend")
@@ -183,25 +190,9 @@ def make_summary(filename: str, parameters: str) -> None:
                 row.append("Hold")
             else:
                 row.append("Any")
-            row.extend(
-                [
-                    x.strip("[']")
-                    for x in pq.read_table(
-                        f"data/evaluation/{number_str}/{pattern}"
-                    ).to_pandas()["evaluation"]
-                ]
-            )
-            row.extend(
-                [
-                    f"{float(x)}" if x != "/" else 2
-                    for x in pq.read_table(f"data/evaluation/{number_str}/{pattern}")
-                    .to_pandas()[["up_test", "down_test"]]
-                    .iloc[0]
-                    .to_numpy()
-                ]
-            )
-            table = pd.concat([table, pd.DataFrame([row], columns=COLS)])
-    table = table.reset_index(drop=True)
+            row.extend([win_rate, down_test, up_test])
+            dataframe_rows.append(row)
+    table = pd.DataFrame(dataframe_rows, columns=COLS)
     significant_buy_signals = (
         table["Binomial test >"].astype(float) < SIGNIFICANCE_VALUE
     ).sum()
@@ -247,7 +238,7 @@ def make_summary(filename: str, parameters: str) -> None:
         ]
     )
 
-    table.to_csv(f"data/summaries/{filename}.csv", index=False)
+    table.to_csv(f"data/runs/{run_name}/summary.csv", index=False)
 
     print(
         f"Making summary table done in {round(time.perf_counter() - t, 2):>3.2f}s",
