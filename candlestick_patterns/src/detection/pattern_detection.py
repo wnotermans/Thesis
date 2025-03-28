@@ -116,7 +116,7 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
     )
 
 
-def extract_func_names(number_candles: str) -> list:
+def extract_func_names(number_candles: str) -> list[str]:
     """
     Extract the function names of pattern functions from number of candlesticks.
 
@@ -127,7 +127,7 @@ def extract_func_names(number_candles: str) -> list:
 
     Returns
     -------
-    list
+    list[str]
         List of all the function names of the candlestick patterns.
     """
     func_names = []
@@ -170,7 +170,7 @@ def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
 
 def handle_gaps(
     pattern: pd.Series, gap: pd.Series, number_candles: int, mode: str = "exclude"
-) -> pd.Series:
+) -> np.ndarray:
     """
     Handle gaps in the data according to the given mode.
 
