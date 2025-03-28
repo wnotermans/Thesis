@@ -1,9 +1,8 @@
-import os
 import time
 
 import numpy as np
 import pandas as pd
-import pyarrow as pa
+import pyarrow.parquet
 from word2number import w2n
 
 from detection.patterns import (
@@ -19,8 +18,23 @@ from detection.patterns import (
     two_patterns,  # noqa: F401
 )
 
+PATTERN_NUMBERS = [
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "eight",
+    "ten",
+    "eleven",
+    "twelve",
+    "thirteen",
+]
 
-def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> None:
+
+def detection(
+    df: pd.DataFrame, percentile: tuple, mode: str = "exclude", *, run_name: str
+) -> None:
     """
     Performs pattern detection.
 
@@ -75,21 +89,7 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
     NUM_PATTERNS = 315
     i = 0
 
-    for number in [
-        "one",
-        "two",
-        "three",
-        "four",
-        "five",
-        "eight",
-        "ten",
-        "eleven",
-        "twelve",
-        "thirteen",
-    ]:
-        for file in os.listdir(f"data/patterns/{number}"):
-            os.remove(f"data/patterns/{number}/{file}")
-
+    for number in PATTERN_NUMBERS:
         func_name_list = extract_func_names(number_candles=number)
 
         for func_name in func_name_list:
@@ -98,13 +98,17 @@ def detection(df: pd.DataFrame, percentile: tuple, mode: str = "exclude") -> Non
             i += 1
 
             func_call = getattr(globals().get(f"{number}_patterns"), func_name)
-            pat = func_call(locals().get(f"{number}_candle"), T, percentile)
-            pat = handle_gaps(pat, df["gap"], w2n.word_to_num(number), mode=mode)
-
-            pa.parquet.write_table(
-                pa.table({f"{func_name}": pat}),
-                f"data/patterns/{number}/{func_name}.parquet",
-                compression="LZ4",
+            patterns = func_call(locals().get(f"{number}_candle"), T, percentile)
+            patterns_gaps_handled = handle_gaps(
+                patterns, df["gap"], w2n.word_to_num(number), mode=mode
+            )
+            table = pyarrow.Table.from_arrays(
+                [patterns_gaps_handled], names=["pattern"]
+            )
+            pyarrow.parquet.write_table(
+                table,
+                f"data/runs/{run_name}/detection/{number}/{func_name}.parquet",
+                compression="brotli",
             )
 
     print()
