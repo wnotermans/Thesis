@@ -69,7 +69,7 @@ def read_and_preprocess(  # noqa: PLR0913
     )
     t = time.perf_counter()
 
-    ohlc_df = pd.read_parquet(f"data/{filename}.parquet")
+    ohlc_df = pd.read_parquet(f"data/raw/{filename}.parquet")
     ohlc_df["datetime"] = pd.to_datetime(ohlc_df["datetime"])
     datetime_ohlc_df = ohlc_df.set_index("datetime")
 
