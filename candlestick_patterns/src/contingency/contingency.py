@@ -10,7 +10,7 @@ TWO_STAR = 0.01
 ONE_STAR = 0.05
 
 
-def print_all_tables(directory: str) -> None:
+def print_all_tables() -> None:
     """
     Print all (2x2) contingency tables.
 
@@ -21,21 +21,22 @@ def print_all_tables(directory: str) -> None:
     directory : str
         Directory containing summaries. Recurses into subdirectories.
     """
-    csv_filepaths = list_csv_filepaths(directory)
-    parameter_list = [
-        pd.read_csv(filepath).iloc[-1].iloc[-1].split("_") for filepath in csv_filepaths
-    ]
+    folders = os.listdir("../data/runs")
+    parameter_list = []
+    for folder in folders:
+        with open(f"{DIRECTORY}/{folder}/parameters.txt") as file:
+            parameter_list.append(file.readline().split("_"))
     for i in range(1, len(parameter_list)):
         for j in range(i):
             symmetric_difference = set(parameter_list[i]) ^ set(parameter_list[j])
-            if len(symmetric_difference) == ONE_PARAMETER_DIFFERENT:
+            if len(symmetric_difference) <= ONE_PARAMETER_DIFFERENT:
                 print_contingency_table(
-                    csv_filepaths, parameter_list, symmetric_difference, i, j
+                    folders, parameter_list, symmetric_difference, i, j
                 )
 
 
 def print_contingency_table(
-    csv_filepaths: list[str],
+    folder: list[str],
     parameter_list: list[list[str]],
     symmetric_difference: set[str],
     i: int,
@@ -62,8 +63,8 @@ def print_contingency_table(
         x for x in parameter_list[i] if x in set(parameter_list[j])
     ]
     difference_str = " vs. ".join(map(str, list(symmetric_difference)))
-    signif1, non_signif1 = get_signif_non_signif(csv_filepaths[i])
-    signif2, non_signif2 = get_signif_non_signif(csv_filepaths[j])
+    signif1, non_signif1 = get_signif_non_signif(folder[i])
+    signif2, non_signif2 = get_signif_non_signif(folder[j])
     contingency_table = np.array(
         [
             [signif1, signif2],
@@ -93,7 +94,7 @@ def print_contingency_table(
     print(f"+{'-' * box_width}+")
 
 
-def get_signif_non_signif(file_path: str) -> tuple[int, int]:
+def get_signif_non_signif(folder: str) -> tuple[int, int]:
     """
     Gets the number of significant respectively non-significant patterns from a csv.
 
@@ -107,7 +108,7 @@ def get_signif_non_signif(file_path: str) -> tuple[int, int]:
     tuple[int, int]
         Number of significant respectively non-significant patterns.
     """
-    last_line = pd.read_csv(file_path).iloc[-1]
+    last_line = pd.read_csv(f"{DIRECTORY}/{folder}/summary.csv").iloc[-1]
     return (
         int("".join(filter(str.isnumeric, last_line.iloc[0])))
         + int("".join(filter(str.isnumeric, last_line.iloc[1]))),
@@ -115,7 +116,7 @@ def get_signif_non_signif(file_path: str) -> tuple[int, int]:
     )
 
 
-def list_csv_filepaths(directory: str) -> list[str]:
+def list_csv_filepaths() -> list[str]:
     """
     List all csv filepaths in `directory`. Recurses into subdirectories as well.
 
@@ -130,12 +131,12 @@ def list_csv_filepaths(directory: str) -> list[str]:
         List of the filepaths of the csvs.
     """
     csv_files = []
-    for root, _, files in os.walk(directory):
+    for root, _, files in os.walk(DIRECTORY):
         for file in files:
-            if file.endswith(".csv"):
+            if file == "summary.csv":
                 csv_files.append(os.path.join(root, file))
     return csv_files
 
 
-directory = "../data/summaries"
-contingency_table = print_all_tables(directory)
+DIRECTORY = "../data/runs"
+contingency_table = print_all_tables()
