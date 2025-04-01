@@ -48,8 +48,8 @@ def print_contingency_table(
 
     Parameters
     ----------
-    csv_filepaths : list[str]
-        Filepaths of the csvs to analyze.
+    folder : list[str]
+        Folder containing the run data.
     parameter_list : list[list[str]]
         List of parameter lists.
     symmetric_difference : set[str]
@@ -100,8 +100,8 @@ def get_signif_non_signif(folder: str) -> tuple[int, int]:
 
     Parameters
     ----------
-    file_path : str
-        Filepath to the csv.
+    folder : str
+        Folder containing the summary csv.
 
     Returns
     -------
@@ -118,12 +118,7 @@ def get_signif_non_signif(folder: str) -> tuple[int, int]:
 
 def list_csv_filepaths() -> list[str]:
     """
-    List all csv filepaths in `directory`. Recurses into subdirectories as well.
-
-    Parameters
-    ----------
-    directory : str
-        Name of the directory to search.
+    List all csv filepaths in `DIRECTORY`. Recurses into subdirectories as well.
 
     Returns
     -------
