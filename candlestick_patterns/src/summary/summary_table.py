@@ -128,7 +128,7 @@ HOLD_NAMES = {
 }
 
 
-def make_summary(parameters: str, *, run_name: str) -> None:
+def make_summary(*, run_name: str) -> None:
     """
     Aggregates data into a summary table. The following data is included:
     - Pattern name
@@ -230,7 +230,7 @@ def make_summary(parameters: str, *, run_name: str) -> None:
                         f"{best_sell_pattern = }, {best_sell_pvalue = :.5g}, "
                         f"{best_sell_win_rate = }",
                         f"{total_patterns_detected = :d}",
-                        f"{parameters}",
+                        "",
                     ]
                 ],
                 columns=COLS,
