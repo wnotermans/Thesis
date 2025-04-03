@@ -8,6 +8,8 @@ import pandas as pd
 import pyarrow.parquet
 from scipy.stats import binomtest
 
+from shared import constants, shared_functions
+
 
 def evaluation(
     df: pd.DataFrame, detection_method: str = "stop_loss_take_profit", *, run_name: str
@@ -46,11 +48,9 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
         Win %, "less" and "greater" binomial tests to disk.
     """
 
-    HL_ARRAY = df[["high", "low"]].to_numpy()
-    MARGIN_PERCENT = 1
+    high_low_array = df[["high", "low"]].to_numpy()
 
     total_time = time.perf_counter()
-    NUM_PATTERNS = 315
     i = 0
     for number in [
         "one",
@@ -65,7 +65,9 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
         "thirteen",
     ]:
         for pattern in os.listdir(f"data/runs/{run_name}/detection/{number}"):
-            print_status_bar(pattern, i, NUM_PATTERNS)
+            shared_functions.print_status_bar(
+                pattern, i, constants.TOTAL_NUMBER_OF_PATTERNS
+            )
 
             i += 1
 
@@ -102,7 +104,11 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                     eval_list = np.append(
                         eval_list,
                         find_first_breakthrough(
-                            HL_ARRAY, OP, open_index, len(df), MARGIN_PERCENT
+                            high_low_array,
+                            OP,
+                            open_index,
+                            len(df),
+                            constants.STOP_LOSS_MARGIN_PERCENT,
                         ),
                     )
 
@@ -135,35 +141,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
         }s",
         end="\n\n",
     )
-
-
-def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
-    """
-    Prints out the status bar (function name, progress bar and count).
-
-    Parameters
-    ----------
-    pattern_name : str
-        Name of the pattern being evaluated.
-    i : int
-        Current iteration number.
-    total_patterns : int
-        Total number of patterns.
-
-    Returns
-    -------
-    None
-        Prints a line that overwrites the previous status bar.
-    """
-    left_line = (51 * (i + 1) // total_patterns) * "-"
-    right_line = (51 - len(left_line)) * "-"
-    progress_bar = f"|{left_line}>>{right_line}|"
-    status_bar = (
-        f"Evaluating {pattern_name:<52}"
-        + progress_bar
-        + f"({i + 1:>3}/{total_patterns})"
-    )
-    print(status_bar, end="\r")
 
 
 @numba.jit

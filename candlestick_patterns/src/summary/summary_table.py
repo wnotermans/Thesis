@@ -4,10 +4,9 @@ import time
 import pandas as pd
 from word2number import w2n
 
-SIGNIFICANCE_VALUE = 0.05
-LOW_COUNT = 100
-NUM_PATTERNS = 315
-COLS = [
+from shared import constants
+
+COLUMN_HEADERS = [
     "Pattern",
     "Number of candlesticks",
     "Number detected",
@@ -15,18 +14,6 @@ COLS = [
     "Buy evaluation",
     "Binomial test <",
     "Binomial test >",
-]
-PATTERN_NUMBERS = [
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "eight",
-    "ten",
-    "eleven",
-    "twelve",
-    "thirteen",
 ]
 BUY_NAMES = {
     "belt hold bullish",
@@ -59,7 +46,6 @@ BUY_NAMES = {
     "breakaway bullish",
     "ladder bottom",
 }
-
 SELL_NAMES = {
     "belt hold bearish",
     "doji northern",
@@ -94,7 +80,6 @@ SELL_NAMES = {
     "twelve new price lines",
     "thirteen new price lines",
 }
-
 HOLD_NAMES = {
     "marubozu black",
     "marubozu closing black",
@@ -153,7 +138,7 @@ def make_summary(*, run_name: str) -> None:
 
     dataframe_rows = []
 
-    for number_str in PATTERN_NUMBERS:
+    for number_str in constants.PATTERN_NUMBERS_AS_STRING:
         for pattern in os.listdir(f"data/runs/{run_name}/evaluation/{number_str}"):
             pattern_no_ext = pattern.removesuffix(".csv")
             win_rate, down_test, up_test = pd.read_csv(
@@ -192,16 +177,19 @@ def make_summary(*, run_name: str) -> None:
                 row.append("Any")
             row.extend([win_rate, down_test, up_test])
             dataframe_rows.append(row)
-    table = pd.DataFrame(dataframe_rows, columns=COLS)
+    table = pd.DataFrame(dataframe_rows, columns=COLUMN_HEADERS)
     significant_buy_signals = (
-        table["Binomial test >"].astype(float) < SIGNIFICANCE_VALUE
+        table["Binomial test >"].astype(float) < constants.ONE_STAR_SIGNIFICANCE
     ).sum()
     significant_sell_signals = (
-        table["Binomial test <"].astype(float) < SIGNIFICANCE_VALUE
+        table["Binomial test <"].astype(float) < constants.ONE_STAR_SIGNIFICANCE
     ).sum()
-    low_count_signals = (table["Number detected"].astype(int) <= LOW_COUNT).sum()
+    low_count_signals = (
+        table["Number detected"].astype(int)
+        <= constants.MINIMAL_SIGNIFICANT_DETECTION_SIZE
+    ).sum()
     non_significant_signals = (
-        NUM_PATTERNS
+        constants.TOTAL_NUMBER_OF_PATTERNS
         - significant_buy_signals
         - significant_sell_signals
         - low_count_signals
@@ -215,7 +203,7 @@ def make_summary(*, run_name: str) -> None:
         table.iloc[best_indices.iloc[1]]["Buy evaluation"],
     )
     total_patterns_detected = (table["Number detected"].astype(int)).sum()
-    table = pd.concat([table, pd.DataFrame([[""] * 7], columns=COLS)])
+    table = pd.concat([table, pd.DataFrame([[""] * 7], columns=COLUMN_HEADERS)])
     table = pd.concat(
         [
             table,
@@ -233,7 +221,7 @@ def make_summary(*, run_name: str) -> None:
                         "",
                     ]
                 ],
-                columns=COLS,
+                columns=COLUMN_HEADERS,
             ),
         ]
     )

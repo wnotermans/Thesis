@@ -6,9 +6,9 @@ import pandas as pd
 from aggregation import aggregate
 from calibration import calibration
 from news import news
+from shared import constants
 
 pd.options.mode.copy_on_write = True
-MIN_YEARS = 15
 
 
 def read_and_preprocess(  # noqa: PLR0913
@@ -181,7 +181,7 @@ def split_data(
     print(f"End date: {last_day}")
     date_diff = last_day - first_day
     num_years = (date_diff.days + date_diff.seconds / 86400) / 365.25
-    if num_years <= MIN_YEARS:
+    if num_years <= constants.MINIMAL_FULL_DATA_YEARS:
         split_date = first_day + date_diff / 3
     else:
         split_date = max(first_day + pd.DateOffset(years=5), pd.Timestamp(2007, 1, 1))

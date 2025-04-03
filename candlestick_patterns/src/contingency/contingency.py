@@ -4,10 +4,9 @@ import numpy as np
 import pandas as pd
 from scipy.stats import fisher_exact
 
+from shared import constants
+
 ONE_PARAMETER_DIFFERENT = 2
-THREE_STAR = 0.001
-TWO_STAR = 0.01
-ONE_STAR = 0.05
 
 
 def print_all_tables() -> None:
@@ -82,11 +81,11 @@ def print_contingency_table(
         print(f"|{' '.join(map(str, line)):^{box_width}}|")
     print(f"+{'p-value'.center(box_width, '-')}+")
     p_value = fisher_exact(contingency_table).pvalue
-    if p_value <= THREE_STAR:
+    if p_value <= constants.THREE_STAR_SIGNIFICANCE:
         p_value_str = f"{p_value:.3g} ***"
-    elif p_value <= TWO_STAR:
+    elif p_value <= constants.TWO_STAR_SIGNIFICANCE:
         p_value_str = f"{p_value:.3g} **"
-    elif p_value <= ONE_STAR:
+    elif p_value <= constants.ONE_STAR_SIGNIFICANCE:
         p_value_str = f"{p_value:.3g} *"
     else:
         p_value_str = f"{p_value:.3g}"

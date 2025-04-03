@@ -17,19 +17,7 @@ from detection.patterns import (
     twelve_patterns,  # noqa: F401
     two_patterns,  # noqa: F401
 )
-
-PATTERN_NUMBERS = [
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "eight",
-    "ten",
-    "eleven",
-    "twelve",
-    "thirteen",
-]
+from shared import constants, shared_functions
 
 
 def detection(
@@ -86,14 +74,15 @@ def detection(
     twelve_candle = [candle_dict[f"candle_minus_{n}"] for n in range(11, -1, -1)]
     thirteen_candle = [candle_dict[f"candle_minus_{n}"] for n in range(12, -1, -1)]
 
-    NUM_PATTERNS = 315
     i = 0
 
-    for number in PATTERN_NUMBERS:
+    for number in constants.PATTERN_NUMBERS_AS_STRING:
         func_name_list = extract_func_names(number_candles=number)
 
         for func_name in func_name_list:
-            print_status_bar(func_name, i, NUM_PATTERNS)
+            shared_functions.print_status_bar(
+                func_name, i, constants.TOTAL_NUMBER_OF_PATTERNS
+            )
 
             i += 1
 
@@ -141,35 +130,6 @@ def extract_func_names(number_candles: str) -> list[str]:
         if callable(attribute):
             func_names.append(name)
     return func_names
-
-
-def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
-    """
-    Prints out the status bar (function name, progress bar and count).
-
-    Parameters
-    ----------
-    pattern_name : str
-        Name of the pattern being detected.
-    i : int
-        Current iteration number.
-    total_patterns : int
-        Total number of patterns.
-
-    Returns
-    -------
-    None
-        Prints a line that overwrites the previous status bar.
-    """
-    left_line = (51 * (i + 1) // total_patterns) * "-"
-    right_line = (51 - len(left_line)) * "-"
-    progress_bar = f"|{left_line}>>{right_line}|"
-    status_bar = (
-        f"Detecting {pattern_name:<53}"
-        + progress_bar
-        + f"({i + 1:>3}/{total_patterns})"
-    )
-    print(status_bar, end="\r")
 
 
 def handle_gaps(

@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.stats import ks_2samp
 
-SIGNIFICANCE_VALUE = 0.05
+from shared import constants
 
 
 def calculate_percentiles(df: np.ndarray) -> tuple:
@@ -23,20 +23,14 @@ def calculate_percentiles(df: np.ndarray) -> tuple:
         percentiles of the upper and lower shadows.
     """
 
-    def body_length(OP: float, C: float) -> float:
+    def body_length(OP: np.ndarray, C: np.ndarray) -> np.ndarray:
         return np.abs(OP - C)
 
-    def top_body(OP: float, C: float) -> float:
-        return np.maximum(OP, C)
+    def upper_shadow_length(OP: np.ndarray, H: np.ndarray, C: np.ndarray) -> np.ndarray:
+        return H - np.maximum(OP, C)
 
-    def bottom_body(OP: float, C: float) -> float:
-        return np.minimum(OP, C)
-
-    def upper_shadow_length(OP: float, H: float, C: float) -> float:
-        return H - top_body(OP, C)
-
-    def lower_shadow_length(OP: float, L: float, C: float) -> float:
-        return bottom_body(OP, C) - L
+    def lower_shadow_length(OP: np.ndarray, L: np.ndarray, C: np.ndarray) -> np.ndarray:
+        return np.minimum(OP, C) - L
 
     OP = df[:, 0]
     H = df[:, 1]
@@ -45,19 +39,21 @@ def calculate_percentiles(df: np.ndarray) -> tuple:
 
     black_idx = OP > C
     white_idx = C > OP
+    black_lengths = body_length(OP[black_idx], C[black_idx])
+    white_lengths = body_length(OP[white_idx], C[white_idx])
+    combined_lengths = body_length(OP, C)
+    upper_shadow_lengths = upper_shadow_length(OP, H, C)
+    lower_shadow_lengths = lower_shadow_length(OP, L, C)
 
-    black_length = body_length(OP[black_idx], C[black_idx])
-    white_length = body_length(OP[white_idx], C[white_idx])
-
-    if ks_2samp(black_length, white_length).pvalue < SIGNIFICANCE_VALUE:
+    if ks_2samp(black_lengths, white_lengths).pvalue < constants.ONE_STAR_SIGNIFICANCE:
         return (
-            np.percentile(black_length, [10, 30, 70]),
-            np.percentile(white_length, [10, 30, 70]),
-            np.percentile(upper_shadow_length(OP, H, C), [10, 30, 70, 90]),
-            np.percentile(lower_shadow_length(OP, L, C), [10, 30, 70, 90]),
+            np.percentile(black_lengths, constants.BODY_PERCENTILES),
+            np.percentile(white_lengths, constants.BODY_PERCENTILES),
+            np.percentile(upper_shadow_lengths, constants.SHADOW_PERCENTILES),
+            np.percentile(lower_shadow_lengths, constants.SHADOW_PERCENTILES),
         )
     return (
-        np.percentile(body_length(OP, C), [10, 30, 70]),
-        np.percentile(upper_shadow_length(OP, H, C), [10, 30, 70, 90]),
-        np.percentile(lower_shadow_length(OP, L, C), [10, 30, 70, 90]),
+        np.percentile(combined_lengths, constants.BODY_PERCENTILES),
+        np.percentile(upper_shadow_lengths, constants.SHADOW_PERCENTILES),
+        np.percentile(lower_shadow_lengths, constants.SHADOW_PERCENTILES),
     )

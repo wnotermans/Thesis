@@ -1,18 +1,7 @@
 import os
 import uuid
 
-PATTERN_NUMBERS = [
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "eight",
-    "ten",
-    "eleven",
-    "twelve",
-    "thirteen",
-]
+from shared import constants
 
 
 def folder_setup(
@@ -110,7 +99,7 @@ def make_new_folder(
     """
     random_id = str(uuid.uuid4())[:8]
     for parent_folder in ["detection", "evaluation"]:
-        for pattern_number in PATTERN_NUMBERS:
+        for pattern_number in constants.PATTERN_NUMBERS_AS_STRING:
             folder_path = (
                 f"data/runs/{random_id}_{run_name}/{parent_folder}/{pattern_number}"
             )
