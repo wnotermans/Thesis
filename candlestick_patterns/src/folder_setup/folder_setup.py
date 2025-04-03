@@ -46,7 +46,8 @@ def folder_setup(
             old_id,
         )
 
-    return make_new_folder(input_parameters_list, run_name=run_name)
+    mode, random_id = make_new_folder(input_parameters_list, run_name=run_name)
+    return mode, random_id
 
 
 def handle_existing_run(*, set_mode: int | None = None) -> str:
