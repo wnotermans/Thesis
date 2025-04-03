@@ -19,7 +19,10 @@ def folder_setup(
     run_name : str
         Folder name of the run. A unique id is prepended.
     set_mode : int | None, optional, default None
-        Allows setting a default mode to skip user interaction.
+        Allows setting a default mode to skip user interaction. Options are:
+        - 0: pass
+        - 1: remake summary
+        - 2: rerun from scratch
 
     Returns
     -------
@@ -53,7 +56,10 @@ def handle_existing_run(*, set_mode: int | None = None) -> str:
     Parameters
     ----------
     set_mode : int | None, optional, default None
-        Allows setting a default mode to skip user interaction.
+        Allows setting a default mode to skip user interaction. Options are:
+        - 0: pass
+        - 1: remake summary
+        - 2: rerun from scratch
 
     Returns
     -------
