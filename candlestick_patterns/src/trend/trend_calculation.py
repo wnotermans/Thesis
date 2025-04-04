@@ -3,60 +3,16 @@ import time
 import numpy as np
 import pandas as pd
 
-
-def calculate_rolling_average(
-    ser: pd.Series, averaging_method: str = "MA", span: int = 5
-) -> pd.Series:
-    """
-    Calculate different rolling averages.
-
-    Parameters
-    ----------
-    ser : pd.Series
-        Data to be averaged.
-    averaging_method : str, optional, default `"MA"`
-        - `"MA"`: simple moving average
-        - `"WMA"`: weighted moving average with linearly decreasing weights
-        - `"EWMA"`: exponentially weighted moving average, with `alpha=2/(1+span)`
-    span : int, optional, default 5
-        How many data points are included in (weighted) moving average, also governs the
-        alpha used in the exponentially weighted moving average.
-
-    Returns
-    -------
-    pd.Series
-        The averaged data.
-
-    Raises
-    ------
-    ValueError
-        If an unknown averaging method is given.
-    """
-    if averaging_method not in ("MA", "WMA", "EWMA"):
-        raise ValueError(
-            f"averaging method '{averaging_method}' not recognized, "
-            "must be 'MA', 'WMA' or 'EWMA' "
-        )
-
-    if averaging_method == "MA":
-        return ser.rolling(span).mean()
-    if averaging_method == "WMA":
-        weights = np.arange(span, 0, -1)
-        sum_weights = np.sum(weights)
-        return ser.rolling(span).apply(
-            lambda x: np.sum(weights * x) / sum_weights, raw=True
-        )
-    if averaging_method == "EWMA":
-        return ser.ewm(span=span).mean()
-    return None
+USES_AVERAGING = {"monotonic", "counting"}
 
 
 def calculate_trend(
     df: pd.DataFrame,
-    averaging_method: str = "MA",
-    span: int = 5,
-    decision_method: str = "monotonic",
-    **kwargs: dict,
+    *,
+    averaging_method: str,
+    averaging_method_kwargs: dict,
+    decision_method: str,
+    decision_method_kwargs: dict,
 ) -> pd.DataFrame:
     """
     Calculate short-term trend of data.
@@ -98,42 +54,85 @@ def calculate_trend(
     valid_decision_methods = globals()
     if decision_method not in valid_decision_methods:
         raise ValueError("Incorrect decision method")
+    decision_method_function_call = globals()[decision_method]
 
     t = time.perf_counter()
 
-    consecutive = kwargs.get("consecutive", 7)
-    fraction = kwargs.get("fraction", 0.7)
-
-    print(
-        f"Calculating trend: {averaging_method=}, "
-        f"{decision_method=}, {span=}, {consecutive=}"
-    )
-
-    df["rolling_average"] = calculate_rolling_average(
-        df["close"], averaging_method, span
-    )
-
-    decision_method_function_call = globals()[decision_method]
-    decision_method_kwargs = {}
     if decision_method == "counting":
-        decision_method_kwargs = {"fraction": fraction}
-    if decision_method == "high_low":
-        df["trend"] = decision_method_function_call(
-            df["high"].to_numpy(), df["low"].to_numpy()
+        decision_method_kwargs.setdefault("fraction", 0.7)
+
+    if decision_method in USES_AVERAGING:
+        averaging_method_kwargs.setdefault("span", 5)
+        averaging_method_kwargs.setdefault("consecutive", 7)
+
+        df["rolling_average"] = calculate_rolling_average(
+            df["close"],
+            averaging_method,
+            averaging_method_kwargs=averaging_method_kwargs,
         )
-    else:
         df["trend"] = (
             df["rolling_average"]
-            .rolling(consecutive)
+            .rolling(averaging_method_kwargs["consecutive"])
             .apply(
                 decision_method_function_call, kwargs=decision_method_kwargs, raw=True
             )
         )
+        del df["rolling_average"]
 
-    del df["rolling_average"]
+    if decision_method == "high_low":
+        df["trend"] = decision_method_function_call(
+            df["high"].to_numpy(), df["low"].to_numpy()
+        )
 
     print(f"Calculating trend done in {time.perf_counter() - t:>3.2f}s", end="\n\n")
     return df
+
+
+def calculate_rolling_average(
+    ser: pd.Series, averaging_method: str, *, averaging_method_kwargs: dict
+) -> pd.Series:
+    """
+    Calculate different rolling averages.
+
+    Parameters
+    ----------
+    ser : pd.Series
+        Data to be averaged.
+    averaging_method : str
+        - `"MA"`: simple moving average
+        - `"WMA"`: weighted moving average with linearly decreasing weights
+        - `"EWMA"`: exponentially weighted moving average, with `alpha=2/(1+span)`
+    averaging_method_kwargs : dict
+        kwargs for rolling average.
+        - `span`: span of the calculation.
+
+    Returns
+    -------
+    pd.Series
+        The averaged data.
+
+    Raises
+    ------
+    ValueError
+        If an unknown averaging method is given.
+    """
+    if averaging_method not in {"MA", "WMA", "EWMA"}:
+        raise ValueError(
+            f"averaging method '{averaging_method}' not recognized, "
+            "must be 'MA', 'WMA' or 'EWMA' "
+        )
+    span = averaging_method_kwargs["span"]
+    if averaging_method == "MA":
+        return ser.rolling(span).mean()
+    if averaging_method == "WMA":
+        weights = np.arange(span, 0, -1)
+        sum_weights = np.sum(weights)
+        return ser.rolling(span).apply(
+            lambda x: np.sum(weights * x) / sum_weights, raw=True
+        )
+    if averaging_method == "EWMA":
+        return ser.ewm(span=span).mean()
+    return None
 
 
 def monotonic(C: list) -> int:
@@ -170,7 +169,7 @@ def monotonic(C: list) -> int:
     return 0
 
 
-def counting(C: list, *, fraction: float = 0.7) -> int:
+def counting(C: list, *, fraction: float) -> int:
     """
     Trend calculation based on counting in/decreases. `fraction` controls how many
     in/decreases there need to be.
