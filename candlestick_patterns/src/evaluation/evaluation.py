@@ -19,8 +19,8 @@ def evaluation(df: pd.DataFrame, evaluation_method: str, *, run_name: str) -> No
     ----------
     df : pd.DataFrame
         DataFrame to be analyzed
-    detection_method : str, optional, default "stop_loss_take_profit"
-        Which detection method to use.
+    evaluation_method : str
+        Which evaluation method to use.
     """
     if evaluation_method == "stop_loss_take_profit":
         stop_loss_take_profit_evaluation(df, run_name=run_name)

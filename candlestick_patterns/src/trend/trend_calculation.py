@@ -21,14 +21,16 @@ def calculate_trend(
     ----------
     df : pd.DataFrame
         Dataframe with at least the column `"close"`.
-    averaging_method : str, optional, default "MA"
+    averaging_method : str
         Method used to calculate a short-term average.
         - `"MA"`: simple moving average
         - `"WMA"`: weighted moving average with linearly decreasing weights
         - `"EWMA"`: exponentially weighted moving average, with `alpha=2/(1+span)`
-    span : int, optional, default 5
-        Span over which the short-term average is calculated.
-    decision_method : str, optional, default `"monotonic"`
+    averaging_method_kwargs : dict
+        Additional kwargs used in the calculation of the average.
+        - `consecutive`: window size for the calculation of the rolling average.
+        - `span`: span of the (EW/W)MA calculation.
+    decision_method : str
         Method that decides the trend.
         - `"monotonic"`: based on consecutive in/decreases of the short-term average.
         Additional kwarg `consecutive` can be passed to decide the number of needed
@@ -38,8 +40,8 @@ def calculate_trend(
         in/decreasing. `fraction` is 0.7 by default.
         - `"high_low"`: based on simultaneous increases of the high and low.
         No additional kwargs.
-    **kwargs : dict, optional
-        Additional arguments to be passed into the decision method.
+    decision_method_kwargs : dict
+        Additional kwargs used by the trend decision method.
 
     Returns
     -------

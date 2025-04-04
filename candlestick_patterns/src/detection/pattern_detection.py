@@ -32,7 +32,7 @@ def detection(
         A Dataframe with OHLC data.
     percentile : tuple
         Tuple of length percentiles.
-    mode : {"exclude", "ignore", "only"}
+    data_gap_handling : {"exclude", "ignore", "only"}
         Mode of handling gaps in the data.
 
     Returns

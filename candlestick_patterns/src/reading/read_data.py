@@ -41,8 +41,6 @@ def read_and_preprocess(
         Starting time of the filtering operation.
     end_time : str, optional, default '16:00:00'
         Ending time of the filtering operation.
-    print_missing : bool, optional, default False
-        Whether to print information about missing data.
     filter_news : bool, optional, default False
         Whether to filter by economic news.
     kwargs : dict, optional
