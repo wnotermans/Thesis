@@ -25,3 +25,12 @@ def print_status_bar(pattern_name: str, i: int, total_patterns: int) -> None:
         + f"({i + 1:>3}/{total_patterns})"
     )
     print(status_bar, end="\r")
+
+
+def box_print(parameters: dict) -> None:
+    box_width = max([len(f"{key}={value}") for key, value in parameters.items()])
+    print(f"+{'Parameters':-^{box_width}}+".center(127))
+    for key, value in parameters.items():
+        line = "=".join([key, str(value)])
+        print(f"|{line:^{box_width}}|".center(127))
+    print(f"+{'-' * box_width}+".center(127), end="\n\n")

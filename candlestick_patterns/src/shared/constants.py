@@ -32,3 +32,27 @@ MINIMAL_FULL_DATA_YEARS = 15
 
 # Patterns with less than this amount of detections are never considered significant.
 MINIMAL_SIGNIFICANT_DETECTION_SIZE = 100
+
+# Run settings
+FILENAMES = ["Wiener_small"]
+INTERVAL_MINUTES = [10]
+STARTTIME = "09:30:00"
+ENDTIME = "16:00:00"
+FILTER_NEWS = False
+TREND_AVERAGING_METHOD = "MA"  # MA, WMA, EWMA
+TREND_AVERAGING_METHOD_KWARGS = {"span:7"}  # span=5, consecutive=7
+TREND_DECISION_METHOD = "monotonic"  # monotonic, counting, high_low
+TREND_DECISION_METHOD_KWARGS = {}  # counting: fraction=0.7
+DATA_GAP_HANDLING = "exclude"
+EVALUATION_METHOD = "stop_loss_take_profit"
+SHARED_PARAMS_DICT = {
+    "start_time": STARTTIME,
+    "end_time": ENDTIME,
+    "filter_news": FILTER_NEWS,
+    "trend_averaging_method": TREND_AVERAGING_METHOD,
+    "trend_averaging_method_kwargs": TREND_AVERAGING_METHOD_KWARGS,
+    "trend_decision_method": TREND_DECISION_METHOD,
+    "trend_decision_method_kwargs": TREND_DECISION_METHOD_KWARGS,
+    "data_gap_handling": DATA_GAP_HANDLING,
+    "evaluation_method": EVALUATION_METHOD,
+}

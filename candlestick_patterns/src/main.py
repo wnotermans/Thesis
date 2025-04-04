@@ -4,6 +4,7 @@ from detection import pattern_detection
 from evaluation import evaluation
 from folder_setup import folder_setup
 from reading import read_data
+from shared import constants, shared_functions
 from summary import summary_table
 from trend import trend_calculation
 
@@ -12,45 +13,23 @@ def main() -> None:
     t = time.perf_counter()
     with open("logo.txt", encoding="utf-8") as f:
         print(f.read(), end="\n\n")
-    FILENAMES = ["Wiener_small"]
-    # FILENAMES = ["BND", "GLD", "QQQ", "SPY", "Wiener"]
-    STARTTIME = "09:30:00"
-    ENDTIME = "16:00:00"
-    FILTER_NEWS = False
-    AVERAGING_METHOD = "MA"  # MA, WMA, EWMA
-    SPAN = 5
-    DECISION_METHOD = "counting"  # monotonic, counting, high_low
-    CONSECUTIVE = 7
-    DETECTION_METHOD = "stop_loss_take_profit"
-    for filename in FILENAMES:
-        for interval_minutes in [5, 10]:
+    for filename in constants.FILENAMES:
+        for interval_minutes in constants.INTERVAL_MINUTES:
             run_name = (
                 f"{filename}_{interval_minutes}min_"
-                f"{AVERAGING_METHOD}_{DECISION_METHOD}_{DETECTION_METHOD}"
+                f"{constants.TREND_AVERAGING_METHOD}_"
+                f"{constants.TREND_DECISION_METHOD}_"
+                f"{constants.EVALUATION_METHOD}"
             )
             parameters = {
                 "filename": filename,
                 "interval_minutes": interval_minutes,
-                "start_time": STARTTIME,
-                "end_time": ENDTIME,
-                "averaging_method": AVERAGING_METHOD,
-                "span": SPAN,
-                "decision_method": DECISION_METHOD,
-                "consecutive": CONSECUTIVE,
-                "detection_method": DETECTION_METHOD,
-                "filter_news": FILTER_NEWS,
+                **constants.SHARED_PARAMS_DICT,
             }
-            box_width = max(
-                [len(f"{key}={value}") for key, value in parameters.items()]
-            )
-            print(f"+{'Parameters':-^{box_width}}+")
-            for key, value in parameters.items():
-                line = "=".join([key, str(value)])
-                print(f"|{line:^{box_width}}|")
-            print(f"+{'-' * box_width}+")
+            shared_functions.box_print(parameters)
 
             mode, unique_id = folder_setup.folder_setup(
-                parameters, run_name=run_name, set_mode=None
+                parameters, run_name=run_name, set_mode=2
             )
             run_name = unique_id + "_" + run_name
             if mode == "pass":
@@ -60,29 +39,32 @@ def main() -> None:
                 main_set, percentiles = read_data.read_and_preprocess(
                     filename,
                     interval_minutes,
-                    STARTTIME,
-                    ENDTIME,
-                    filter_news=FILTER_NEWS,
+                    constants.STARTTIME,
+                    constants.ENDTIME,
+                    filter_news=constants.FILTER_NEWS,
                 )
 
                 print(" Calculating trend ".center(127, "#"), end="\n\n")
                 main_set_with_trend = trend_calculation.calculate_trend(
                     main_set,
-                    averaging_method=AVERAGING_METHOD,
-                    span=SPAN,
-                    decision_method=DECISION_METHOD,
-                    consecutive=CONSECUTIVE,
+                    averaging_method=constants.TREND_AVERAGING_METHOD,
+                    averaging_method_kwargs=constants.TREND_AVERAGING_METHOD_KWARGS,
+                    decision_method=constants.TREND_DECISION_METHOD,
+                    decision_method_kwargs=constants.TREND_DECISION_METHOD_KWARGS,
                 )
 
                 print(" Pattern detection ".center(127, "#"), end="\n\n")
                 pattern_detection.detection(
-                    main_set_with_trend, percentiles, run_name=run_name
+                    main_set_with_trend,
+                    percentiles,
+                    constants.DATA_GAP_HANDLING,
+                    run_name=run_name,
                 )
 
                 print(" Pattern evaluation ".center(127, "#"), end="\n\n")
                 evaluation.evaluation(
                     main_set_with_trend,
-                    detection_method=DETECTION_METHOD,
+                    evaluation_method=constants.EVALUATION_METHOD,
                     run_name=run_name,
                 )
 
