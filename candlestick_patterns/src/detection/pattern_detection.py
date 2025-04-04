@@ -21,7 +21,7 @@ from shared import constants, shared_functions
 
 
 def detection(
-    df: pd.DataFrame, percentile: tuple, mode: str = "exclude", *, run_name: str
+    df: pd.DataFrame, percentile: tuple, data_gap_handling: str, *, run_name: str
 ) -> None:
     """
     Performs pattern detection.
@@ -89,7 +89,7 @@ def detection(
             func_call = getattr(globals().get(f"{number}_patterns"), func_name)
             patterns = func_call(locals().get(f"{number}_candle"), T, percentile)
             patterns_gaps_handled = handle_gaps(
-                patterns, df["gap"], w2n.word_to_num(number), mode=mode
+                patterns, df["gap"], w2n.word_to_num(number), mode=data_gap_handling
             )
             table = pyarrow.Table.from_arrays(
                 [patterns_gaps_handled], names=["pattern"]
@@ -133,7 +133,7 @@ def extract_func_names(number_candles: str) -> list[str]:
 
 
 def handle_gaps(
-    pattern: pd.Series, gap: pd.Series, number_candles: int, mode: str = "exclude"
+    pattern: pd.Series, gap: pd.Series, number_candles: int, mode: str
 ) -> np.ndarray:
     """
     Handle gaps in the data according to the given mode.

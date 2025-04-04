@@ -11,13 +11,12 @@ from shared import constants
 pd.options.mode.copy_on_write = True
 
 
-def read_and_preprocess(  # noqa: PLR0913
+def read_and_preprocess(
     filename: str,
-    interval_minutes: int = 1,
-    start_time: str = "09:30:00",
-    end_time: str = "16:00:00",
+    interval_minutes: int,
+    start_time: str,
+    end_time: str,
     *,
-    print_missing: bool = False,
     filter_news: bool = False,
     **kwargs: dict,
 ) -> pd.DataFrame | tuple:
@@ -82,9 +81,6 @@ def read_and_preprocess(  # noqa: PLR0913
             for date in unique_dates
         ]
     )
-
-    if print_missing:
-        print(calculate_missing(datetime_ohlc_df, time_idx))
 
     reindexed_df = (
         datetime_ohlc_df.reindex(
