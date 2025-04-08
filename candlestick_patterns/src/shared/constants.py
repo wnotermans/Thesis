@@ -36,8 +36,7 @@ MINIMAL_SIGNIFICANT_DETECTION_SIZE = 100
 # Run settings
 FILENAMES = ["Wiener_small"]
 INTERVAL_MINUTES = [10]
-STARTTIME = "09:30:00"
-ENDTIME = "16:00:00"
+START_END_TIME = ("09:30:00", "16:00:00")
 FILTER_NEWS = False
 ADDITIONAL_FILTERS_DICT = {}
 TREND_AVERAGING_METHOD = "MA"  # MA, WMA, EWMA
@@ -47,8 +46,7 @@ TREND_DECISION_METHOD_KWARGS = {}  # counting: fraction=0.7
 DATA_GAP_HANDLING = "exclude"
 EVALUATION_METHOD = "stop_loss_take_profit"
 SHARED_PARAMS_DICT = {
-    "start_time": STARTTIME,
-    "end_time": ENDTIME,
+    "start_end_time": START_END_TIME,
     "filter_news": FILTER_NEWS,
     "additional_filters_dict": ADDITIONAL_FILTERS_DICT,
     "trend_averaging_method": TREND_AVERAGING_METHOD,

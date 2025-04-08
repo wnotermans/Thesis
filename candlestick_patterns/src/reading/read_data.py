@@ -14,8 +14,7 @@ pd.options.mode.copy_on_write = True
 def read_and_preprocess(
     filename: str,
     interval_minutes: int,
-    start_time: str,
-    end_time: str,
+    start_end_time: tuple[str],
     *,
     filter_news: bool = False,
     **kwargs: dict,
@@ -74,7 +73,9 @@ def read_and_preprocess(
     time_idx = pd.concat(
         [
             pd.date_range(
-                start=f"{date} {start_time}", end=f"{date} {end_time}", freq="min"
+                start=f"{date} {start_end_time[0]}",
+                end=f"{date} {start_end_time[1]}",
+                freq="min",
             ).to_series()
             for date in unique_dates
         ]

@@ -40,8 +40,7 @@ def main() -> None:
                 main_set, percentiles = read_data.read_and_preprocess(
                     filename,
                     interval_minutes,
-                    constants.STARTTIME,
-                    constants.ENDTIME,
+                    constants.START_END_TIME,
                     filter_news=constants.FILTER_NEWS,
                 )
 
