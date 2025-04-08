@@ -33,16 +33,14 @@ def read_and_preprocess(  # noqa: PLR0913
     ----------
     filename : str
         Filename of the data to read on disk.
-    interval_minutes : int, optional, default 1:
+    interval_minutes : int
         Number of minutes over which the data will be aggregated. The default, 1,
         performs no aggregation.
-    start_time : str, optional, default '09:30:00'
-        Starting time of the filtering operation.
-    end_time : str, optional, default '16:00:00'
-        Ending time of the filtering operation.
-    filter_news : bool, optional, default False
+    start_end_time : tuple[str]
+        Start and end time of the filtering operation.
+    filter_news : bool
         Whether to filter by economic news.
-    kwargs : dict, optional
+    filter_news_kwargs : dict, optional
         kwargs for `filter_news`:
         - `exclude_impact` : tuple, default ("NONE","LOW"):
             Which impact levels to exclude.
