@@ -3,6 +3,7 @@ import time
 from detection import pattern_detection
 from evaluation import evaluation
 from folder_setup import folder_setup
+from indicators import indicators
 from reading import read_data
 from shared import constants, shared_functions
 from summary import summary_table
@@ -51,6 +52,14 @@ def main() -> None:
                     averaging_method_kwargs=constants.TREND_AVERAGING_METHOD_KWARGS,
                     decision_method=constants.TREND_DECISION_METHOD,
                     decision_method_kwargs=constants.TREND_DECISION_METHOD_KWARGS,
+                )
+
+                print(
+                    " Calculating additional indicators ".center(127, "#"), end="\n\n"
+                )
+                main_set_with_trend = indicators.calculate_indicators(
+                    main_set_with_trend,
+                    indicator_kwargs=constants.ADDITIONAL_FILTERS_DICT,
                 )
 
                 print(" Pattern detection ".center(127, "#"), end="\n\n")

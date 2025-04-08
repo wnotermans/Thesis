@@ -39,6 +39,7 @@ INTERVAL_MINUTES = [10]
 STARTTIME = "09:30:00"
 ENDTIME = "16:00:00"
 FILTER_NEWS = False
+ADDITIONAL_FILTERS_DICT = {}
 TREND_AVERAGING_METHOD = "MA"  # MA, WMA, EWMA
 TREND_AVERAGING_METHOD_KWARGS = {"span:7"}  # span=5, consecutive=7
 TREND_DECISION_METHOD = "monotonic"  # monotonic, counting, high_low
@@ -49,6 +50,7 @@ SHARED_PARAMS_DICT = {
     "start_time": STARTTIME,
     "end_time": ENDTIME,
     "filter_news": FILTER_NEWS,
+    "additional_filters_dict": ADDITIONAL_FILTERS_DICT,
     "trend_averaging_method": TREND_AVERAGING_METHOD,
     "trend_averaging_method_kwargs": TREND_AVERAGING_METHOD_KWARGS,
     "trend_decision_method": TREND_DECISION_METHOD,
