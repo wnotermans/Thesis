@@ -38,9 +38,10 @@ FILENAMES = ["Wiener_small"]
 INTERVAL_MINUTES = [10]
 START_END_TIME = ("09:30:00", "16:00:00")
 FILTER_NEWS = False
+FILTER_NEWS_KWARGS = {}
 ADDITIONAL_FILTERS_DICT = {}
 TREND_AVERAGING_METHOD = "MA"  # MA, WMA, EWMA
-TREND_AVERAGING_METHOD_KWARGS = {"span:7"}  # span=5, consecutive=7
+TREND_AVERAGING_METHOD_KWARGS = {}  # span=5, consecutive=7
 TREND_DECISION_METHOD = "monotonic"  # monotonic, counting, high_low
 TREND_DECISION_METHOD_KWARGS = {}  # counting: fraction=0.7
 DATA_GAP_HANDLING = "exclude"
@@ -48,6 +49,7 @@ EVALUATION_METHOD = "stop_loss_take_profit"
 SHARED_PARAMS_DICT = {
     "start_end_time": START_END_TIME,
     "filter_news": FILTER_NEWS,
+    "filter_news_kwargs": FILTER_NEWS_KWARGS,
     "additional_filters_dict": ADDITIONAL_FILTERS_DICT,
     "trend_averaging_method": TREND_AVERAGING_METHOD,
     "trend_averaging_method_kwargs": TREND_AVERAGING_METHOD_KWARGS,

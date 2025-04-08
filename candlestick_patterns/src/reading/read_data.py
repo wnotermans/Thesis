@@ -11,13 +11,13 @@ from shared import constants
 pd.options.mode.copy_on_write = True
 
 
-def read_and_preprocess(
+def read_and_preprocess(  # noqa: PLR0913
     filename: str,
     interval_minutes: int,
     start_end_time: tuple[str],
     *,
-    filter_news: bool = False,
-    **kwargs: dict,
+    filter_news: bool,
+    filter_news_kwargs: dict,
 ) -> pd.DataFrame | tuple:
     """
     Read the data from disk and perform some basic operations on it.
@@ -103,8 +103,8 @@ def read_and_preprocess(
     percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
 
     if filter_news:
-        exclude_impact = kwargs.get("exclude_impact", ("NONE", "LOW"))
-        minutes_after = kwargs.get("minutes_after", 60)
+        exclude_impact = filter_news_kwargs.get("exclude_impact", ("NONE", "LOW"))
+        minutes_after = filter_news_kwargs.get("minutes_after", 60)
         news_df, filter_index = news.get_news_df(exclude_impact, minutes_after)
         main_set["news"] = news_df["Impact"]
         main_set = main_set[main_set.index.isin(filter_index)]

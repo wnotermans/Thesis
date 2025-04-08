@@ -42,6 +42,7 @@ def main() -> None:
                     interval_minutes,
                     constants.START_END_TIME,
                     filter_news=constants.FILTER_NEWS,
+                    filter_news_kwargs=constants.FILTER_NEWS_KWARGS,
                 )
 
                 print(" Calculating trend ".center(127, "#"), end="\n\n")
