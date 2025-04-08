@@ -110,7 +110,7 @@ def read_and_preprocess(
 
     print(
         f"Reading and handling dataset {filename} done in {
-            round(time.perf_counter() - t, 2):<3.2f
+            time.perf_counter() - t:3.2f
         }s",
         end="\n\n",
     )

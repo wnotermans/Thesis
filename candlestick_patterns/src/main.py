@@ -71,7 +71,7 @@ def main() -> None:
             print(" Summary table ".center(127, "#"), end="\n\n")
             summary_table.make_summary(run_name=run_name)
             print("".center(127, "#"), end="\n\n")
-    print(f" All done in {round(time.perf_counter() - t, 2):>3.2f}s ".center(127, "#"))
+    print(f" All done in {time.perf_counter() - t:3.2f}s ".center(127, "#"))
 
 
 if __name__ == "__main__":

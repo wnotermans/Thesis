@@ -22,10 +22,16 @@ def evaluation(df: pd.DataFrame, evaluation_method: str, *, run_name: str) -> No
     evaluation_method : str
         Which evaluation method to use.
     """
+    t = time.perf_counter()
     if evaluation_method == "stop_loss_take_profit":
         stop_loss_take_profit_evaluation(df, run_name=run_name)
     if evaluation_method == "n_holding_periods":
         n_holding_periods(df, run_name=run_name)
+    print()
+    print(
+        f"All done. Total evaluation time: {time.perf_counter() - t:3.2f}s",
+        end="\n\n",
+    )
 
 
 def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None:
@@ -48,7 +54,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
 
     high_low_array = df[["high", "low"]].to_numpy()
 
-    total_time = time.perf_counter()
     i = 0
     for number in [
         "one",
@@ -132,14 +137,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                     writer = csv.writer(csvfile)
                     writer.writerow([eval_str, down_test, up_test])
 
-    print()
-    print(
-        f"All done. Total evaluation time: {
-            round(time.perf_counter() - total_time, 2)
-        }s",
-        end="\n\n",
-    )
-
 
 @numba.jit
 def find_first_breakthrough(
@@ -170,8 +167,6 @@ def n_holding_periods(df_single_close: pd.DataFrame) -> None:
         axis=1,
     )
 
-    total_time = time.perf_counter()
-
     for number in [
         "one",
         "two",
@@ -187,7 +182,6 @@ def n_holding_periods(df_single_close: pd.DataFrame) -> None:
         print(f"Candlestick patterns with {number} candlestick(s)")
         i = 1
         n = len(os.listdir(f"../data/patterns/{number}"))
-        t = time.perf_counter()
 
         for pattern in os.listdir(f"../data/patterns/{number}"):
             print(
@@ -262,17 +256,3 @@ def n_holding_periods(df_single_close: pd.DataFrame) -> None:
             )
 
             i += 1
-
-        print()
-        print(
-            f"Evaluating patterns with {number} candlestick(s): "
-            f"Done in {round(time.perf_counter() - t, 2):<3.2f}s.",
-            end="\n\n",
-        )
-
-    print(
-        f"All done. Total evaluation time: {
-            round(time.perf_counter() - total_time, 2)
-        }s",
-        end="\n\n",
-    )

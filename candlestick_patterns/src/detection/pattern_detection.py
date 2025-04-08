@@ -40,7 +40,7 @@ def detection(
     None
         Outputs the 309 candlestick patterns to disk in `.parquet` format.
     """
-    total_time = time.perf_counter()
+    t = time.perf_counter()
 
     column_dict = {
         f"{col}_{shift}": df[col].shift(shift).to_numpy()
@@ -102,9 +102,7 @@ def detection(
 
     print()
     print(
-        f"All done. Total detection time: {
-            round(time.perf_counter() - total_time, 2)
-        }s",
+        f"All done. Total detection time: {time.perf_counter() - t:3.2f}s",
         end="\n\n",
     )
 
