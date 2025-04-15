@@ -54,7 +54,7 @@ def set_defaults(indicator_kwargs: dict[dict]) -> None:
 
     Parameters
     ----------
-    filter_dict : dict[dict]
+    indicator_kwargs : dict[dict]
         Already present kwargs. These are left unchanged.
     """
     for indicator in INDICATORS:
@@ -71,6 +71,19 @@ def set_defaults(indicator_kwargs: dict[dict]) -> None:
 
 
 def true_range(df: pd.DataFrame) -> pd.Series:
+    """
+    Calculate the true range.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC data.
+
+    Returns
+    -------
+    pd.Series
+        The true range.
+    """
     prev_close = df["close"].shift()
     return pd.concat(
         [
@@ -83,22 +96,38 @@ def true_range(df: pd.DataFrame) -> pd.Series:
 
 
 def average_true_range(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
+    """
+    Calculates the average true range (ATR).
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC data.
+    indicator_kwargs : dict
+        ``window``: controls the window size.
+
+    Returns
+    -------
+    pd.Series
+        The ATR indicator.
+    """
     tr = true_range(df)
     return tr.ewm(alpha=1 / indicator_kwargs["window"], adjust=False).mean()
 
 
 def average_directional_movement_index(
-    df: pd.DataFrame, ATR: pd.Series, *, indicator_kwargs: dict
+    df: pd.DataFrame, *, indicator_kwargs: dict
 ) -> pd.Series:
     """
-    Calculates the average directional movement index indicator, also called ADX.
+    Calculates the average directional movement index indicator (ADX). Reuses the ATR to
+    speed up calculations.
 
     Parameters
     ----------
     df : pd.DataFrame
-        Dataframe with OHLC and trend data.
+        Dataframe with OHLC data and a column containing the ATR.
     indicator_kwargs : dict
-        kwarg `window`, that sets the window over which the rolling averages are
+        ``window``: sets the window over which the rolling averages are
         calculated.
 
     Returns
@@ -109,10 +138,11 @@ def average_directional_movement_index(
     window = indicator_kwargs["window"]
     up_move = df["high"] - df["high"].shift()
     down_move = df["low"].shift() - df["low"]
+    atr = df["ATR"]
     plus_dm = up_move.where((up_move > 0) & (up_move > down_move), 0)
     minus_dm = down_move.where((down_move > 0) & (down_move > up_move), 0)
-    plus_di = 100 * plus_dm.rolling(window).mean() / ATR
-    minus_di = 100 * minus_dm.rolling(window).mean() / ATR
+    plus_di = 100 * plus_dm.rolling(window).mean() / atr
+    minus_di = 100 * minus_dm.rolling(window).mean() / atr
     adx = (plus_di - minus_di).abs() / (plus_di + minus_di)
     return 100 * adx.rolling(window).mean()
 
@@ -142,17 +172,62 @@ def Bollinger_bands(df: pd.DataFrame, *, indicator_kwargs: dict) -> tuple[pd.Ser
 def detrended_price_oscillator(
     df: pd.DataFrame, *, indicator_kwargs: dict
 ) -> pd.Series:
+    """
+    Calculates the detrended price oscillator (DPO).
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC data.
+    indicator_kwargs : dict
+        ``window``: controls the window size.
+
+    Returns
+    -------
+    pd.Series
+        The DPO indicator.
+    """
     window = indicator_kwargs["window"]
     return df["close"].shift(window // 2 + 1) - df["close"].rolling(window).mean()
 
 
 def moving_average(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
+    """
+    Calculates the moving average (MA).
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC data.
+    indicator_kwargs : dict
+        ``window``: controls the window size.
+
+    Returns
+    -------
+    pd.Series
+        The MA.
+    """
     return df["close"].rolling(indicator_kwargs["window"]).mean()
 
 
 def moving_average_convergence_divergence(
     df: pd.DataFrame, *, indicator_kwargs: dict
 ) -> tuple[pd.Series]:
+    """
+    Calculates the moving average convergence/divergence (MACD).
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC data.
+    indicator_kwargs : dict
+        ``spans``: 3-tuple controlling the spans.
+
+    Returns
+    -------
+    tuple[pd.Series]
+        The MACD indicator and MACD signal.
+    """
     span_1, span_2, span_3 = indicator_kwargs["spans"]
     EMA_short = df["close"].ewm(span=span_1, adjust=False).mean()
     EMA_long = df["close"].ewm(span=span_2, adjust=False).mean()
@@ -185,10 +260,40 @@ def money_flow_index(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
 
 
 def momentum(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
+    """
+    Calculates the momentum.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC data.
+    indicator_kwargs : dict
+        ``span``: controls the span.
+
+    Returns
+    -------
+    pd.Series
+        The momentum.
+    """
     return 100 * df["close"] / df["close"].shift(indicator_kwargs["span"])
 
 
 def relative_strength_index(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
+    """
+    Calculates the relative strength index (RSI).
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC data.
+    indicator_kwargs : dict
+        ``window``: controls the window size.
+
+    Returns
+    -------
+    pd.Series
+        The RSI indicator.
+    """
     window = indicator_kwargs["window"]
     diff = df["close"].diff()
     up_move = diff.where(diff > 0, 0)
@@ -199,6 +304,21 @@ def relative_strength_index(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.S
 
 
 def triple_exponential(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
+    """
+    Calculates the triple exponential indicator (TRIX).
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC data.
+    indicator_kwargs : dict
+        ``windows``: 3-tuple of windows.
+
+    Returns
+    -------
+    pd.Series
+        The TRIX indicator.
+    """
     window_1, window_2, window_3 = indicator_kwargs["windows"]
     EMA_1 = df["close"].ewm(alpha=1 / window_1, adjust=False).mean()
     EMA_2 = EMA_1.ewm(alpha=1 / window_2, adjust=False).mean()
@@ -206,7 +326,22 @@ def triple_exponential(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series
     return 100 * EMA_3.diff()
 
 
-def vortex(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
+def vortex(df: pd.DataFrame, *, indicator_kwargs: dict) -> tuple[pd.Series]:
+    """
+    Calculates the vortex indicator (VI).
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC data.
+    indicator_kwargs : dict
+        ``window``: controls the window size.
+
+    Returns
+    -------
+    tuple[pd.Series]
+        The VI+, VI- indicators and the difference of those two.
+    """
     window = indicator_kwargs["window"]
     tr_sum = true_range(df).rolling(window).sum()
     VM_plus = (df["high"] - df["low"].shift()).abs()
