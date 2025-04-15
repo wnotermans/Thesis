@@ -2,49 +2,7 @@ import time
 
 import pandas as pd
 
-INDICATORS = ["ADX", "ATR", "DPO", "MA", "MACD", "momentum", "RSI", "TRIX", "VI"]
-
-
-def calculate_indicators(
-    df: pd.DataFrame, *, indicator_kwargs: dict[dict]
-) -> pd.DataFrame:
-    """
-    Calculate additional indicators.
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        Dataframe with OHLC and trend data.
-    indicator_kwargs : dict[dict]
-        Additional parameters for the indicators.
-
-    Returns
-    -------
-    pd.DataFrame
-        Original df together with additional indicators as new columns.
-    """
-    t = time.perf_counter()
-    set_defaults(indicator_kwargs)
-    df["ATR"] = average_true_range(df, indicator_kwargs=indicator_kwargs["ATR"])
-    df["ADX"] = average_directional_movement_index(
-        df, df["ATR"], indicator_kwargs=indicator_kwargs["ADX"]
-    )
-    df["DPO"] = detrended_price_oscillator(df, indicator_kwargs=indicator_kwargs["DPO"])
-    df["MA"] = moving_average(df, indicator_kwargs=indicator_kwargs["MA"])
-    df["MACD"], df["MACD_signal"] = moving_average_convergence_divergence(
-        df, indicator_kwargs=indicator_kwargs["MACD"]
-    )
-    df["momentum"] = momentum(df, indicator_kwargs=indicator_kwargs["momentum"])
-    df["RSI"] = relative_strength_index(df, indicator_kwargs=indicator_kwargs["RSI"])
-    df["TRIX"] = triple_exponential(df, indicator_kwargs=indicator_kwargs["TRIX"])
-    df["VI+"], df["VI-"], df["VI_diff"] = vortex(
-        df, indicator_kwargs=indicator_kwargs["VI"]
-    )
-    print(
-        f"Calculating additional indicators done in {time.perf_counter() - t:<3.2f}s",
-        end="\n\n",
-    )
-    return df
+from shared import constants
 
 
 def set_defaults(indicator_kwargs: dict[dict]) -> None:
@@ -59,15 +17,10 @@ def set_defaults(indicator_kwargs: dict[dict]) -> None:
     """
     for indicator in INDICATORS:
         indicator_kwargs.setdefault(indicator, {})
-    indicator_kwargs["ADX"].setdefault("window", 15)
-    indicator_kwargs["ATR"].setdefault("window", 15)
-    indicator_kwargs["DPO"].setdefault("window", 20)
-    indicator_kwargs["MA"].setdefault("window", 7)
-    indicator_kwargs["MACD"].setdefault("spans", (5, 11, 5))
-    indicator_kwargs["momentum"].setdefault("span", 7)
-    indicator_kwargs["RSI"].setdefault("window", 15)
-    indicator_kwargs["TRIX"].setdefault("windows", (15, 15, 15))
-    indicator_kwargs["VI"].setdefault("window", 21)
+        if not indicator_kwargs[indicator]:
+            indicator_kwargs[indicator] = constants.INDICATOR_DEFAULT_VALUES.get(
+                indicator
+            )
 
 
 def true_range(df: pd.DataFrame) -> pd.Series:
@@ -439,3 +392,63 @@ def parabolic_SAR(df: pd.DataFrame, *, indicator_kwargs: dict) -> list:
                 psar[i] = max(psar[i], high[i - 2])
 
     return psar
+
+
+INDICATORS = {
+    "ATR": average_true_range,
+    "ADX": average_directional_movement_index,
+    "BB": Bollinger_bands,
+    "DPO": detrended_price_oscillator,
+    "MA": moving_average,
+    "MACD": moving_average_convergence_divergence,
+    "MFI": money_flow_index,
+    "momentum": momentum,
+    "PSAR": parabolic_SAR,
+    "RSI": relative_strength_index,
+    "TRIX": triple_exponential,
+    "VI": vortex,
+    "%R": Williams_R,
+}
+
+
+def calculate_indicators(
+    df: pd.DataFrame, *, indicator_kwargs: dict[dict]
+) -> pd.DataFrame:
+    """
+    Calculate additional indicators.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Dataframe with OHLC data.
+    indicator_kwargs : dict[dict]
+        Additional parameters for the indicators.
+
+    Returns
+    -------
+    pd.DataFrame
+        Original df together with additional indicators as new columns.
+    """
+    t = time.perf_counter()
+    set_defaults(indicator_kwargs)
+    for indicator_name, indicator_function in INDICATORS.items():
+        kwargs = indicator_kwargs.get(indicator_name)
+        if indicator_name == "BB":
+            df["BB_low"], df["BB_mid"], df["BB_high"] = indicator_function(
+                df, indicator_kwargs=kwargs
+            )
+        elif indicator_name == "MACD":
+            df["MACD"], df["MACD_signal"] = indicator_function(
+                df, indicator_kwargs=kwargs
+            )
+        elif indicator_name == "VI":
+            df["VI+"], df["VI-"], df["VI_diff"] = indicator_function(
+                df, indicator_kwargs=kwargs
+            )
+        else:
+            df[indicator_name] = indicator_function(df, indicator_kwargs=kwargs)
+    print(
+        f"Calculating additional indicators done in {time.perf_counter() - t:<3.2f}s",
+        end="\n\n",
+    )
+    return df
