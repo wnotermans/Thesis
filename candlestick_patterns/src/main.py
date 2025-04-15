@@ -59,7 +59,7 @@ def main() -> None:
                 )
                 main_set_with_trend = indicators.calculate_indicators(
                     main_set_with_trend,
-                    indicator_kwargs=constants.ADDITIONAL_FILTERS_DICT,
+                    indicator_kwargs=constants.INDICATOR_KWARGS,
                 )
 
                 print(" Pattern detection ".center(127, "#"), end="\n\n")

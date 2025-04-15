@@ -39,7 +39,22 @@ INTERVAL_MINUTES = [10]
 START_END_TIME = ("09:30:00", "16:00:00")
 FILTER_NEWS = False
 FILTER_NEWS_KWARGS = {}
-ADDITIONAL_FILTERS_DICT = {}
+INDICATOR_KWARGS = {}
+INDICATOR_DEFAULT_VALUES = {  # Avoids bloating the parameters file
+    "ADX": {"window": 15},
+    "ATR": {"window": 15},
+    "BB": {"window": 20},
+    "DPO": {"window": 20},
+    "MA": {"window": 7},
+    "MACD": {"spans": (5, 11, 5)},
+    "MFI": {"window": 15},
+    "momentum": {"span": 7},
+    "PSAR": {"step": 0.02, "max_accel_factor": 0.2},
+    "RSI": {"window": 15},
+    "TRIX": {"windows": (15, 15, 15)},
+    "VI": {"window": 21},
+    "%R": {"window": 14},
+}
 TREND_AVERAGING_METHOD = "MA"  # MA, WMA, EWMA
 TREND_AVERAGING_METHOD_KWARGS = {}  # span=5, consecutive=7
 TREND_DECISION_METHOD = "monotonic"  # monotonic, counting, high_low
@@ -50,7 +65,7 @@ SHARED_PARAMS_DICT = {
     "start_end_time": START_END_TIME,
     "filter_news": FILTER_NEWS,
     "filter_news_kwargs": FILTER_NEWS_KWARGS,
-    "additional_filters_dict": ADDITIONAL_FILTERS_DICT,
+    "additional_filters_dict": INDICATOR_KWARGS,
     "trend_averaging_method": TREND_AVERAGING_METHOD,
     "trend_averaging_method_kwargs": TREND_AVERAGING_METHOD_KWARGS,
     "trend_decision_method": TREND_DECISION_METHOD,
