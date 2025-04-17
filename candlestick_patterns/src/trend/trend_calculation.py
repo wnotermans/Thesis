@@ -228,3 +228,58 @@ def high_low(H: np.ndarray, L: np.ndarray) -> np.ndarray:
             np.where((H_diff_sign == L_diff_sign) & (H_diff_sign != 0), H_diff_sign, 0),
         ]
     )
+
+
+def parabolic_SAR(df: pd.DataFrame, *, decision_kwargs: dict) -> list[int]:
+    step = decision_kwargs["step"]
+    max_accel_factor = decision_kwargs["max_accel_factor"]
+
+    length = len(df)
+    high = list(df["high"])
+    low = list(df["low"])
+    psar = list(df["close"])
+    psar_trend = [None] * length
+    up_trend = True
+    accel_factor = step
+    max_high = high[0]
+    min_low = low[0]
+
+    for i in range(2, length):
+        if up_trend:
+            psar[i] = psar[i - 1] + accel_factor * (max_high - psar[i - 1])
+        else:
+            psar[i] = psar[i - 1] + accel_factor * (min_low - psar[i - 1])
+        reverse = False
+
+        if up_trend:
+            if low[i] < psar[i]:
+                up_trend = False
+                reverse = True
+                psar[i] = max_high
+                min_low = low[i]
+                accel_factor = step
+
+        elif high[i] > psar[i]:
+            up_trend = True
+            reverse = True
+            psar[i] = min_low
+            max_high = high[i]
+            accel_factor = step
+
+        if not reverse:
+            if up_trend:
+                if high[i] > max_high:
+                    max_high = high[i]
+                    accel_factor = min(accel_factor + step, max_accel_factor)
+                psar[i] = min(psar[i], low[i - 1])
+                psar[i] = min(psar[i], low[i - 2])
+
+            else:
+                if low[i] < min_low:
+                    min_low = low[i]
+                    accel_factor = min(accel_factor + step, max_accel_factor)
+                psar[i] = max(psar[i], high[i - 1])
+                psar[i] = max(psar[i], high[i - 2])
+
+        psar_trend[i] = 1 if up_trend else -1
+    return psar_trend
