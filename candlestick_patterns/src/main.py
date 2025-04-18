@@ -49,9 +49,9 @@ def main() -> None:
                 main_set_with_trend = trend_calculation.calculate_trend(
                     main_set,
                     averaging_method=constants.TREND_AVERAGING_METHOD,
-                    averaging_method_kwargs=constants.TREND_AVERAGING_METHOD_KWARGS,
+                    averaging_kwargs=constants.TREND_AVERAGING_METHOD_KWARGS,
                     decision_method=constants.TREND_DECISION_METHOD,
-                    decision_method_kwargs=constants.TREND_DECISION_METHOD_KWARGS,
+                    decision_kwargs=constants.TREND_DECISION_METHOD_KWARGS,
                 )
 
                 print(

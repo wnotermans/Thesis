@@ -55,10 +55,20 @@ INDICATOR_DEFAULT_VALUES = {  # Avoids bloating the parameters file
     "VI": {"window": 21},
     "%R": {"window": 14},
 }
-TREND_AVERAGING_METHOD = "MA"  # MA, WMA, EWMA
+TREND_AVERAGING_METHOD = "SMA"  # SMA, WMA, EMA
 TREND_AVERAGING_METHOD_KWARGS = {}  # span=5, consecutive=7
-TREND_DECISION_METHOD = "monotonic"  # monotonic, counting, high_low
+TREND_AVERAGING_DEFAULTS = {
+    "SMA": {"window": 5},
+    "WMA": {"window": 5},
+    "EMA": {"window": 5},
+}
+TREND_DECISION_METHOD = "monotonic"  # monotonic, counting, high_low, PSAR
 TREND_DECISION_METHOD_KWARGS = {}  # counting: fraction=0.7
+TREND_DECISION_DEFAULTS = {
+    "monotonic": {"span": 7},
+    "counting": {"span": 7, "fraction": 0.7},
+    "PSAR": {"step": 0.02, "max_accel_factor": 0.2},
+}
 DATA_GAP_HANDLING = "exclude"
 EVALUATION_METHOD = "stop_loss_take_profit"
 SHARED_PARAMS_DICT = {
