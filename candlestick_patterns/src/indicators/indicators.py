@@ -18,8 +18,8 @@ def set_defaults(indicator_kwargs: dict[dict]) -> None:
     for indicator in INDICATORS:
         indicator_kwargs.setdefault(indicator, {})
         if not indicator_kwargs[indicator]:
-            indicator_kwargs[indicator] = constants.INDICATOR_DEFAULT_VALUES.get(
-                indicator
+            indicator_kwargs[indicator] = constants.INDICATOR_DEFAULTS.get(
+                indicator, {}
             )
 
 

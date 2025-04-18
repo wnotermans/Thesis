@@ -40,7 +40,7 @@ START_END_TIME = ("09:30:00", "16:00:00")
 FILTER_NEWS = False
 FILTER_NEWS_KWARGS = {}
 INDICATOR_KWARGS = {}
-INDICATOR_DEFAULT_VALUES = {  # Avoids bloating the parameters file
+INDICATOR_DEFAULTS = {  # Avoids bloating the parameters file
     "ADX": {"window": 15},
     "ATR": {"window": 15},
     "BB": {"window": 20},
