@@ -11,29 +11,6 @@ from scipy.stats import binomtest
 from shared import constants, shared_functions
 
 
-def evaluation(df: pd.DataFrame, evaluation_method: str, *, run_name: str) -> None:
-    """
-    Performs evaluation of the patterns.
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        DataFrame to be analyzed
-    evaluation_method : str
-        Which evaluation method to use.
-    """
-    t = time.perf_counter()
-    if evaluation_method == "stop_loss_take_profit":
-        stop_loss_take_profit_evaluation(df, run_name=run_name)
-    if evaluation_method == "n_holding_periods":
-        n_holding_periods(df, run_name=run_name)
-    print()
-    print(
-        f"All done. Total evaluation time: {time.perf_counter() - t:3.2f}s",
-        end="\n\n",
-    )
-
-
 def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None:
     """
     Stop loss/take profit-based candlestick pattern evaluation.
@@ -96,7 +73,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
 
             else:
                 pattern_indices = df[df["pat"]].index
-                del df["pat"]
 
                 eval_list = np.array([])
 
@@ -114,6 +90,9 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                             constants.STOP_LOSS_MARGIN_PERCENT,
                         ),
                     )
+                df["evaluation"] = np.nan
+                df.loc[df["pat"], "evaluation"] = eval_list
+                del df["pat"]
 
                 eval_str = f"{np.nansum(eval_list) / len(eval_list):.2%}"
                 down_test = binomtest(
@@ -142,8 +121,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
 def find_first_breakthrough(
     HL_array: np.ndarray, OP: float, open_index: int, limit: int, percent: float
 ) -> float:
-    if OP < 0:
-        percent = -percent
     for idx in range(open_index, limit):
         if HL_array[idx, 0] >= OP * (1 + percent / 100) and HL_array[idx, 1] <= OP * (
             1 - percent / 100
@@ -156,7 +133,7 @@ def find_first_breakthrough(
     return np.nan
 
 
-def n_holding_periods(df_single_close: pd.DataFrame) -> None:
+def n_holding_periods(df_single_close: pd.DataFrame, *, run_name: str) -> None:
     del df_single_close["high"], df_single_close["low"], df_single_close["volume"]
     df_single_close = df_single_close.rename(columns={"close": "close_0"})
     shifted_closes = {
@@ -181,16 +158,18 @@ def n_holding_periods(df_single_close: pd.DataFrame) -> None:
     ]:
         print(f"Candlestick patterns with {number} candlestick(s)")
         i = 1
-        n = len(os.listdir(f"../data/patterns/{number}"))
+        n = len(os.listdir(f"data/runs/{run_name}/detection/{number}"))
 
-        for pattern in os.listdir(f"../data/patterns/{number}"):
+        for pattern in os.listdir(f"data/runs/{run_name}/detection/{number}"):
             print(
                 f"Evaluating {pattern:<54} | {'#' * (50 * i // n):<50} ({i:>3}/{n})",
                 end="\r",
             )
 
             if (
-                pyarrow.parquet.read_table(f"../data/patterns/{number}/{pattern}")
+                pyarrow.parquet.read_table(
+                    f"data/runs/{run_name}/detection/{number}/{pattern}"
+                )
                 .to_pandas()
                 .sum()
                 .to_numpy()[0]
@@ -201,7 +180,9 @@ def n_holding_periods(df_single_close: pd.DataFrame) -> None:
 
             else:
                 df_all_closes["pat"] = (
-                    pyarrow.parquet.read_table(f"../data/patterns/{number}/{pattern}")
+                    pyarrow.parquet.read_table(
+                        f"data/runs/{run_name}/detection/{number}/{pattern}"
+                    )
                     .to_pandas()
                     .set_index(df_all_closes.index)
                     .shift(1)
@@ -251,8 +232,35 @@ def n_holding_periods(df_single_close: pd.DataFrame) -> None:
 
             pyarrow.parquet.write_table(
                 pyarrow.table({"buy": buy_eval, "sell": sell_eval}),
-                f"../data/evaluation/{number}/{pattern}",
+                f"data/runs/{run_name}/evaluation/{number}/{pattern}",
                 compression="LZ4",
             )
 
             i += 1
+
+
+EVALUATION_METHODS = {
+    "stop_loss_take_profit": stop_loss_take_profit_evaluation,
+    "n_holding_periods": n_holding_periods,
+}
+
+
+def evaluation(df: pd.DataFrame, evaluation_method: str, *, run_name: str) -> None:
+    """
+    Performs evaluation of the patterns.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame to be analyzed
+    evaluation_method : str
+        Which evaluation method to use.
+    """
+    t = time.perf_counter()
+    evaluation_func = EVALUATION_METHODS[evaluation_method]
+    evaluation_func(df, run_name=run_name)
+    print()
+    print(
+        f"All done. Total evaluation time: {time.perf_counter() - t:3.2f}s",
+        end="\n\n",
+    )
