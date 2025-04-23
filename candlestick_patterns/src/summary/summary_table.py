@@ -190,11 +190,17 @@ def make_summary(*, run_name: str) -> None:
                 row.append("")
             dataframe_rows.append(row)
     table = pd.DataFrame(dataframe_rows, columns=COLUMN_HEADERS)
+    table_exclude_low_count = table[
+        table["Number detected"].astype(int)
+        > constants.MINIMAL_SIGNIFICANT_DETECTION_SIZE
+    ]
     significant_buy_signals = (
-        table["Binomial test >"].astype(float) < constants.ONE_STAR_SIGNIFICANCE
+        table_exclude_low_count["Binomial test >"].astype(float)
+        < constants.ONE_STAR_SIGNIFICANCE
     ).sum()
     significant_sell_signals = (
-        table["Binomial test <"].astype(float) < constants.ONE_STAR_SIGNIFICANCE
+        table_exclude_low_count["Binomial test <"].astype(float)
+        < constants.ONE_STAR_SIGNIFICANCE
     ).sum()
     low_count_signals = (
         table["Number detected"].astype(int)
