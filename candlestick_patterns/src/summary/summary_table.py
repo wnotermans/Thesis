@@ -122,18 +122,19 @@ def make_summary(*, run_name: str) -> None:
     - Number of candlesticks
     - Number of patterns detected
     - Type of pattern signal (buy/sell/any/hold)
-    - Buy evaluation (win %, average profit), sell evaluation is the opposite
+    - Win rate
     - binomial tests: "greater", "less"
+    - Significance (\*\*\*/\*\*/\*)
 
     Parameters
     ----------
     filename : str
-        Filename of the output `txt` file.
+        Filename of the output ``.csv`` file.
 
     Returns
     -------
     None
-        `filename`.txt to disk.
+        ``filename.csv`` to disk.
     """
     t = time.perf_counter()
     print("Making summary table", end="\r")
