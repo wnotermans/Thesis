@@ -94,16 +94,23 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                 df.loc[df["pat"], "evaluation"] = eval_list
                 del df["pat"]
 
-                eval_str = f"{np.nansum(eval_list) / len(eval_list):.2%}"
+                wins = int(np.nansum(eval_list))
+                total = len(eval_list)
+                win_rate = wins / total
+                absolute_win_rate = (
+                    f"{win_rate:.2%}+"
+                    if win_rate >= 0.5  # noqa: PLR2004
+                    else f"{0.5 + abs(0.5 - win_rate):.2%}-"
+                )
                 down_test = binomtest(
-                    int(np.nansum(eval_list)),
-                    len(eval_list),
+                    wins,
+                    total,
                     p=0.5,
                     alternative="less",
                 ).pvalue
                 up_test = binomtest(
-                    int(np.nansum(eval_list)),
-                    len(eval_list),
+                    wins,
+                    total,
                     p=0.5,
                     alternative="greater",
                 ).pvalue
@@ -114,7 +121,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                     "w",
                 ) as csvfile:
                     writer = csv.writer(csvfile)
-                    writer.writerow([eval_str, down_test, up_test])
+                    writer.writerow([absolute_win_rate, down_test, up_test])
 
 
 @numba.jit
