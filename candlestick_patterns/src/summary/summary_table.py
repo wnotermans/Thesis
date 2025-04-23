@@ -6,15 +6,6 @@ from word2number import w2n
 
 from shared import constants
 
-COLUMN_HEADERS = [
-    "Pattern",
-    "Number of candlesticks",
-    "Number detected",
-    "Signal type",
-    "Buy evaluation",
-    "Binomial test <",
-    "Binomial test >",
-]
 BUY_NAMES = {
     "belt hold bullish",
     "doji southern",
@@ -112,6 +103,17 @@ HOLD_NAMES = {
     "long white day",
 }
 
+COLUMN_HEADERS = [
+    "Pattern",
+    "Number of candlesticks",
+    "Number detected",
+    "Signal type",
+    "Win rate",
+    "Binomial test <",
+    "Binomial test >",
+    "Significance",
+]
+
 
 def make_summary(*, run_name: str) -> None:
     """
@@ -176,6 +178,16 @@ def make_summary(*, run_name: str) -> None:
             else:
                 row.append("Any")
             row.extend([win_rate, down_test, up_test])
+
+            best_significance = min(down_test, up_test)
+            if best_significance < constants.THREE_STAR_SIGNIFICANCE:
+                row.append("***")
+            elif best_significance < constants.TWO_STAR_SIGNIFICANCE:
+                row.append("**")
+            elif best_significance < constants.ONE_STAR_SIGNIFICANCE:
+                row.append("*")
+            else:
+                row.append("")
             dataframe_rows.append(row)
     table = pd.DataFrame(dataframe_rows, columns=COLUMN_HEADERS)
     significant_buy_signals = (
@@ -199,11 +211,11 @@ def make_summary(*, run_name: str) -> None:
     best_buy_pvalue = float(table.iloc[best_indices.iloc[0]]["Binomial test >"])
     best_sell_pvalue = float(table.iloc[best_indices.iloc[1]]["Binomial test <"])
     best_buy_win_rate, best_sell_win_rate = (
-        table.iloc[best_indices.iloc[0]]["Buy evaluation"],
-        table.iloc[best_indices.iloc[1]]["Buy evaluation"],
+        table.iloc[best_indices.iloc[0]]["Win rate"][:6],
+        table.iloc[best_indices.iloc[1]]["Win rate"][:6],
     )
     total_patterns_detected = (table["Number detected"].astype(int)).sum()
-    table = pd.concat([table, pd.DataFrame([[""] * 7], columns=COLUMN_HEADERS)])
+    table = pd.concat([table, pd.DataFrame([[""] * 8], columns=COLUMN_HEADERS)])
     table = pd.concat(
         [
             table,
@@ -218,6 +230,7 @@ def make_summary(*, run_name: str) -> None:
                         f"{best_sell_pattern = }, {best_sell_pvalue = :.5g}, "
                         f"{best_sell_win_rate = }",
                         f"{total_patterns_detected = :d}",
+                        "",
                         "",
                     ]
                 ],
