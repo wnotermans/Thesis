@@ -90,13 +90,29 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                             constants.STOP_LOSS_MARGIN_PERCENT,
                         ),
                     )
-                df["evaluation"] = np.nan
+                df["evaluation"] = None
                 df.loc[df["pat"], "evaluation"] = eval_list
                 del df["pat"]
 
+                success_indicator_means = (
+                    df.drop(
+                        columns=[
+                            "open",
+                            "high",
+                            "low",
+                            "close",
+                            "volume",
+                            "gap",
+                            "trend",
+                        ]
+                    )
+                    .loc[df["evaluation"] == 1]
+                    .mean()
+                )
+
                 wins = int(np.nansum(eval_list))
-                total = len(eval_list)
-                win_rate = wins / total
+                number_detected = len(eval_list)
+                win_rate = wins / number_detected
                 absolute_win_rate = (
                     f"{win_rate:.2%}+"
                     if win_rate >= 0.5  # noqa: PLR2004
@@ -104,24 +120,33 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                 )
                 down_test = binomtest(
                     wins,
-                    total,
+                    number_detected,
                     p=0.5,
                     alternative="less",
                 ).pvalue
                 up_test = binomtest(
                     wins,
-                    total,
+                    number_detected,
                     p=0.5,
                     alternative="greater",
                 ).pvalue
 
-                with open(
+                csv_path = (
                     f"data/runs/{run_name}/evaluation/{number}/"
-                    f"{pattern.removesuffix('.parquet')}.csv",
-                    "w",
-                ) as csvfile:
-                    writer = csv.writer(csvfile)
-                    writer.writerow([absolute_win_rate, down_test, up_test])
+                    f"{pattern.removesuffix('.parquet')}"
+                )
+                csv_data = {
+                    f"{csv_path}evaluation.csv": [
+                        absolute_win_rate,
+                        down_test,
+                        up_test,
+                        number_detected,
+                    ],
+                    f"{csv_path}indicators.csv": success_indicator_means,
+                }
+                for path, data in csv_data.items():
+                    with open(path, "w") as csvfile:
+                        csv.writer(csvfile).writerow(data)
 
 
 @numba.jit

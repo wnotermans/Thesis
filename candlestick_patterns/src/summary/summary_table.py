@@ -143,20 +143,15 @@ def make_summary(*, run_name: str) -> None:
 
     for number_str in constants.PATTERN_NUMBERS_AS_STRING:
         for pattern in os.listdir(f"data/runs/{run_name}/evaluation/{number_str}"):
-            pattern_no_ext = pattern.removesuffix(".csv")
-            win_rate, down_test, up_test = pd.read_csv(
-                f"data/runs/{run_name}/evaluation/{number_str}/{pattern_no_ext}.csv",
+            if not pattern.endswith("evaluation.csv"):
+                continue
+            pattern_no_ext = pattern.removesuffix("evaluation.csv")
+            win_rate, down_test, up_test, number_detected = pd.read_csv(
+                f"data/runs/{run_name}/evaluation/{number_str}/{pattern}",
                 header=None,
             ).iloc[0]
             down_test = down_test if down_test != "/" else 2
             up_test = up_test if up_test != "/" else 2
-            number_detected = (
-                pd.read_parquet(
-                    f"data/runs/{run_name}/detection/{number_str}/{pattern_no_ext}.parquet"
-                )
-                .sum()
-                .iloc[0]
-            )
             row = [
                 f"{pattern_no_ext.replace('_', ' ').strip()}",
                 w2n.word_to_num(number_str),
