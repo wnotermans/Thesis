@@ -28,43 +28,37 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
     None
         Win %, "less" and "greater" binomial tests to disk.
     """
+    open_array = df["open"].to_numpy()
+    high_array = df["high"].to_numpy()
+    low_array = df["low"].to_numpy()
 
-    high_low_array = df[["high", "low"]].to_numpy()
+    indicator_columns = df.columns.difference(
+        ["open", "high", "low", "close", "volume", "gap", "trend"]
+    )
 
     i = 0
-    for number in [
-        "one",
-        "two",
-        "three",
-        "four",
-        "five",
-        "eight",
-        "ten",
-        "eleven",
-        "twelve",
-        "thirteen",
-    ]:
-        for pattern in os.listdir(f"data/runs/{run_name}/detection/{number}"):
+    for number_str in constants.PATTERN_NUMBERS_AS_STRING:
+        for pattern in os.listdir(f"data/runs/{run_name}/detection/{number_str}"):
             shared_functions.print_status_bar(
                 pattern, i, constants.TOTAL_NUMBER_OF_PATTERNS
             )
 
             i += 1
 
-            df["pat"] = (
+            df["pattern"] = (
                 pyarrow.parquet.read_table(
-                    f"data/runs/{run_name}/detection/{number}/{pattern}"
+                    f"data/runs/{run_name}/detection/{number_str}/{pattern}"
                 )
                 .to_pandas()
                 .set_index(df.index)
                 .shift(1)
             )
-            df.loc[df.index[0], "pat"] = False
-            num_detected = df["pat"].sum()
+            df.loc[df.index[0], "pattern"] = False
+            num_detected = df["pattern"].sum()
 
             if num_detected in (0, 1):
                 with open(
-                    f"data/runs/{run_name}/evaluation/{number}/"
+                    f"data/runs/{run_name}/evaluation/{number_str}/"
                     f"{pattern.removesuffix('.parquet')}.csv",
                     "w",
                 ) as csvfile:
@@ -72,43 +66,22 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                     writer.writerow(["/"] * 3)
 
             else:
-                pattern_indices = df[df["pat"]].index
-
-                eval_list = np.array([])
-
-                for pattern_index in pattern_indices:
-                    open_index = df.index.get_loc(pattern_index)
-                    OP = df.loc[pattern_index, "open"]
-
-                    eval_list = np.append(
-                        eval_list,
-                        find_first_breakthrough(
-                            high_low_array,
-                            OP,
-                            open_index,
-                            len(df),
-                            constants.STOP_LOSS_MARGIN_PERCENT,
-                        ),
-                    )
-                df["evaluation"] = None
-                df.loc[df["pat"], "evaluation"] = eval_list
-                del df["pat"]
-
-                success_indicator_means = (
-                    df.drop(
-                        columns=[
-                            "open",
-                            "high",
-                            "low",
-                            "close",
-                            "volume",
-                            "gap",
-                            "trend",
-                        ]
-                    )
-                    .loc[df["evaluation"] == 1]
-                    .mean()
+                bool_array = df["pattern"].astype(bool).to_numpy()
+                eval_list = find_first_breakthroughs(
+                    bool_array,
+                    open_array,
+                    high_array,
+                    low_array,
+                    constants.STOP_LOSS_MARGIN_PERCENT,
                 )
+
+                df["evaluation"] = None
+                df.loc[df["pattern"], "evaluation"] = eval_list
+                del df["pattern"]
+
+                success_indicator_means = df.loc[
+                    df["evaluation"] == 1, indicator_columns
+                ].mean()
 
                 wins = int(np.nansum(eval_list))
                 number_detected = len(eval_list)
@@ -118,6 +91,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                     if win_rate >= 0.5  # noqa: PLR2004
                     else f"{0.5 + abs(0.5 - win_rate):.2%}-"
                 )
+
                 down_test = binomtest(
                     wins,
                     number_detected,
@@ -132,7 +106,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                 ).pvalue
 
                 csv_path = (
-                    f"data/runs/{run_name}/evaluation/{number}/"
+                    f"data/runs/{run_name}/evaluation/{number_str}/"
                     f"{pattern.removesuffix('.parquet')}"
                 )
                 csv_data = {
@@ -150,19 +124,32 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
 
 
 @numba.jit
-def find_first_breakthrough(
-    HL_array: np.ndarray, OP: float, open_index: int, limit: int, percent: float
-) -> float:
-    for idx in range(open_index, limit):
-        if HL_array[idx, 0] >= OP * (1 + percent / 100) and HL_array[idx, 1] <= OP * (
-            1 - percent / 100
-        ):
-            return np.nan
-        if HL_array[idx, 0] >= OP * (1 + percent / 100):
-            return 1
-        if HL_array[idx, 1] <= OP * (1 - percent / 100):
-            return 0
-    return np.nan
+def find_first_breakthroughs(
+    bool_array: np.ndarray,
+    open_array: np.ndarray,
+    high_array: np.ndarray,
+    low_array: np.ndarray,
+    percentage: float,
+) -> list:
+    breaches = []
+    true_indices = np.where(bool_array)[0]
+
+    for i in true_indices:
+        start_value = open_array[i]
+        upper_threshold = start_value * (1 + percentage / 100)
+        lower_threshold = start_value * (1 - percentage / 100)
+
+        for j in range(i + 1, len(open_array)):
+            if high_array[j] > upper_threshold:
+                breaches.append(1)
+                break
+            if low_array[j] < lower_threshold:
+                breaches.append(0)
+                break
+        else:
+            breaches.append(np.nan)
+
+    return breaches
 
 
 def n_holding_periods(df_single_close: pd.DataFrame, *, run_name: str) -> None:
@@ -211,7 +198,7 @@ def n_holding_periods(df_single_close: pd.DataFrame, *, run_name: str) -> None:
                 sell_eval = [("/", "/") for _ in range(10)]
 
             else:
-                df_all_closes["pat"] = (
+                df_all_closes["pattern"] = (
                     pyarrow.parquet.read_table(
                         f"data/runs/{run_name}/detection/{number}/{pattern}"
                     )
@@ -220,7 +207,7 @@ def n_holding_periods(df_single_close: pd.DataFrame, *, run_name: str) -> None:
                     .shift(1)
                 )
 
-                subset = df_all_closes[df_all_closes["pat"]]
+                subset = df_all_closes[df_all_closes["pattern"]]
 
                 mean_buy_profit = {
                     f"{n + 1}_holding_periods": np.format_float_positional(
