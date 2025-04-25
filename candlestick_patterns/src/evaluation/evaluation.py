@@ -131,6 +131,28 @@ def find_first_breakthroughs(
     low_array: np.ndarray,
     percentage: float,
 ) -> list:
+    """
+    Find the stop loss take profit breakthroughs. Margins are percentage-based and
+    controlled globally.
+
+    Parameters
+    ----------
+    bool_array : np.ndarray
+        Boolean array of the detected patterns.
+    open_array : np.ndarray
+        Opens.
+    high_array : np.ndarray
+        Highs.
+    low_array : np.ndarray
+        Lows.
+    percentage : float
+        Percentage that defines the margins.
+
+    Returns
+    -------
+    list
+        Evaluation: 0 for bottom breakthrough, 1 for upper, ``np.nan`` else.
+    """
     breaches = []
     true_indices = np.where(bool_array)[0]
 
