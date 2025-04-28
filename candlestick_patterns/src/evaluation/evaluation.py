@@ -32,10 +32,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
     high_array = df["high"].to_numpy()
     low_array = df["low"].to_numpy()
 
-    indicator_columns = df.columns.difference(
-        ["open", "high", "low", "close", "volume", "gap", "trend"]
-    )
-
     i = 0
     for number_str in constants.PATTERN_NUMBERS_AS_STRING:
         for pattern in os.listdir(f"data/runs/{run_name}/detection/{number_str}"):
@@ -80,7 +76,7 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                 del df["pattern"]
 
                 success_indicator_means = df.loc[
-                    df["evaluation"] == 1, indicator_columns
+                    df["evaluation"] == 1, constants.INDICATOR_COLUMNS
                 ].mean()
 
                 wins = int(np.nansum(eval_list))

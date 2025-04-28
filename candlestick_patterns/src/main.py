@@ -79,7 +79,7 @@ def main() -> None:
 
             print(" Summary table ".center(127, "#"), end="\n\n")
             summary_table.make_summary(run_name=run_name)
-            backtest.backtest_indicators(run_name=run_name)
+            backtest.aggregate_indicators(run_name=run_name)
             print("".center(127, "#"), end="\n\n")
     print(f" All done in {time.perf_counter() - t:3.2f}s ".center(127, "#"))
 

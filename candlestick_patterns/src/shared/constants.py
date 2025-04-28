@@ -15,6 +15,26 @@ PATTERN_NUMBERS_AS_STRING = [
     "twelve",
     "thirteen",
 ]
+INDICATOR_COLUMNS = [
+    "ATR",
+    "ADX",
+    "BB_low",
+    "BB_mid",
+    "BB_high",
+    "DPO",
+    "MA",
+    "MACD",
+    "MACD_signal",
+    "MFI",
+    "momentum",
+    "PSAR",
+    "RSI",
+    "TRIX",
+    "VI+",
+    "VI-",
+    "VI_diff",
+    "%R",
+]
 
 # Percentiles to use for the splitting of body/shadow sizes into bins.
 # These are doji, small, normal and tall for body;
