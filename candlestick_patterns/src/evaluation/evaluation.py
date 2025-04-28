@@ -154,7 +154,7 @@ def find_first_breakthroughs(
         Evaluation: 0 for bottom breakthrough, 1 for upper, ``np.nan`` else.
     """
     breaches = []
-    true_indices = np.where(bool_array)[0]
+    true_indices = np.flatnonzero(bool_array)
 
     for i in true_indices:
         start_value = open_array[i]
