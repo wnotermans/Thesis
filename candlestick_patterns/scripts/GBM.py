@@ -53,4 +53,4 @@ GBM_series = pd.Series(geometric_brownian_motion(len(time_idx)), time_idx)
 GBM_df = GBM_series.resample("1min", label="right").ohlc()
 GBM_df["datetime"] = GBM_df.index
 GBM_df["volume"] = 0
-GBM_df.to_parquet("../data/Wiener_small.parquet", compression="lz4")
+GBM_df.to_parquet("src/data/Wiener_small.parquet", compression="brotli")
