@@ -3,7 +3,7 @@ import time
 from detection import pattern_detection
 from evaluation import evaluation
 from folder_setup import folder_setup
-from indicators import indicators
+from indicators import backtest, indicators
 from reading import read_data
 from shared import constants, shared_functions
 from summary import summary_table
@@ -30,7 +30,7 @@ def main() -> None:
             shared_functions.box_print(parameters)
 
             mode, unique_id = folder_setup.folder_setup(
-                parameters, run_name=run_name, set_mode=2
+                parameters, run_name=run_name, set_mode=None
             )
             run_name = unique_id + "_" + run_name
             if mode == "pass":
@@ -79,6 +79,7 @@ def main() -> None:
 
             print(" Summary table ".center(127, "#"), end="\n\n")
             summary_table.make_summary(run_name=run_name)
+            backtest.backtest_indicators(run_name=run_name)
             print("".center(127, "#"), end="\n\n")
     print(f" All done in {time.perf_counter() - t:3.2f}s ".center(127, "#"))
 
