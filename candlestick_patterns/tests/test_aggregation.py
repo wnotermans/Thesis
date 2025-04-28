@@ -9,8 +9,6 @@ default_data = {
     "close": [104, 109, 114, 119, 124, 129],
     "volume": [1000, 1100, 1200, 1300, 1400, 1500],
 }
-
-
 default_df = pd.DataFrame(
     default_data, index=pd.date_range("1/1/1970", periods=6, freq="min")
 )

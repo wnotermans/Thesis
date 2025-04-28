@@ -20,7 +20,7 @@ def print_all_tables() -> None:
     directory : str
         Directory containing summaries. Recurses into subdirectories.
     """
-    folders = os.listdir("../data/runs")
+    folders = os.listdir(f"{DIRECTORY}")
     parameter_list = []
     for folder in folders:
         with open(f"{DIRECTORY}/{folder}/parameters.txt") as file:
@@ -132,5 +132,5 @@ def list_csv_filepaths() -> list[str]:
     return csv_files
 
 
-DIRECTORY = "../data/runs"
+DIRECTORY = "src/data/runs"
 contingency_table = print_all_tables()

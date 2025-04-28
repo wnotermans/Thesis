@@ -41,4 +41,4 @@ select = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"test/*" = ["PLR2004"]
+"tests/*" = ["PLR2004"]
