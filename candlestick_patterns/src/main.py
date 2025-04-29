@@ -3,7 +3,7 @@ import time
 from detection import pattern_detection
 from evaluation import evaluation
 from folder_setup import folder_setup
-from indicators import backtest, indicators
+from indicators import indicators
 from reading import read_data
 from shared import constants, shared_functions
 from summary import summary_table
@@ -78,8 +78,7 @@ def main() -> None:
                 )
 
             print(" Summary table ".center(127, "#"), end="\n\n")
-            summary_table.make_summary(run_name=run_name)
-            backtest.aggregate_indicators(run_name=run_name)
+            summary_table.make_summaries(run_name=run_name)
             print("".center(127, "#"), end="\n\n")
     print(f" All done in {time.perf_counter() - t:3.2f}s ".center(127, "#"))
 

@@ -4,6 +4,7 @@ import time
 import pandas as pd
 from word2number import w2n
 
+from indicators import backtest
 from shared import constants
 
 BUY_NAMES = {
@@ -115,7 +116,7 @@ COLUMN_HEADERS = [
 ]
 
 
-def make_summary(*, run_name: str) -> None:
+def make_summary_table(*, run_name: str) -> None:
     """
     Aggregates data into a summary table. The following data is included:
     - Pattern name
@@ -247,3 +248,16 @@ def make_summary(*, run_name: str) -> None:
         f"Making summary table done in {time.perf_counter() - t:.2f}s",
         end="\n\n",
     )
+
+
+def make_summaries(*, run_name: str) -> None:
+    """
+    Make the summary table and aggregate the indicators.
+
+    Parameters
+    ----------
+    run_name : str
+        The run name.
+    """
+    make_summary_table(run_name=run_name)
+    backtest.aggregate_indicators(run_name=run_name)
