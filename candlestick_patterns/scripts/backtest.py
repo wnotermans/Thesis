@@ -6,6 +6,7 @@ from shared import constants
 
 
 def backtest() -> None:
+    """Perform backtest of technical indicators."""
     base_path = "src/data/runs"
     dataframe_rows = []
     for folder in os.listdir(base_path):
@@ -17,4 +18,5 @@ def backtest() -> None:
     print(pd.DataFrame(dataframe_rows, columns=constants.INDICATOR_COLUMNS).mean())
 
 
-backtest()
+if __name__ == "__main__":
+    backtest()

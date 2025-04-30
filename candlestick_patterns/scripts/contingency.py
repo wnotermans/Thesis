@@ -133,4 +133,5 @@ def list_csv_filepaths() -> list[str]:
 
 
 DIRECTORY = "src/data/runs"
-contingency_table = print_all_tables()
+if __name__ == "__main__":
+    print_all_tables()
