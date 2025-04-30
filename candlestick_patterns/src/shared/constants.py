@@ -33,6 +33,7 @@ INDICATOR_COLUMNS = [
     "VI+",
     "VI-",
     "VI_diff",
+    "VW",
     "%R",
 ]
 
@@ -73,6 +74,7 @@ INDICATOR_DEFAULTS = {  # Avoids bloating the parameters file
     "RSI": {"window": 15},
     "TRIX": {"windows": (15, 15, 15)},
     "VI": {"window": 21},
+    "VW": {"minutes": 30},
     "%R": {"window": 14},
 }
 TREND_AVERAGING_METHOD = "SMA"  # SMA, WMA, EMA

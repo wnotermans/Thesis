@@ -304,6 +304,50 @@ def vortex(df: pd.DataFrame, *, indicator_kwargs: dict) -> tuple[pd.Series]:
     return VI_plus, VI_minus, VI_plus - VI_minus
 
 
+def volume_weight(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
+    """
+    Calculates the volume weight.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with OHLC and volume data.
+    indicator_kwargs : dict
+        ``minutes``: time span of the blocks in minutes.
+
+    Returns
+    -------
+    pd.Series
+        The volume weight.
+    """
+    minutes = indicator_kwargs["minutes"]
+    shift = 24 * 60 / minutes
+    if shift != int(shift):
+        raise ValueError(
+            f"The given amount of minutes ({minutes}) "
+            "does not divide the amount of minutes in a day (1440)."
+        )
+    volume_rolling_mean = (
+        df["open"].groupby(df.index.date).sum().rolling(7).mean()
+    ).shift()
+    df_volume_mean = df.index.normalize().map(volume_rolling_mean)
+    block_volume = (
+        df["open"].groupby(pd.Grouper(freq=f"{minutes}min")).sum().shift(int(shift))
+    )
+    block_volume = block_volume.loc[
+        (pd.Timestamp("09:30").time() <= block_volume.index.time)
+        & (block_volume.index.time <= pd.Timestamp("16:00").time())
+    ]
+    adjusted_index = df.index.floor(f"{minutes}min").unique()
+    adjusted_index = adjusted_index.where(
+        adjusted_index.time != pd.Timestamp(f"{df.index[0].time()}").time(),
+        adjusted_index + pd.Timedelta(minutes=1),
+    )
+    block_volume.index = adjusted_index
+    block_volume = block_volume.reindex(df.index).ffill()
+    return block_volume / df_volume_mean
+
+
 def Williams_R(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
     """
     Calculates Williams' %R (%R).
@@ -407,6 +451,7 @@ INDICATORS = {
     "RSI": relative_strength_index,
     "TRIX": triple_exponential,
     "VI": vortex,
+    "VW": volume_weight,
     "%R": Williams_R,
 }
 
