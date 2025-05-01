@@ -334,10 +334,6 @@ def volume_weight(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
     block_volume = (
         df["volume"].groupby(pd.Grouper(freq=f"{minutes}min")).sum().shift(int(shift))
     )
-    block_volume = block_volume.loc[
-        (pd.Timestamp("09:30").time() <= block_volume.index.time)
-        & (block_volume.index.time <= pd.Timestamp("16:00").time())
-    ]
     block_volume = block_volume.reindex(df.index).ffill()
     return block_volume / df_volume_mean
 
