@@ -328,22 +328,16 @@ def volume_weight(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
             "does not divide the amount of minutes in a day (1440)."
         )
     volume_rolling_mean = (
-        df["open"].groupby(df.index.date).sum().rolling(7).mean()
+        df["volume"].groupby(df.index.date).sum().rolling(7).mean()
     ).shift()
     df_volume_mean = df.index.normalize().map(volume_rolling_mean)
     block_volume = (
-        df["open"].groupby(pd.Grouper(freq=f"{minutes}min")).sum().shift(int(shift))
+        df["volume"].groupby(pd.Grouper(freq=f"{minutes}min")).sum().shift(int(shift))
     )
     block_volume = block_volume.loc[
         (pd.Timestamp("09:30").time() <= block_volume.index.time)
         & (block_volume.index.time <= pd.Timestamp("16:00").time())
     ]
-    adjusted_index = df.index.floor(f"{minutes}min").unique()
-    adjusted_index = adjusted_index.where(
-        adjusted_index.time != pd.Timestamp(f"{df.index[0].time()}").time(),
-        adjusted_index + pd.Timedelta(minutes=1),
-    )
-    block_volume.index = adjusted_index
     block_volume = block_volume.reindex(df.index).ffill()
     return block_volume / df_volume_mean
 
