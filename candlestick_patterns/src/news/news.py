@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 
-def read_and_clean_data(filename: str, exclude_impact: tuple) -> pd.DataFrame:
+def read_and_clean_data(filename: str, *, impact_level: tuple) -> pd.DataFrame:
     """
     Read the data from disk and clean it up into a DataFrame.
 
@@ -12,7 +12,7 @@ def read_and_clean_data(filename: str, exclude_impact: tuple) -> pd.DataFrame:
     ----------
     filename : str
         Filename of the target file.
-    exclude_impact : tuple
+    impact_level : tuple
         Which impact levels to exclude.
 
     Returns
@@ -25,7 +25,7 @@ def read_and_clean_data(filename: str, exclude_impact: tuple) -> pd.DataFrame:
     raw["Start"] = pd.to_datetime(raw["Start"])
     sorted_df = custom_sort(raw)
     sorted_df = sorted_df.drop_duplicates(["Start"])
-    return sorted_df[~sorted_df["Impact"].isin(exclude_impact)]
+    return sorted_df[sorted_df["Impact"].isin(impact_level)]
 
 
 def custom_sort(raw: pd.DataFrame) -> pd.DataFrame:
@@ -56,7 +56,7 @@ def custom_sort(raw: pd.DataFrame) -> pd.DataFrame:
 
 
 def get_news_df(
-    exclude_impact: tuple, minutes_after: int
+    *, impact_level: tuple, minutes_after: int
 ) -> tuple[pd.DataFrame, pd.DatetimeIndex]:
     """
     Get a DataFrame of economic news events.
@@ -68,8 +68,8 @@ def get_news_df(
 
     Parameters
     ----------
-    exclude_impact : tuple
-        Which impact levels to exclude.
+    impact_level : tuple
+        Which impact levels to include.
     minutes_after : int
         How many minutes of NaNs to include after the news events (for filtering).
 
@@ -79,7 +79,7 @@ def get_news_df(
         A DataFrame with a DateTimeIndex and the corresponding economic news events.
     """
     news_df_list = [
-        read_and_clean_data(file, exclude_impact)
+        read_and_clean_data(file, impact_level=impact_level)
         for file in os.listdir("data/news")
         if file.endswith(".csv")
     ]

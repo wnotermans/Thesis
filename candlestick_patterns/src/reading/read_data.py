@@ -16,7 +16,6 @@ def read_and_preprocess(  # noqa: PLR0913
     interval_minutes: int,
     start_end_time: tuple[str],
     *,
-    filter_news: bool,
     filter_news_kwargs: dict,
 ) -> pd.DataFrame | tuple:
     """
@@ -38,13 +37,11 @@ def read_and_preprocess(  # noqa: PLR0913
         performs no aggregation.
     start_end_time : tuple[str]
         Start and end time of the filtering operation.
-    filter_news : bool
-        Whether to filter by economic news.
     filter_news_kwargs : dict, optional
         kwargs for `filter_news`:
-        - `exclude_impact` : tuple, default ("NONE","LOW"):
-            Which impact levels to exclude.
-        - `minutes_after` : int, default 60:
+        - ``impact_level`` : tuple:
+            Which impact levels to include.
+        - ``minutes_after`` : int, default 60:
             How many minutes of data to include after a news event.
 
     Returns
@@ -100,10 +97,13 @@ def read_and_preprocess(  # noqa: PLR0913
 
     percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
 
-    if filter_news:
-        exclude_impact = filter_news_kwargs.get("exclude_impact", ("NONE", "LOW"))
-        minutes_after = filter_news_kwargs.get("minutes_after", 60)
-        news_df, filter_index = news.get_news_df(exclude_impact, minutes_after)
+    if filter_news_kwargs and filter_news_kwargs["impact_level"]:
+        minutes_after = filter_news_kwargs.setdefault(
+            "minutes_after", constants.FILTER_NEWS_DEFAULTS["minutes_after"]
+        )
+        news_df, filter_index = news.get_news_df(
+            impact_level=filter_news_kwargs["impact_level"], minutes_after=minutes_after
+        )
         main_set["news"] = news_df["Impact"]
         main_set = main_set[main_set.index.isin(filter_index)]
 

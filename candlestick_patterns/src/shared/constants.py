@@ -58,8 +58,8 @@ MINIMAL_SIGNIFICANT_DETECTION_SIZE = 100
 FILENAMES = ["Wiener_small"]
 INTERVAL_MINUTES = [10]
 START_END_TIME = ("09:30:00", "16:00:00")
-FILTER_NEWS = False
-FILTER_NEWS_KWARGS = {}
+FILTER_NEWS_KWARGS = {}  # "impact_level": ("MEDIUM", "HIGH")
+FILTER_NEWS_DEFAULTS = {"minutes_after": 60}
 INDICATOR_KWARGS = {}
 INDICATOR_DEFAULTS = {  # Avoids bloating the parameters file
     "ADX": {"window": 15},
@@ -85,7 +85,7 @@ TREND_AVERAGING_DEFAULTS = {
     "EMA": {"window": 5},
 }
 TREND_DECISION_METHOD = "monotonic"  # monotonic, counting, high_low, PSAR
-TREND_DECISION_METHOD_KWARGS = {}  # counting: fraction=0.7
+TREND_DECISION_METHOD_KWARGS = {}
 TREND_DECISION_DEFAULTS = {
     "monotonic": {"span": 7},
     "counting": {"span": 7, "fraction": 0.7},
@@ -95,7 +95,6 @@ DATA_GAP_HANDLING = "exclude"
 EVALUATION_METHOD = "stop_loss_take_profit"
 SHARED_PARAMS_DICT = {
     "start_end_time": START_END_TIME,
-    "filter_news": FILTER_NEWS,
     "filter_news_kwargs": FILTER_NEWS_KWARGS,
     "additional_filters_dict": INDICATOR_KWARGS,
     "trend_averaging_method": TREND_AVERAGING_METHOD,
