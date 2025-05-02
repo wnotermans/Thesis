@@ -263,6 +263,6 @@ def calculate_trend(
     if "rolling_average" in df.columns:
         del df["rolling_average"]
 
-    print(f"Calculating trend done in {time.perf_counter() - t:<3.2f}s", end="\n\n")
+    print(f"Calculating trend done in {time.perf_counter() - t:3.2f}s", end="\n\n")
 
     return df

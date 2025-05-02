@@ -469,7 +469,7 @@ def calculate_indicators(
         else:
             df[indicator_name] = indicator_function(df, indicator_kwargs=kwargs)
     print(
-        f"Calculating additional indicators done in {time.perf_counter() - t:<3.2f}s",
+        f"Calculating additional indicators done in {time.perf_counter() - t:3.2f}s",
         end="\n\n",
     )
     return df

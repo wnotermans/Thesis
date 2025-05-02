@@ -245,7 +245,7 @@ def make_summary_table(*, run_name: str) -> None:
     table.to_csv(f"data/runs/{run_name}/summary.csv", index=False)
 
     print(
-        f"Making summary table done in {time.perf_counter() - t:.2f}s",
+        f"Making summary table done in {time.perf_counter() - t:3.2f}s",
         end="\n\n",
     )
 
