@@ -2,25 +2,7 @@ import time
 
 import pandas as pd
 
-from shared import constants
-
-
-def set_defaults(indicator_kwargs: dict[dict]) -> None:
-    """
-    Sets (in place) default kwargs for the indicators. Also creates keys for indicators,
-    should they not exist already.
-
-    Parameters
-    ----------
-    indicator_kwargs : dict[dict]
-        Already present kwargs. These are left unchanged.
-    """
-    for indicator in INDICATORS:
-        indicator_kwargs.setdefault(indicator, {})
-        if not indicator_kwargs[indicator]:
-            indicator_kwargs[indicator] = constants.INDICATOR_DEFAULTS.get(
-                indicator, {}
-            )
+from shared import constants, shared_functions
 
 
 def true_range(df: pd.DataFrame) -> pd.Series:
@@ -465,9 +447,13 @@ def calculate_indicators(
         Original df together with additional indicators as new columns.
     """
     t = time.perf_counter()
-    set_defaults(indicator_kwargs)
+    indicator_kwargs = shared_functions.set_kwarg_defaults(
+        indicator_kwargs,
+        local_dict=INDICATORS,
+        default_dict=constants.INDICATOR_DEFAULTS,
+    )
     for indicator_name, indicator_function in INDICATORS.items():
-        kwargs = indicator_kwargs.get(indicator_name)
+        kwargs = indicator_kwargs[indicator_name]
         if indicator_name == "BB":
             df["BB_low"], df["BB_mid"], df["BB_high"] = indicator_function(
                 df, indicator_kwargs=kwargs

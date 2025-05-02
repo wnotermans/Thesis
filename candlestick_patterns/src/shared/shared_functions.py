@@ -30,3 +30,30 @@ def box_print(parameters: dict) -> None:
         line = "=".join([key, str(value)])
         print(f"|{line:^{box_width}}|".center(127))
     print(f"+{'-' * box_width}+".center(127), end="\n\n")
+
+
+def set_kwarg_defaults(
+    input_kwargs: dict, *, local_dict: dict, default_dict: dict
+) -> dict:
+    """
+    Set default kwargs.
+
+    Parameters
+    ----------
+    input_kwargs : dict
+        The kwargs specified by the user. Left untouched.
+    local_dict : dict
+        The local dict whose keys will be given a default value when no user-defined
+        one is given.
+    default_dict : dict
+        The dict containing the default key:value pairs.
+
+    Returns
+    -------
+    dict
+        Dict of kwargs with default key:value pairs added.
+    """
+    out = {**input_kwargs}
+    for key in local_dict:
+        out.setdefault(key, default_dict.get(key, {}))
+    return out

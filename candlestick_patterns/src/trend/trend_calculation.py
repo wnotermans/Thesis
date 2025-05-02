@@ -3,7 +3,7 @@ import time
 import numpy as np
 import pandas as pd
 
-from shared import constants
+from shared import constants, shared_functions
 
 
 def moving_average(ser: pd.Series, *, averaging_kwargs: dict) -> pd.Series:
@@ -189,40 +189,6 @@ def PSAR_trend(df: pd.DataFrame, *, decision_kwargs: dict) -> list[int]:
     return psar_trend
 
 
-def set_averaging_defaults(averaging_kwargs: dict) -> None:
-    """
-    Sets (inplace) the default values for ``averaging_kwargs``.
-
-    Parameters
-    ----------
-    averaging_kwargs : dict
-        User-defined kwargs, left unaltered.
-    """
-    for averaging_method in AVERAGING_METHODS:
-        averaging_kwargs.setdefault(averaging_method, {})
-        if not averaging_kwargs[averaging_method]:
-            averaging_kwargs[averaging_method] = constants.TREND_AVERAGING_DEFAULTS.get(
-                averaging_method, {}
-            )
-
-
-def set_decision_defaults(decision_kwargs: dict) -> None:
-    """
-    Sets (inplace) the default values for ``decision_kwargs``.
-
-    Parameters
-    ----------
-    averaging_kwargs : dict
-        User-defined kwargs, left unaltered.
-    """
-    for decision_method in DECISION_METHODS:
-        decision_kwargs.setdefault(decision_method, {})
-        if not decision_kwargs[decision_method]:
-            decision_kwargs[decision_method] = constants.TREND_DECISION_DEFAULTS.get(
-                decision_method, {}
-            )
-
-
 AVERAGING_METHODS = {
     "SMA": moving_average,
     "WMA": weighted_moving_average,
@@ -273,8 +239,16 @@ def calculate_trend(
     """
     t = time.perf_counter()
 
-    set_averaging_defaults(averaging_kwargs)
-    set_decision_defaults(decision_kwargs)
+    averaging_kwargs = shared_functions.set_kwarg_defaults(
+        averaging_kwargs,
+        local_dict=AVERAGING_METHODS,
+        default_dict=constants.TREND_AVERAGING_DEFAULTS,
+    )
+    decision_kwargs = shared_functions.set_kwarg_defaults(
+        decision_kwargs,
+        local_dict=DECISION_METHODS,
+        default_dict=constants.TREND_DECISION_DEFAULTS,
+    )
 
     averaging_func = AVERAGING_METHODS[averaging_method]
     decision_func = DECISION_METHODS[decision_method]
