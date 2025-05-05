@@ -303,8 +303,7 @@ def volume_weight(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
         The volume weight.
     """
     minutes = indicator_kwargs["minutes"]
-    shift = 24 * 60 / minutes
-    if shift != int(shift):
+    if (24 * 60) % minutes != 0:
         raise ValueError(
             f"The given amount of minutes ({minutes}) "
             "does not divide the amount of minutes in a day (1440)."
@@ -313,6 +312,7 @@ def volume_weight(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
         df["volume"].groupby(df.index.date).sum().rolling(7).mean()
     ).shift()
     df_volume_mean = df.index.normalize().map(volume_rolling_mean)
+    shift = 24 * 60 / minutes
     block_volume = (
         df["volume"].groupby(pd.Grouper(freq=f"{minutes}min")).sum().shift(int(shift))
     )
