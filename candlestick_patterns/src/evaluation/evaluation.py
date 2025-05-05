@@ -52,14 +52,18 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
             df.loc[df.index[0], "pattern"] = False
             num_detected = df["pattern"].sum()
 
-            if num_detected in (0, 1):
-                with open(
-                    f"data/runs/{run_name}/evaluation/{number_str}/"
-                    f"{pattern.removesuffix('.parquet')}.csv",
-                    "w",
-                ) as csvfile:
-                    writer = csv.writer(csvfile)
-                    writer.writerow(["/"] * 3)
+            csv_path = (
+                f"data/runs/{run_name}/evaluation/{number_str}/"
+                f"{pattern.removesuffix('.parquet')}"
+            )
+
+            if num_detected <= constants.MINIMAL_SIGNIFICANT_DETECTION_SIZE:
+                csv_data = {
+                    f"{csv_path}evaluation.csv": ["/"] * 3 + [0],
+                    f"{csv_path}indicators.csv": [""]
+                    * len(constants.INDICATOR_COLUMNS),
+                }
+                write_csvs(csv_data)
 
             else:
                 bool_array = df["pattern"].astype(bool).to_numpy()
@@ -101,10 +105,6 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                     alternative="greater",
                 ).pvalue
 
-                csv_path = (
-                    f"data/runs/{run_name}/evaluation/{number_str}/"
-                    f"{pattern.removesuffix('.parquet')}"
-                )
                 csv_data = {
                     f"{csv_path}evaluation.csv": [
                         absolute_win_rate,
@@ -114,9 +114,21 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                     ],
                     f"{csv_path}indicators.csv": success_indicator_means,
                 }
-                for path, data in csv_data.items():
-                    with open(path, "w") as csvfile:
-                        csv.writer(csvfile).writerow(data)
+                write_csvs(csv_data)
+
+
+def write_csvs(csv_data: dict) -> None:
+    """
+    Write csv data to disk.
+
+    Parameters
+    ----------
+    csv_data : dict
+        Dict containing filepaths as keys and data as values.
+    """
+    for path, data in csv_data.items():
+        with open(path, "w") as csvfile:
+            csv.writer(csvfile).writerow(data)
 
 
 @numba.jit

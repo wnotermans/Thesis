@@ -67,6 +67,7 @@ def main() -> None:
                     percentiles,
                     constants.DATA_GAP_HANDLING,
                     run_name=run_name,
+                    filter_kwargs=constants.INDICATOR_FILTER_KWARGS,
                 )
 
                 print(" Pattern evaluation ".center(127, "#"), end="\n\n")

@@ -17,11 +17,17 @@ from detection.patterns import (
     twelve_patterns,  # noqa: F401
     two_patterns,  # noqa: F401
 )
+from indicators import filtering
 from shared import constants, shared_functions
 
 
 def detection(
-    df: pd.DataFrame, percentile: tuple, data_gap_handling: str, *, run_name: str
+    df: pd.DataFrame,
+    percentile: tuple,
+    data_gap_handling: str,
+    *,
+    run_name: str,
+    filter_kwargs: dict,
 ) -> None:
     """
     Performs pattern detection.
@@ -76,6 +82,9 @@ def detection(
 
     i = 0
 
+    if filter_kwargs:
+        filter_index = filtering.filter_indicators(df, indicators=filter_kwargs)
+
     for number in constants.PATTERN_NUMBERS_AS_STRING:
         func_name_list = extract_func_names(number_candles=number)
 
@@ -91,6 +100,8 @@ def detection(
             patterns_gaps_handled = handle_gaps(
                 patterns, df["gap"], w2n.word_to_num(number), mode=data_gap_handling
             )
+            if filter_kwargs:
+                patterns_gaps_handled[filter_index] = False
             table = pyarrow.Table.from_arrays(
                 [patterns_gaps_handled], names=["pattern"]
             )

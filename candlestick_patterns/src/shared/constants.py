@@ -54,14 +54,14 @@ MINIMAL_FULL_DATA_YEARS = 15
 # Patterns with less than this amount of detections are never considered significant.
 MINIMAL_SIGNIFICANT_DETECTION_SIZE = 100
 
-# Run settings
+# Run settings, defaults are used to avoid bloating the parameters.txt file
 FILENAMES = ["Wiener_small"]
 INTERVAL_MINUTES = [10]
 START_END_TIME = ("09:30:00", "16:00:00")
 FILTER_NEWS_KWARGS = {}  # "impact_level": ("MEDIUM", "HIGH")
 FILTER_NEWS_DEFAULTS = {"minutes_after": 60}
 INDICATOR_KWARGS = {}
-INDICATOR_DEFAULTS = {  # Avoids bloating the parameters file
+INDICATOR_DEFAULTS = {
     "ADX": {"window": 15},
     "ATR": {"window": 15},
     "BB": {"window": 20},
@@ -77,6 +77,7 @@ INDICATOR_DEFAULTS = {  # Avoids bloating the parameters file
     "VW": {"minutes": 30},
     "%R": {"window": 14},
 }
+INDICATOR_FILTER_KWARGS = {}
 TREND_AVERAGING_METHOD = "SMA"  # SMA, WMA, EMA
 TREND_AVERAGING_METHOD_KWARGS = {}  # span=5, consecutive=7
 TREND_AVERAGING_DEFAULTS = {
@@ -96,7 +97,8 @@ EVALUATION_METHOD = "stop_loss_take_profit"
 SHARED_PARAMS_DICT = {
     "start_end_time": START_END_TIME,
     "filter_news_kwargs": FILTER_NEWS_KWARGS,
-    "additional_filters_dict": INDICATOR_KWARGS,
+    "indicator_kwargs": INDICATOR_KWARGS,
+    "indicator_filter_kwargs": INDICATOR_FILTER_KWARGS,
     "trend_averaging_method": TREND_AVERAGING_METHOD,
     "trend_averaging_method_kwargs": TREND_AVERAGING_METHOD_KWARGS,
     "trend_decision_method": TREND_DECISION_METHOD,
