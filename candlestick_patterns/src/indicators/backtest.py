@@ -27,6 +27,6 @@ def aggregate_indicators(*, run_name: str) -> None:
         pd.DataFrame(dataframe_rows, columns=constants.INDICATOR_COLUMNS)
         .mean()
         .round(2)
-        .to_csv(f"{base_path}/backtest.csv")
+        .to_csv(f"{base_path}/backtest.csv", header=False)
     )
     print(f"Aggregating indicators done in {time.perf_counter() - t:.2f}s", end="\n\n")
