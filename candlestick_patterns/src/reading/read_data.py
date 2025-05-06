@@ -11,7 +11,7 @@ from shared import constants
 pd.options.mode.copy_on_write = True
 
 
-def read_and_preprocess(  # noqa: PLR0913
+def read_and_preprocess(
     filename: str,
     interval_minutes: int,
     start_end_time: tuple[str],
