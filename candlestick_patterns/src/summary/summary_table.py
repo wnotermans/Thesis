@@ -137,27 +137,26 @@ def make_summary_table(*, run_name: str) -> None:
     None
         ``filename.csv`` to disk.
     """
-    t = time.perf_counter()
-    print("Making summary table", end="\r")
-
     dataframe_rows = []
 
     for number_str in constants.PATTERN_NUMBERS_AS_STRING:
         for pattern in os.listdir(f"data/runs/{run_name}/evaluation/{number_str}"):
             if not pattern.endswith("evaluation.csv"):
                 continue
-            pattern_no_ext = pattern.removesuffix("evaluation.csv")
+
+            ser = pd.Series()
+
             win_rate, down_test, up_test, number_detected = pd.read_csv(
                 f"data/runs/{run_name}/evaluation/{number_str}/{pattern}",
                 header=None,
             ).iloc[0]
-            down_test = down_test if down_test != "/" else 2
-            up_test = up_test if up_test != "/" else 2
-            row = [
+
+            pattern_no_ext = pattern.removesuffix("evaluation.csv")
+            ser["Pattern"], ser["Number of candlesticks"], ser["Number detected"] = (
                 f"{pattern_no_ext.replace('_', ' ').strip()}",
                 w2n.word_to_num(number_str),
                 number_detected,
-            ]
+            )
             name = (
                 pattern_no_ext.replace("_", " ")
                 .removesuffix(" no trend")
@@ -166,98 +165,121 @@ def make_summary_table(*, run_name: str) -> None:
                 .removesuffix(" down trend")
                 .rstrip()
             )
+            ser["Signal type"] = "Any"
             if name in BUY_NAMES:
-                row.append("Buy")
+                ser["Signal type"] = "Buy"
             elif name in SELL_NAMES:
-                row.append("Sell")
+                ser["Signal type"] = "Sell"
             elif name in HOLD_NAMES:
-                row.append("Hold")
-            else:
-                row.append("Any")
-            row.extend([win_rate, down_test, up_test])
+                ser["Signal type"] = "Hold"
+
+            down_test = down_test if down_test != "/" else 2
+            up_test = up_test if up_test != "/" else 2
+            ser["Win rate"], ser["Binomial test <"], ser["Binomial test >"] = (
+                win_rate,
+                down_test,
+                up_test,
+            )
 
             best_significance = min(down_test, up_test)
+            ser["Significance"] = ""
             if best_significance < constants.THREE_STAR_SIGNIFICANCE:
-                row.append("***")
+                ser["Significance"] = "***"
             elif best_significance < constants.TWO_STAR_SIGNIFICANCE:
-                row.append("**")
+                ser["Significance"] = "**"
             elif best_significance < constants.ONE_STAR_SIGNIFICANCE:
-                row.append("*")
+                ser["Significance"] = "*"
+
+            if ser["Win rate"] != "/":
+                ser["Profitability score"] = (
+                    int(ser["Number detected"])
+                    * (float(ser["Win rate"][:5]) / 100 - 0.5)
+                    * len(ser["Significance"])
+                )
             else:
-                row.append("")
-            dataframe_rows.append(row)
-    table = pd.DataFrame(dataframe_rows, columns=COLUMN_HEADERS)
-    table_exclude_low_count = table[
-        table["Number detected"].astype(int)
-        > constants.MINIMAL_SIGNIFICANT_DETECTION_SIZE
-    ]
-    significant_buy_signals = (
-        table_exclude_low_count["Binomial test >"].astype(float)
-        < constants.ONE_STAR_SIGNIFICANCE
-    ).sum()
-    significant_sell_signals = (
-        table_exclude_low_count["Binomial test <"].astype(float)
-        < constants.ONE_STAR_SIGNIFICANCE
-    ).sum()
-    low_count_signals = (
-        table["Number detected"].astype(int)
-        <= constants.MINIMAL_SIGNIFICANT_DETECTION_SIZE
-    ).sum()
-    non_significant_signals = (
-        constants.TOTAL_NUMBER_OF_PATTERNS
-        - significant_buy_signals
-        - significant_sell_signals
-        - low_count_signals
-    )
-    best_indices = table[["Binomial test >", "Binomial test <"]].astype(float).idxmin()
-    best_buy_pattern, best_sell_pattern = table.iloc[best_indices]["Pattern"].to_numpy()
-    best_buy_pvalue = float(table.iloc[best_indices.iloc[0]]["Binomial test >"])
-    best_sell_pvalue = float(table.iloc[best_indices.iloc[1]]["Binomial test <"])
-    best_buy_win_rate, best_sell_win_rate = (
-        table.iloc[best_indices.iloc[0]]["Win rate"][:6],
-        table.iloc[best_indices.iloc[1]]["Win rate"][:6],
-    )
-    total_patterns_detected = (table["Number detected"].astype(int)).sum()
-    table = pd.concat([table, pd.DataFrame([[""] * 8], columns=COLUMN_HEADERS)])
-    table = pd.concat(
-        [
-            table,
-            pd.DataFrame(
-                [
-                    [
-                        f"{significant_buy_signals = :d}",
-                        f"{significant_sell_signals = :d}",
-                        f"{non_significant_signals = :d}",
-                        f"{best_buy_pattern = }, {best_buy_pvalue = :.5g}, "
-                        f"{best_buy_win_rate = }",
-                        f"{best_sell_pattern = }, {best_sell_pvalue = :.5g}, "
-                        f"{best_sell_win_rate = }",
-                        f"{total_patterns_detected = :d}",
-                        "",
-                        "",
-                    ]
-                ],
-                columns=COLUMN_HEADERS,
-            ),
-        ]
-    )
-
-    table.to_csv(f"data/runs/{run_name}/summary.csv", index=False)
-
-    print(
-        f"Making summary table done in {time.perf_counter() - t:3.2f}s",
-        end="\n\n",
+                ser["Profitability score"] = 0
+            dataframe_rows.append(ser)
+    pd.DataFrame(dataframe_rows).to_csv(
+        f"data/runs/{run_name}/summary.csv", index=False
     )
 
 
-def make_summaries(*, run_name: str) -> None:
+def make_meta_summary(*, run_name: str) -> None:
     """
-    Make the summary table and aggregate the indicators.
+    Make meta summary of best buy/sell patterns, most profitable pattern, number
+    detected...
 
     Parameters
     ----------
     run_name : str
         The run name.
     """
+    data = pd.read_csv(f"data/runs/{run_name}/summary.csv")
+    data_exclude_low_count = data[data["Number detected"] > 0]
+    significant_buy_signals = (
+        data_exclude_low_count["Binomial test >"] < constants.ONE_STAR_SIGNIFICANCE
+    ).sum()
+    significant_sell_signals = (
+        data_exclude_low_count["Binomial test <"] < constants.ONE_STAR_SIGNIFICANCE
+    ).sum()
+    low_count_signals = (data["Number detected"] == 0).sum()
+    non_significant_signals = (
+        constants.TOTAL_NUMBER_OF_PATTERNS
+        - significant_buy_signals
+        - significant_sell_signals
+        - low_count_signals
+    )
+    best_indices = data[["Binomial test >", "Binomial test <"]].idxmin()
+    best_buy_pattern, best_sell_pattern = data.iloc[best_indices]["Pattern"].to_numpy()
+    best_buy_pvalue = data.iloc[best_indices.iloc[0]]["Binomial test >"]
+    best_sell_pvalue = data.iloc[best_indices.iloc[1]]["Binomial test <"]
+    best_buy_win_rate, best_sell_win_rate = (
+        data.iloc[best_indices.iloc[0]]["Win rate"][:6],
+        data.iloc[best_indices.iloc[1]]["Win rate"][:6],
+    )
+    most_profitable_pattern, most_profitable_score = data.loc[
+        data["Profitability score"].idxmax(), ["Pattern", "Profitability score"]
+    ]
+    total_patterns_detected = (data["Number detected"]).sum()
+    meta = pd.Series()
+    (
+        meta["Significant buy signals"],
+        meta["Significant sell signals"],
+        meta["Non significant signals"],
+    ) = significant_buy_signals, significant_sell_signals, non_significant_signals
+    meta["Best buy pattern"], meta["Best buy p value"], meta["Best buy win rate"] = (
+        best_buy_pattern,
+        best_buy_pvalue,
+        best_buy_win_rate,
+    )
+    meta["Best sell pattern"], meta["Best sell p value"], meta["Best sell win rate"] = (
+        best_sell_pattern,
+        best_sell_pvalue,
+        best_sell_win_rate,
+    )
+    meta["Most profitable pattern"], meta["Most profitable score"] = (
+        most_profitable_pattern,
+        most_profitable_score,
+    )
+    meta["Total number detected"] = total_patterns_detected
+    meta.to_csv(f"data/runs/{run_name}/meta_summary.csv", header=False)
+
+
+def make_summaries(*, run_name: str) -> None:
+    """
+    Make the summary tables and aggregate the indicators.
+
+    Parameters
+    ----------
+    run_name : str
+        The run name.
+    """
+    print("Making summary tables", end="\r")
+    t = time.perf_counter()
     make_summary_table(run_name=run_name)
+    make_meta_summary(run_name=run_name)
     backtest.aggregate_indicators(run_name=run_name)
+    print(
+        f"Making summary tables done in {time.perf_counter() - t:3.2f}s",
+        end="\n\n",
+    )
