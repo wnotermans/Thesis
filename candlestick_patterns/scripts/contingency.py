@@ -9,7 +9,7 @@ from shared import constants
 ONE_PARAMETER_DIFFERENT = 2
 
 
-def print_all_tables() -> None:
+def print_tables(filter_string: str = "") -> None:
     """
     Print all (2x2) contingency tables.
 
@@ -17,8 +17,9 @@ def print_all_tables() -> None:
 
     Parameters
     ----------
-    directory : str
-        Directory containing summaries. Recurses into subdirectories.
+    filter_str : str
+        String to filter by, if the string is not present in the symmetric difference,
+        the corresponding contingency table is skipped.
     """
     folders = os.listdir(f"{DIRECTORY}")
     parameter_list = []
@@ -29,6 +30,8 @@ def print_all_tables() -> None:
         for j in range(i):
             symmetric_difference = set(parameter_list[i]) ^ set(parameter_list[j])
             if len(symmetric_difference) <= ONE_PARAMETER_DIFFERENT:
+                if not any(f"{filter_string}" in s for s in symmetric_difference):
+                    continue
                 print_contingency_table(
                     folders, parameter_list, symmetric_difference, i, j
                 )
@@ -118,4 +121,4 @@ def get_signif_non_signif(folder: str) -> tuple[int, int]:
 
 DIRECTORY = "src/data/runs"
 if __name__ == "__main__":
-    print_all_tables()
+    print_tables()
