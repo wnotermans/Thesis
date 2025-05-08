@@ -261,6 +261,9 @@ def make_meta_summary(*, run_name: str) -> None:
         most_profitable_pattern,
         most_profitable_score,
     )
+    meta["Average profitability score"] = data.loc[
+        data["Profitability score"] != 0, "Profitability score"
+    ].mean()
     meta["Total number detected"] = total_patterns_detected
     meta.to_csv(f"data/runs/{run_name}/meta_summary.csv", header=False)
 
