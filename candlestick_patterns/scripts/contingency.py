@@ -107,29 +107,13 @@ def get_signif_non_signif(folder: str) -> tuple[int, int]:
     tuple[int, int]
         Number of significant respectively non-significant patterns.
     """
-    last_line = pd.read_csv(f"{DIRECTORY}/{folder}/summary.csv").iloc[-1]
+    meta = pd.read_csv(
+        f"{DIRECTORY}/{folder}/meta_summary.csv", header=None, index_col=0
+    ).squeeze()
     return (
-        int("".join(filter(str.isnumeric, last_line.iloc[0])))
-        + int("".join(filter(str.isnumeric, last_line.iloc[1]))),
-        int("".join(filter(str.isnumeric, last_line.iloc[2]))),
+        int(meta["Significant buy signals"]) + int(meta["Significant sell signals"]),
+        int(meta["Non significant signals"]),
     )
-
-
-def list_csv_filepaths() -> list[str]:
-    """
-    List all csv filepaths in `DIRECTORY`. Recurses into subdirectories as well.
-
-    Returns
-    -------
-    list[str]
-        List of the filepaths of the csvs.
-    """
-    csv_files = []
-    for root, _, files in os.walk(DIRECTORY):
-        for file in files:
-            if file == "summary.csv":
-                csv_files.append(os.path.join(root, file))
-    return csv_files
 
 
 DIRECTORY = "src/data/runs"
