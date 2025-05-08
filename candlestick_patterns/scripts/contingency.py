@@ -24,7 +24,7 @@ def print_all_tables() -> None:
     parameter_list = []
     for folder in folders:
         with open(f"{DIRECTORY}/{folder}/parameters.txt") as file:
-            parameter_list.append(file.readline().split("_"))
+            parameter_list.append(file.readline().split("#"))
     for i in range(1, len(parameter_list)):
         for j in range(i):
             symmetric_difference = set(parameter_list[i]) ^ set(parameter_list[j])

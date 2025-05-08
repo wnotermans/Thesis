@@ -30,12 +30,12 @@ def folder_setup(
         Rerun mode and unique id.
     """
     input_parameters_list = [
-        f"{key}={value}".replace("_", "") for key, value in input_parameters.items()
+        f"{key}={value}" for key, value in input_parameters.items()
     ]
     already_present_parameter_list = []
     for folder in os.listdir("data/runs"):
         with open(f"data/runs/{folder}/parameters.txt") as file:
-            already_present_parameter_list.append(file.readline().split("_"))
+            already_present_parameter_list.append(file.readline().split("#"))
 
     if input_parameters_list in already_present_parameter_list:
         old_id = os.listdir("data/runs")[
@@ -112,5 +112,5 @@ def make_new_folder(
             )
             os.makedirs(folder_path)
     with open(f"data/runs/{random_id}_{run_name}/parameters.txt", "w") as file:
-        file.write("_".join(input_parameters_list))
+        file.write("#".join(input_parameters_list))
     return ("rerun", random_id)
