@@ -38,7 +38,7 @@ def print_tables(filter_string: str = "") -> None:
 
 
 def print_contingency_table(
-    folder: list[str],
+    folders: list[str],
     parameter_list: list[list[str]],
     symmetric_difference: set[str],
     i: int,
@@ -50,8 +50,8 @@ def print_contingency_table(
 
     Parameters
     ----------
-    folder : list[str]
-        Folder containing the run data.
+    folders : list[str]
+        Folders containing the runs.
     parameter_list : list[list[str]]
         List of parameter lists.
     symmetric_difference : set[str]
@@ -65,8 +65,8 @@ def print_contingency_table(
         x for x in parameter_list[i] if x in set(parameter_list[j])
     ]
     difference_str = " vs. ".join(map(str, list(symmetric_difference)))
-    signif1, non_signif1 = get_signif_non_signif(folder[i])
-    signif2, non_signif2 = get_signif_non_signif(folder[j])
+    signif1, non_signif1 = get_signif_non_signif(folders[i])
+    signif2, non_signif2 = get_signif_non_signif(folders[j])
     contingency_table = np.array(
         [
             [signif1, signif2],
@@ -84,14 +84,13 @@ def print_contingency_table(
         print(f"|{' '.join(map(str, line)):^{box_width}}|")
     print(f"+{'p-value'.center(box_width, '-')}+")
     p_value = fisher_exact(contingency_table).pvalue
+    p_value_str = f"{p_value:.3g}"
     if p_value <= constants.THREE_STAR_SIGNIFICANCE:
         p_value_str = f"{p_value:.3g} ***"
     elif p_value <= constants.TWO_STAR_SIGNIFICANCE:
         p_value_str = f"{p_value:.3g} **"
     elif p_value <= constants.ONE_STAR_SIGNIFICANCE:
         p_value_str = f"{p_value:.3g} *"
-    else:
-        p_value_str = f"{p_value:.3g}"
     print(f"|{p_value_str:^{box_width}}|")
     print(f"+{'-' * box_width}+")
 

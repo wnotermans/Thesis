@@ -125,7 +125,7 @@ def make_summary_table(*, run_name: str) -> None:
     - Type of pattern signal (buy/sell/any/hold)
     - Win rate
     - binomial tests: "greater", "less"
-    - Significance (\*\*\*/\*\*/\*)
+    - Significance (``***``/``**``/``*``)
 
     Parameters
     ----------
