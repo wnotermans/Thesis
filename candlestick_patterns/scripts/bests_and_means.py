@@ -20,6 +20,15 @@ COLS = {
 
 
 def bests_and_means(filter_string: str = "") -> None:
+    """
+    Print several best and mean statistics.
+
+    Parameters
+    ----------
+    filter_string : str, optional, default ""
+        String to filter by. If this string is not in parameters.txt, it is excluded
+        from the results.
+    """
     rows, indices = [], []
     for run_name in os.listdir("src/data/runs"):
         with open(f"src/data/runs/{run_name}/parameters.txt") as f:

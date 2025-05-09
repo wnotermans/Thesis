@@ -6,6 +6,7 @@ from summary import summary_table
 
 
 def rerun_all_summaries() -> None:
+    """Script that reruns summaries of all runs present in ``src/data/runs/``."""
     os.chdir("src")
     run_names = os.listdir("data/runs")
 

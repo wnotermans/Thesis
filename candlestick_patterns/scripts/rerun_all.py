@@ -12,6 +12,7 @@ from trend import trend_calculation
 
 
 def rerun_all() -> None:
+    """Script that reruns all runs that are already present in ``src/data/runs/``."""
     os.chdir("src")
     run_names = os.listdir("data/runs")
 
