@@ -11,6 +11,7 @@ dependencies = [
     "pyarrow>=19.0.0",
     "scipy>=1.15.1",
     "word2number>=1.1",
+    "yfinance>=0.2.59",
 ]
 
 [dependency-groups]
