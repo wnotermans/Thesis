@@ -38,7 +38,7 @@ def box_print(input_dict: dict) -> None:
 
 
 def set_kwarg_defaults(
-    input_kwargs: dict, *, local_dict: dict, default_dict: dict
+    input_kwargs: dict, *, kwargs_to_set: dict | list, default_dict: dict
 ) -> dict:
     """
     Set default kwargs.
@@ -47,9 +47,9 @@ def set_kwarg_defaults(
     ----------
     input_kwargs : dict
         The kwargs specified by the user. Left untouched.
-    local_dict : dict
-        The local dict whose keys will be given a default value when no user-defined
-        one is given.
+    kwargs_to_set : dict | list
+        Dict or list whose keys/values will be given a default value when no
+        user-defined one is given.
     default_dict : dict
         The dict containing the default key:value pairs.
 
@@ -59,6 +59,6 @@ def set_kwarg_defaults(
         Dict of kwargs with default key:value pairs added.
     """
     out = {**input_kwargs}
-    for key in local_dict:
+    for key in kwargs_to_set:
         out.setdefault(key, default_dict.get(key, {}))
     return out
