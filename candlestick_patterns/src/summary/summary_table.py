@@ -1,6 +1,7 @@
 import os
 import time
 
+import numpy as np
 import pandas as pd
 from word2number import w2n
 
@@ -191,11 +192,11 @@ def make_summary_table(*, run_name: str) -> None:
                 ser["Significance"] = "*"
 
             if ser["Win rate"] != "/":
-                ser["Profitability score"] = (
-                    int(ser["Number detected"])
-                    * (float(ser["Win rate"][:5]) / 100 - 0.5)
-                    * len(ser["Significance"])
-                )
+                x = int(ser["Number detected"])
+                number_factor = max(200 / (1 + np.exp(-(x - 100) / 100)) - 100, 0)
+                win_factor = float(ser["Win rate"][:5]) / 100 - 0.5
+                signif_factor = len(ser["Significance"])
+                ser["Profitability score"] = number_factor * win_factor * signif_factor
             else:
                 ser["Profitability score"] = 0
             dataframe_rows.append(ser)
