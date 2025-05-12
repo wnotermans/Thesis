@@ -241,12 +241,12 @@ def calculate_trend(
 
     averaging_kwargs = shared_functions.set_kwarg_defaults(
         averaging_kwargs,
-        local_dict=AVERAGING_METHODS,
+        kwargs_to_set=AVERAGING_METHODS,
         default_dict=constants.TREND_AVERAGING_DEFAULTS,
     )
     decision_kwargs = shared_functions.set_kwarg_defaults(
         decision_kwargs,
-        local_dict=DECISION_METHODS,
+        kwargs_to_set=DECISION_METHODS,
         default_dict=constants.TREND_DECISION_DEFAULTS,
     )
 
