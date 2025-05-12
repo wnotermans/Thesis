@@ -6,7 +6,7 @@ import pandas as pd
 from aggregation import aggregate
 from calibration import calibration
 from news import news
-from shared import constants
+from shared import constants, shared_functions
 
 pd.options.mode.copy_on_write = True
 
@@ -98,11 +98,14 @@ def read_and_preprocess(
     percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
 
     if filter_news_kwargs and filter_news_kwargs["impact_level"]:
-        minutes_after = filter_news_kwargs.setdefault(
-            "minutes_after", constants.FILTER_NEWS_DEFAULTS["minutes_after"]
+        filter_news_kwargs = shared_functions.set_kwarg_defaults(
+            filter_news_kwargs,
+            kwargs_to_set=["minutes_after"],
+            default_dict=constants.FILTER_NEWS_DEFAULTS,
         )
         news_df, filter_index = news.get_news_df(
-            impact_level=filter_news_kwargs["impact_level"], minutes_after=minutes_after
+            impact_level=filter_news_kwargs["impact_level"],
+            minutes_after=filter_news_kwargs["minutes_after"],
         )
         main_set["news"] = news_df["Impact"]
         main_set = main_set[main_set.index.isin(filter_index)]
