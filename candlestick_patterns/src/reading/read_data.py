@@ -14,7 +14,7 @@ pd.options.mode.copy_on_write = True
 def read_and_preprocess(
     filename: str,
     interval_minutes: int,
-    start_end_time: tuple[str],
+    start_end_time: tuple[str, str],
     *,
     filter_news_kwargs: dict,
 ) -> pd.DataFrame | tuple:

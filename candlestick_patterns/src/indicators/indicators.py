@@ -82,7 +82,9 @@ def average_directional_movement_index(
     return 100 * adx.rolling(window).mean()
 
 
-def Bollinger_bands(df: pd.DataFrame, *, indicator_kwargs: dict) -> tuple[pd.Series]:
+def Bollinger_bands(
+    df: pd.DataFrame, *, indicator_kwargs: dict
+) -> tuple[pd.Series, pd.Series, pd.Series]:
     """
     Calculates Bollinger bands. Uses 2 std. dev. moves.
 
@@ -147,7 +149,7 @@ def moving_average(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
 
 def moving_average_convergence_divergence(
     df: pd.DataFrame, *, indicator_kwargs: dict
-) -> tuple[pd.Series]:
+) -> tuple[pd.Series, pd.Series]:
     """
     Calculates the moving average convergence/divergence (MACD).
 
@@ -261,7 +263,9 @@ def triple_exponential(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series
     return 100 * EMA_3.diff()
 
 
-def vortex(df: pd.DataFrame, *, indicator_kwargs: dict) -> tuple[pd.Series]:
+def vortex(
+    df: pd.DataFrame, *, indicator_kwargs: dict
+) -> tuple[pd.Series, pd.Series, pd.Series]:
     """
     Calculates the vortex indicator (VI).
 
@@ -429,7 +433,7 @@ INDICATORS = {
 
 
 def calculate_indicators(
-    df: pd.DataFrame, *, indicator_kwargs: dict[dict]
+    df: pd.DataFrame, *, indicator_kwargs: dict[str, dict[str, float | int]]
 ) -> pd.DataFrame:
     """
     Calculate additional indicators.
@@ -449,7 +453,7 @@ def calculate_indicators(
     t = time.perf_counter()
     indicator_kwargs = shared_functions.set_kwarg_defaults(
         indicator_kwargs,
-        local_dict=INDICATORS,
+        kwargs_to_set=INDICATORS,
         default_dict=constants.INDICATOR_DEFAULTS,
     )
     for indicator_name, indicator_function in INDICATORS.items():
