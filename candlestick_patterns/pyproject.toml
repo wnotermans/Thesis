@@ -17,6 +17,11 @@ dependencies = [
 [dependency-groups]
 dev = ["pytest-cov>=6.0.0"]
 
+[tool.pyright]
+include = ["src", "scripts", "tests"]
+exclude = ["**/.*", "**/__pycache__"]
+typeCheckingMode = "off"
+
 [tool.uv]
 package = true
 
