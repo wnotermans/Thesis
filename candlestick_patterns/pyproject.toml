@@ -20,7 +20,7 @@ dev = ["pytest-cov>=6.0.0"]
 
 [tool.pyright]
 include = ["src", "scripts", "tests"]
-exclude = ["**/.*", "**/__pycache__"]
+exclude = ["**/.*", "**/__pycache__", "**/data"]
 typeCheckingMode = "off"
 
 [tool.uv]
