@@ -10,6 +10,7 @@ dependencies = [
     "numba>=0.61.0",
     "pyarrow>=19.0.0",
     "scipy>=1.15.1",
+    "seaborn>=0.13.2",
     "word2number>=1.1",
     "yfinance>=0.2.59",
 ]
