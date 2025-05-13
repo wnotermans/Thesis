@@ -12,7 +12,6 @@
 \usepackage{times} % set font on times new roman
 \usepackage{eurosym} % package for Euro sign
 \usepackage{lineno}   % package for line numbering
-\usepackage{hyperref} % this is for url links
 \usepackage{subcaption}  % this package enables one to put several
 % figures next to each other
 \usepackage{textcomp}
@@ -21,6 +20,7 @@
 \usepackage{url}
 \usepackage[backend=biber,style=numeric-comp,sorting=none]{biblatex}
 \addbibresource{bib.bib}
+\usepackage{hyperref} % this is for url links
 
 %----------------------------------
 % Fill in the essential Information
@@ -28,13 +28,13 @@
 
 \title[Candlestick Patterns]{Performance of candlestick patterns on
 intraday market data}
-\subtitle{Intermediate presentation}
+\subtitle{Seminar}
 \author[W.\ Notermans]{Wout Notermans} % between [] is short name,
 % between {} is long name
-\date{January 29, 2025} % Here you can also just type something, e.g.
+\date{May 14, 2025} % Here you can also just type something, e.g.
 % October 10, 2017
 \institute[KU Leuven]{Faculty of Science\\ Department of
-Mathematics\\ Section of Statistics and Data Science}
+Mathematics\\ Section of Statistics and Risk}
 
 %----------------------------------
 % ACTUAL PRESENTATION STARTS HERE
@@ -68,6 +68,17 @@ Mathematics\\ Section of Statistics and Data Science}
   \tableofcontents[currentsection]
 \end{frame}
 
+\begin{frame}{Stock price \cite{berkshirehathaway}}
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/BRK.A_line.pdf}\\
+
+\end{frame}
+
+\begin{frame}[noframenumbering]{Stock price \cite{berkshirehathaway}}
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/BRK.A_candle.pdf}
+\end{frame}
+
 \begin{frame}{Candlestick construction}
   \centering
   \includegraphics[width=\textwidth]{Images/candlestick_construction.png}
@@ -76,8 +87,31 @@ Mathematics\\ Section of Statistics and Data Science}
 
 \begin{frame}{Candlestick pattern examples}
   \centering
-  \includegraphics[width=\textwidth]{Images/pattern_example.jpg}
-  (a) "Concealing Baby Swallow" (b) "Three-Line Strike, Bearish" (c) "Three-Line Strike, Bullish" \cite{hu2019}
+  \includegraphics[width=0.5\textwidth]{Images/window_falling.pdf}%
+  \includegraphics[width=0.5\textwidth]{Images/meeting_lines_bearish.pdf}
+\end{frame}
+
+\begin{frame}{History}
+  \begin{itemize}
+    \item Developed in the 1700s in Japan.
+    \item Remained exclusive to the East until 1991.
+    \item This is reflected in the literature.
+    \item Quite well-known technical analysis technique.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Literature}
+  \begin{itemize}
+    \item Literature split between machine learning and rule based approach.
+    \item Results are very split.
+    \item Very few publications about intraday market data.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \begin{kulblock}{Research question}
+    Do candlestick patterns possess any predictive power on intraday market data?
+  \end{kulblock}
 \end{frame}
 
 % -----------
@@ -90,29 +124,36 @@ Mathematics\\ Section of Statistics and Data Science}
   \tableofcontents[currentsection]
 \end{frame}
 
-\begin{frame}{Data sets}
-  \centering
-  \begin{tabular}{|c|c|}
-    \hline
-    BND & Bonds \\ \hline
-    GLD & Gold \\ \hline
-    QQQ & Stocks \\ \hline
-    SPY & Stocks \\
-    \hline
-  \end{tabular}\\[1em]
-  Overview of the data sets.
-\end{frame}
-
-\begin{frame}{Data handling/preprocessing}
+\begin{frame}{Overview}
   \begin{itemize}
-    \item Filtering pre/after-market
-    \item Missing data $\rightarrow$ interpolation
-    \item Aggregation
-    \item Splitting of the data set
+    \item Selection of data sets.
+    \item Preprocessing of the data.
+    \item Trends and technical indicators.
+    \item Pattern detection.
+    \item Pattern evaluation.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Calibration}
+\begin{frame}{Data sets}
+  \begin{itemize}
+    \item BND: Bonds.
+    \item GLD: Gold.
+    \item QQQ: Stocks.
+    \item SPY: Stocks.
+    \item Wiener: Generated.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Preprocessing}
+  \begin{itemize}
+    \item Filter pre/after-market and economic news.
+    \item Missing data $\rightarrow$ interpolation.
+    \item Aggregation.
+    \item Splitting of the data set for calibration.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Preprocessing: calibration}
   \scalebox{0.8}{
     \begin{tabular}{cccccc}
       \hline
@@ -123,36 +164,79 @@ Mathematics\\ Section of Statistics and Data Science}
   }
   \centering\\[1em]
   Percentiles of real bodies and shadows \cite{etschberger2006}.\\
-
-  $$\text{Calculated as } |O-C|,\ H-\max\{O,C\},\ \min\{O,C\}-L.$$
+  \includegraphics[width=0.5\textwidth]{Images/matching_low.pdf}
 \end{frame}
 
-\begin{frame}{Calibration}
+\begin{frame}{Preprocessing: calibration}
   \begin{itemize}
     \item Assumes length and color candle independent.
-    \item Has to be checked $\rightarrow$ Kolmogorov-Smirnov test. \\ $$H_0: W = B \qquad H_1: W \neq B.$$ \\ Reject at 5\% significance.
+    \item Has to be checked $\rightarrow$ Kolmogorov-Smirnov test.
+      $$H_0: W = B \qquad H_1: W \neq B.$$
+    \item Reject at 5\% significance.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Trend}
   \begin{itemize}
-    \item Simple method to start: $\text{MA}(C_i,...,C_{i+5})$ monotonically increasing/decreasing 7 times.
+    \item Many patterns are only valid when the correct trend is present.
+    \item Multiple ways of defining the trend in the literature.
+    \item Example: count in/decreases in the moving average.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Prediction}
+\begin{frame}{Technical indicators}
+  \begin{itemize}
+    \item Values calculated from asset prices and volume.
+    \item Some publications only find significant patterns when combining them with technical indicators.
+    \item Quite a number found in the literature.
+    \item Example: triple exponential (TRIX).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Pattern detection}
+  \begin{itemize}
+    \item Patterns are vaguely defined at best: a rigid classification is necessary.
+    \item The paper ``A formal approach to candlestick pattern classification in financial time series'' does exactly this \cite{hu2019}.
+    \item Define 103 candlestick patterns with strict conditions.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Pattern detection: example}
+  \centering
+  \includegraphics[width=0.75\textwidth]{Images/doji_star_bearish.pdf}
+\end{frame}
+
+\begin{frame}{Pattern detection: prediction}
   \begin{itemize}
     \item Typically classified as buy/sell signal.
-    \item Evaluated according to prediction.
+    \item Look at the results themselves instead of the predictions.
   \end{itemize}
+  \centering
+  \includegraphics[width=0.6\textwidth]{Images/stick_sandwich.pdf}
 \end{frame}
 
-\begin{frame}{Evaluation}
+\begin{frame}{Pattern evaluation}
   \begin{itemize}
     \item Buy/sell after pattern is detected.
     \item Make use of stop loss/take profit margins.
-    \item Binomial test for winning rate. \\ $$H_0:\pi=0.5\qquad\qquad H_1:\pi>0.5$$
+    \item This gives us a winning rate.
+    \item Test significance with binomial test. \\ $$H_0:\pi=0.5\qquad\qquad H_1:\pi>0.5$$
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Pattern evaluation: stop loss/take profit \cite{berkshirehathaway}}
+  \centering
+  \includegraphics[width=0.75\textwidth]{Images/BRK.A_candle_stop_loss.pdf}
+\end{frame}
+
+\begin{frame}{Pattern evaluation: profitability score}
+  Quantify profitability score with three factors:
+  \begin{enumerate}
+    \item The number of detected patterns.
+      $$\max\left(\dfrac{200}{1+\exp\left(-\dfrac{n-100}{100}\right)}-100,0\right)$$
+    \item The win rate (deviation from 50\%).
+    \item The significance.
+  \end{enumerate}
 \end{frame}
 
 % -------
@@ -168,68 +252,80 @@ Mathematics\\ Section of Statistics and Data Science}
 \begin{frame}{Detection results}
   \begin{itemize}
     \item Not many ``gapping" patterns.
-    \item Some are rare due to stringent conditions.
-    \item 103 $\rightarrow$ 63 patterns.
+    \item Some patterns are rare due to stringent conditions.
   \end{itemize}
   \centering
-  \includegraphics{Images/window_falling.png}
+  \includegraphics[width=0.5\textwidth]{Images/window_falling.pdf}%
+  \includegraphics[width=0.5\textwidth]{Images/evening_doji_star.pdf}
 \end{frame}
 
-\begin{frame}{BND results}
+\begin{frame}{Evaluation results: significance}
   \begin{itemize}
-    \item No significant sell signals.
-    \item Almost everything significant buy signal.
+    \item Significant patterns are found.
+    \item Many more significant buy than sell signals.
+    \item A lot of variance between data sets/asset types.
+    \item Aggregation decreases significance but not profitability.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{GLD results}
+\begin{frame}{Evaluation results: effect of data set}
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/mean_profit_diff_data.pdf}
+\end{frame}
+
+\begin{frame}{Evaluation results: effect of time interval}
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/mean_profit_diff_minutes.pdf}
+\end{frame}
+
+\begin{frame}{Evaluation results: effect of news}
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/mean_profit_news.pdf}
+\end{frame}
+
+\begin{frame}{Evaluation results: no effect}
   \begin{itemize}
-    \item Quite similar to BND.
-    \item Some significant sell signals.
+    \item Different start and end times.
+    \item Filtering based on technical indicators.
+    \item Averaging methods: SMA, WMA, EMA.
+    \item Trend defining methods.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{QQQ results}
-  \begin{itemize}
-    \item Again no significant sell signals.
-    \item Level of significance lower than previous data sets.
-    \item Some pattern behave the opposite now.
-  \end{itemize}
+\begin{frame}{Evaluation results: MVP}
+  \centering
+  \includegraphics[width=0.75\textwidth]{Images/stick_sandwich.pdf}
 \end{frame}
 
-\begin{frame}{SPY results}
-  \begin{itemize}
-    \item Results similar to QQQ, indicates that results depend on asset type.
-    \item Though not exactly the same, significance lost or gained.
-  \end{itemize}
-\end{frame}
+% ----------
+% Conclusion
+% ----------
 
-\begin{frame}{Conclusion}
-  \begin{itemize}
-    \item Candlestick patterns appear to possess some significant predictive power.
-    \item More buy than sell signals.
-    \item Some patterns behave like the theory, some against it.
-    \item Aggregation has little influence.
-  \end{itemize}
-\end{frame}
-
-% -------------
-% Looking ahead
-% -------------
-
-\section{Looking ahead}
+\section{Conclusion and further research}
 
 \begin{frame}[noframenumbering]{Table of contents}
   \tableofcontents[currentsection]
 \end{frame}
 
-\begin{frame}{Looking ahead}
+\begin{frame}
+  \begin{kulblock}{Research question}
+    Do candlestick patterns possess any predictive power on intraday market data?
+  \end{kulblock}
+\end{frame}
+
+\begin{frame}{Conclusion}
   \begin{itemize}
-    \item Test different trend definitions, play with parameters.
-    \item New methods of evaluation.
-    \item Combinations with other aspects of technical analysis.
-    \item Fuzzy approach.
-    \item (Machine learning approach)
+    \item Some patterns do appear to possess (consistent) significant predictive power.
+    \item This mainly holds true for buy signals.
+    \item There is a lot of variance to these results.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Further research}
+  \begin{itemize}
+    \item Machine learning-based approach to detection.
+    \item Fuzzy rules for detection.
+    \item ``Evolving margins'' evaluation.
   \end{itemize}
 \end{frame}
 
@@ -239,7 +335,7 @@ Mathematics\\ Section of Statistics and Data Science}
 
 \section*{Bibliography}
 
-\begin{frame}[noframenumbering]
+\begin{frame}[noframenumbering,allowframebreaks]
   \printbibliography
 \end{frame}
 
