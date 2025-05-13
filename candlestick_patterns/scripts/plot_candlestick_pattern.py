@@ -52,7 +52,17 @@ def parse_candlestick(
 
 
 def add_trend_indicator(ax: matplotlib.axes.Axes, trend: str) -> None:
-    """Adds trend indicator bars to the bottom or top left of the plot."""
+    """
+    Adds trend indicator bars to the bottom or top left of the plot.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        Figure ax.
+    trend : str
+        * ``up`` for up trend.
+        * ``down`` for down trend.
+    """
     if trend not in ["up", "down"]:
         return
 
@@ -78,10 +88,38 @@ def add_trend_indicator(ax: matplotlib.axes.Axes, trend: str) -> None:
         )
 
 
+def add_arrow_indicator(ax: matplotlib.axes.Axes, arrow: str) -> None:
+    """
+    Adds an arrow to the middle right of the plot, pointing up or down right.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        Figure ax.
+    arrow : str
+        * ``up`` for up right.
+        * ``down`` for down right.
+    """
+    if arrow not in ["up", "down"]:
+        return
+    xy = (0.95, 0.6) if arrow == "up" else (0.95, 0.4)
+    xytext = (0.85, 0.5)
+    arrowprops = {"arrowstyle": "->", "lw": 2}
+    ax.annotate(
+        "",
+        xy=xy,
+        xytext=xytext,
+        arrowprops=arrowprops,
+        xycoords="figure fraction",
+        transform=ax.transAxes,
+    )
+
+
 def plot_candlestick_pattern() -> None:
     """Make and plot a candlestick pattern."""
-    name = "Evening doji star"
-    trend = "up"  # "up", "down"
+    name = "Stick sandwich"
+    trend = "down"  # "up", "down"
+    arrow = "up"
     candlestick_data = [
         {
             "color": "white",
@@ -120,13 +158,14 @@ def plot_candlestick_pattern() -> None:
     fig, axlist = mpf.plot(
         data,
         type="candle",
-        title=name,
         returnfig=True,
         figsize=(14.8 * cm, 10.5 * cm),
         axisoff=True,
     )
+    axlist[0].set_title(f"{name}", x=0.5, fontdict={"fontweight": "bold"})
 
     add_trend_indicator(axlist[0], trend=trend)
+    add_arrow_indicator(axlist[0], arrow=arrow)
 
     fig.savefig(f"{name}.pdf", bbox_inches="tight")
 
