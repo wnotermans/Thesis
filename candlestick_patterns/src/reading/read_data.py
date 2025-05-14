@@ -76,15 +76,8 @@ def read_and_preprocess(
         ]
     )
 
-    reindexed_df = (
-        datetime_ohlc_df.reindex(
-            time_idx
-        )  # filters to US market time and adds NaNs for missing data
-        .interpolate(method="linear")
-        .round({"open": 3, "high": 3, "low": 3, "close": 3, "volume": 0})
-        .bfill()
-        .ffill()
-    )
+    # filters to start and end time and adds NaNs for missing data
+    reindexed_df = datetime_ohlc_df.reindex(time_idx)
 
     aggregated_df = aggregate.aggregate(reindexed_df, interval_minutes)
 
