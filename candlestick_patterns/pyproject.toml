@@ -23,6 +23,9 @@ include = ["src", "scripts", "tests"]
 exclude = ["**/.*", "**/__pycache__", "**/data"]
 typeCheckingMode = "off"
 
+[tool.pytest.ini_options]
+testpaths = "tests"
+
 [tool.uv]
 package = true
 
