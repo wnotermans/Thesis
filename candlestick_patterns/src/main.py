@@ -19,8 +19,7 @@ def main() -> None:
             run_name = (
                 f"{filename}_{interval_minutes}min_"
                 f"{constants.TREND_AVERAGING_METHOD}_"
-                f"{constants.TREND_DECISION_METHOD}_"
-                f"{constants.EVALUATION_METHOD}"
+                f"{constants.TREND_DECISION_METHOD}"
             )
             parameters = {
                 "filename": filename,
@@ -71,9 +70,9 @@ def main() -> None:
                 )
 
                 print(" Pattern evaluation ".center(127, "#"), end="\n\n")
-                evaluation.evaluation(
+                evaluation.stop_loss_take_profit_evaluation(
                     main_set_with_trend,
-                    evaluation_method=constants.EVALUATION_METHOD,
+                    constants.STOP_LOSS_TAKE_PROFIT_MARGINS,
                     run_name=run_name,
                 )
 

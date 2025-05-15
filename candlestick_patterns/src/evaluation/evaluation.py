@@ -11,7 +11,9 @@ from scipy.stats import binomtest
 from shared import constants, shared_functions
 
 
-def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None:
+def stop_loss_take_profit_evaluation(
+    df: pd.DataFrame, margins: dict[str, float | None], *, run_name: str
+) -> None:
     """
     Stop loss/take profit-based candlestick pattern evaluation.
 
@@ -28,15 +30,17 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
     None
         Win %, "less" and "greater" binomial tests to disk.
     """
+    t = time.perf_counter()
     open_array = df["open"].to_numpy()
     high_array = df["high"].to_numpy()
     low_array = df["low"].to_numpy()
+    ATR_array = df["ATR"].to_numpy()
 
     i = 0
     for number_str in constants.PATTERN_NUMBERS_AS_STRING:
         for pattern in os.listdir(f"data/runs/{run_name}/detection/{number_str}"):
             shared_functions.print_status_bar(
-                pattern, i, constants.TOTAL_NUMBER_OF_PATTERNS
+                pattern.removesuffix(".parquet"), i, constants.TOTAL_NUMBER_OF_PATTERNS
             )
 
             i += 1
@@ -67,13 +71,28 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
 
             else:
                 bool_array = df["pattern"].astype(bool).to_numpy()
-                eval_list = find_first_breakthroughs(
-                    bool_array,
-                    open_array,
-                    high_array,
-                    low_array,
-                    constants.STOP_LOSS_MARGIN_PERCENT,
-                )
+                if all(
+                    method not in margins
+                    for method in ["ATR", "constant", "percentage"]
+                ):
+                    raise ValueError(
+                        "No correct margin method specified, choose either "
+                        "'ATR', 'constant' or 'percentage'"
+                    )
+                if "percentage" in margins:
+                    eval_list = find_first_breakthroughs_percent(
+                        (bool_array, open_array, high_array, low_array),
+                        margins["percentage"],
+                    )
+                elif "constant" in margins:
+                    eval_list = find_first_breakthroughs_constant(
+                        (bool_array, open_array, high_array, low_array),
+                        margins["constant"],
+                    )
+                else:
+                    eval_list = find_first_breakthroughs_ATR(
+                        (bool_array, open_array, high_array, low_array, ATR_array)
+                    )
 
                 df["evaluation"] = None
                 df.loc[df["pattern"], "evaluation"] = eval_list
@@ -87,9 +106,9 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                 number_detected = len(eval_list)
                 win_rate = wins / number_detected
                 absolute_win_rate = (
-                    f"{win_rate:.2%}+"
+                    win_rate
                     if win_rate >= 0.5  # noqa: PLR2004
-                    else f"{0.5 + abs(0.5 - win_rate):.2%}-"
+                    else 0.5 + abs(0.5 - win_rate)
                 )
 
                 down_test = binomtest(
@@ -115,6 +134,11 @@ def stop_loss_take_profit_evaluation(df: pd.DataFrame, *, run_name: str) -> None
                     f"{csv_path}indicators.csv": success_indicator_means,
                 }
                 write_csvs(csv_data)
+    print()
+    print(
+        f"All done. Total evaluation time: {time.perf_counter() - t:3.2f}s",
+        end="\n\n",
+    )
 
 
 def write_csvs(csv_data: dict) -> None:
@@ -132,27 +156,18 @@ def write_csvs(csv_data: dict) -> None:
 
 
 @numba.jit
-def find_first_breakthroughs(
-    bool_array: np.ndarray,
-    open_array: np.ndarray,
-    high_array: np.ndarray,
-    low_array: np.ndarray,
+def find_first_breakthroughs_percent(
+    arrays: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+    *,
     percentage: float,
 ) -> list:
     """
-    Find the stop loss take profit breakthroughs. Margins are percentage-based and
-    controlled globally.
+    Find the stop loss take profit breakthroughs. Margins are percentage-based.
 
     Parameters
     ----------
-    bool_array : np.ndarray
-        Boolean array of the detected patterns.
-    open_array : np.ndarray
-        Opens.
-    high_array : np.ndarray
-        Highs.
-    low_array : np.ndarray
-        Lows.
+    arrays : tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+        Boolean array of the patterns; open, high and low array.
     percentage : float
         Percentage that defines the margins.
 
@@ -161,6 +176,9 @@ def find_first_breakthroughs(
     list
         Evaluation: 0 for bottom breakthrough, 1 for upper, ``np.nan`` else.
     """
+
+    bool_array, open_array, high_array, low_array = arrays
+
     breaches = []
     true_indices = np.flatnonzero(bool_array)
 
@@ -182,134 +200,88 @@ def find_first_breakthroughs(
     return breaches
 
 
-def n_holding_periods(df_single_close: pd.DataFrame, *, run_name: str) -> None:
-    del df_single_close["high"], df_single_close["low"], df_single_close["volume"]
-    df_single_close = df_single_close.rename(columns={"close": "close_0"})
-    shifted_closes = {
-        f"close_{n}": df_single_close["close_0"].shift(-n) for n in range(1, 10)
-    }
-    df_all_closes = pd.concat(
-        [df_single_close, pd.DataFrame(shifted_closes, index=df_single_close.index)],
-        axis=1,
-    )
-
-    for number in [
-        "one",
-        "two",
-        "three",
-        "four",
-        "five",
-        "eight",
-        "ten",
-        "eleven",
-        "twelve",
-        "thirteen",
-    ]:
-        print(f"Candlestick patterns with {number} candlestick(s)")
-        i = 1
-        n = len(os.listdir(f"data/runs/{run_name}/detection/{number}"))
-
-        for pattern in os.listdir(f"data/runs/{run_name}/detection/{number}"):
-            print(
-                f"Evaluating {pattern:<54} | {'#' * (50 * i // n):<50} ({i:>3}/{n})",
-                end="\r",
-            )
-
-            if (
-                pyarrow.parquet.read_table(
-                    f"data/runs/{run_name}/detection/{number}/{pattern}"
-                )
-                .to_pandas()
-                .sum()
-                .to_numpy()[0]
-                == 0
-            ):
-                buy_eval = [("/", "/") for _ in range(10)]
-                sell_eval = [("/", "/") for _ in range(10)]
-
-            else:
-                df_all_closes["pattern"] = (
-                    pyarrow.parquet.read_table(
-                        f"data/runs/{run_name}/detection/{number}/{pattern}"
-                    )
-                    .to_pandas()
-                    .set_index(df_all_closes.index)
-                    .shift(1)
-                )
-
-                subset = df_all_closes[df_all_closes["pattern"]]
-
-                mean_buy_profit = {
-                    f"{n + 1}_holding_periods": np.format_float_positional(
-                        (subset[f"close_{n}"] - subset["open"]).mean(), 2
-                    )
-                    for n in range(10)
-                }
-                buy_winning_rate = {
-                    f"{n + 1}_holding_periods": np.format_float_positional(
-                        100
-                        * (subset[f"close_{n}"] > subset["open"]).sum()
-                        / len(subset),
-                        2,
-                    )
-                    for n in range(10)
-                }
-                mean_sell_profit = {
-                    f"{n + 1}_holding_periods": np.format_float_positional(
-                        (subset["open"] - subset[f"close_{n}"]).mean(), 2
-                    )
-                    for n in range(10)
-                }
-                sell_winning_rate = {
-                    f"{n + 1}_holding_periods": np.format_float_positional(
-                        100
-                        * (subset["open"] > subset[f"close_{n}"]).sum()
-                        / len(subset),
-                        2,
-                    )
-                    for n in range(10)
-                }
-
-                buy_eval = [
-                    (mean_buy_profit[key], buy_winning_rate[key])
-                    for key in mean_buy_profit
-                ]
-                sell_eval = [
-                    (mean_sell_profit[key], sell_winning_rate[key])
-                    for key in mean_sell_profit
-                ]
-
-            pyarrow.parquet.write_table(
-                pyarrow.table({"buy": buy_eval, "sell": sell_eval}),
-                f"data/runs/{run_name}/evaluation/{number}/{pattern}",
-                compression="LZ4",
-            )
-
-            i += 1
-
-
-EVALUATION_METHODS = {
-    "stop_loss_take_profit": stop_loss_take_profit_evaluation,
-    "n_holding_periods": n_holding_periods,
-}
-
-
-def evaluation(df: pd.DataFrame, evaluation_method: str, *, run_name: str) -> None:
+@numba.jit
+def find_first_breakthroughs_constant(
+    arrays: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+    *,
+    constant: float,
+) -> list:
     """
-    Performs evaluation of the patterns.
+    Find the stop loss take profit breakthroughs. Margins are constant.
 
     Parameters
     ----------
-    df : pd.DataFrame
-        DataFrame to be analyzed
-    evaluation_method : str
-        Which evaluation method to use.
+    arrays : tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+        Boolean array of the patterns; open, high and low array.
+    constant : float
+        Percentage that defines the margins.
+
+    Returns
+    -------
+    list
+        Evaluation: 0 for bottom breakthrough, 1 for upper, ``np.nan`` else.
     """
-    t = time.perf_counter()
-    evaluation_func = EVALUATION_METHODS[evaluation_method]
-    evaluation_func(df, run_name=run_name)
-    print()
-    print(
-        f"All done. Total evaluation time: {time.perf_counter() - t:3.2f}s",
-        end="\n\n",
-    )
+
+    bool_array, open_array, high_array, low_array = arrays
+
+    breaches = []
+    true_indices = np.flatnonzero(bool_array)
+
+    for i in true_indices:
+        start_value = open_array[i]
+        upper_threshold = start_value + constant
+        lower_threshold = start_value - constant
+
+        for j in range(i + 1, len(open_array)):
+            if high_array[j] > upper_threshold:
+                breaches.append(1)
+                break
+            if low_array[j] < lower_threshold:
+                breaches.append(0)
+                break
+        else:
+            breaches.append(np.nan)
+
+    return breaches
+
+
+@numba.jit
+def find_first_breakthroughs_ATR(
+    arrays: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+) -> list:
+    """
+    Find the stop loss take profit breakthroughs. Margins are percentage-based and
+    controlled globally.
+
+    Parameters
+    ----------
+    arrays : tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+        Boolean array of the patterns; open, high and low array; ATR array.
+
+    Returns
+    -------
+    list
+        Evaluation: 0 for bottom breakthrough, 1 for upper, ``np.nan`` else.
+    """
+
+    bool_array, open_array, high_array, low_array, ATR_array = arrays
+
+    breaches = []
+    true_indices = np.flatnonzero(bool_array)
+
+    for i in true_indices:
+        start_value = open_array[i]
+        upper_threshold = start_value + ATR_array[i]
+        lower_threshold = start_value - ATR_array[i]
+
+        for j in range(i + 1, len(open_array)):
+            if high_array[j] > upper_threshold:
+                breaches.append(1)
+                break
+            if low_array[j] < lower_threshold:
+                breaches.append(0)
+                break
+        else:
+            breaches.append(np.nan)
+
+    return breaches

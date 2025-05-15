@@ -45,8 +45,6 @@ INDICATOR_COLUMNS = [
 BODY_PERCENTILES = [10, 30, 70]
 SHADOW_PERCENTILES = [10, 30, 70, 90]
 
-# Margins of the stop_loss_take_profit evaluation.
-STOP_LOSS_MARGIN_PERCENT = 1
 
 # Amount of years of data necessary for a dataset to be considered "of proper length".
 MINIMAL_FULL_DATA_YEARS = 15
@@ -54,13 +52,22 @@ MINIMAL_FULL_DATA_YEARS = 15
 # Patterns with less than this amount of detections are never considered significant.
 MINIMAL_SIGNIFICANT_DETECTION_SIZE = 100
 
-# Run settings, defaults are used to avoid bloating the parameters.txt file
+########################################################################################
+###### Run settings, defaults are used to avoid bloating the parameters.txt file #######
+########################################################################################
+
+# Data set(s) (loops if multiple)
 FILENAMES = ["Wiener_small"]
-INTERVAL_MINUTES = [10]
-START_END_TIME = ("09:30:00", "16:00:00")
+# Time intervals (loops if multiple)
+INTERVAL_MINUTES = [5]
+# Filter down to this time range
+START_END_TIME = ("9:30:00", "16:00:00")
+# Filters by economic news
 FILTER_NEWS_KWARGS = {}  # "impact_level": ("MEDIUM", "HIGH")
 FILTER_NEWS_DEFAULTS = {"minutes_after": 60}
+# Override
 INDICATOR_KWARGS = {}
+# Defaults
 INDICATOR_DEFAULTS = {
     "ADX": {"window": 15},
     "ATR": {"window": 15},
@@ -77,23 +84,34 @@ INDICATOR_DEFAULTS = {
     "VW": {"minutes": 30},
     "%R": {"window": 14},
 }
+# Filter by indicators
 INDICATOR_FILTER_KWARGS = {}
-TREND_AVERAGING_METHOD = "SMA"  # SMA, WMA, EMA
-TREND_AVERAGING_METHOD_KWARGS = {}  # span=5, consecutive=7
+# Which averaging method to use in trend calculation; options are: SMA, WMA, EMA
+TREND_AVERAGING_METHOD = "SMA"
+# Override
+TREND_AVERAGING_METHOD_KWARGS = {}
+# Defaults
 TREND_AVERAGING_DEFAULTS = {
     "SMA": {"window": 5},
     "WMA": {"window": 5},
     "EMA": {"window": 5},
 }
-TREND_DECISION_METHOD = "monotonic"  # monotonic, counting, high_low, PSAR
+# Which trend decision method to use; options are: monotonic, counting, high_low, PSAR
+TREND_DECISION_METHOD = "monotonic"
+# Override
 TREND_DECISION_METHOD_KWARGS = {}
+# Defaults
 TREND_DECISION_DEFAULTS = {
     "monotonic": {"span": 7},
     "counting": {"span": 7, "fraction": 0.7},
     "PSAR": {"step": 0.02, "max_accel_factor": 0.2},
 }
+# How to handle gaps in the data
 DATA_GAP_HANDLING = "exclude"
-EVALUATION_METHOD = "stop_loss_take_profit"
+# Margins of the stop_loss_take_profit evaluation.
+STOP_LOSS_TAKE_PROFIT_MARGINS = {"ATR": None}
+
+# Dict that is included in parameters.txt
 SHARED_PARAMS_DICT = {
     "start_end_time": START_END_TIME,
     "filter_news_kwargs": FILTER_NEWS_KWARGS,
@@ -104,5 +122,5 @@ SHARED_PARAMS_DICT = {
     "trend_decision_method": TREND_DECISION_METHOD,
     "trend_decision_method_kwargs": TREND_DECISION_METHOD_KWARGS,
     "data_gap_handling": DATA_GAP_HANDLING,
-    "evaluation_method": EVALUATION_METHOD,
+    "stop_loss_take_profit_margins": STOP_LOSS_TAKE_PROFIT_MARGINS,
 }
