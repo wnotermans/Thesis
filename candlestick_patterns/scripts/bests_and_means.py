@@ -8,13 +8,13 @@ COLS = {
     "Non significant signals": int,
     "Best buy pattern": str,
     "Best buy p value": float,
-    "Best buy win rate": str,
+    "Best buy win rate": float,
     "Best sell pattern": str,
     "Best sell p value": float,
-    "Best sell win rate": str,
+    "Best sell win rate": float,
     "Most profitable pattern": str,
-    "Most profitable score": float,
-    "Average profitability score": float,
+    "Highest adjusted z-score": float,
+    "Average adjusted z-score": float,
     "Total number detected": int,
 }
 
@@ -55,9 +55,6 @@ def bests_and_means(include: list[str] = None, exclude: list[str] = None) -> Non
 
     data.loc[data["Best buy win rate"] == "/", "Best buy win rate"] = 50
     data.loc[data["Best sell win rate"] == "/", "Best sell win rate"] = 50
-    data[["Best buy win rate", "Best sell win rate"]] = data[
-        ["Best buy win rate", "Best sell win rate"]
-    ].apply(lambda x: x.str.slice(stop=5).astype(float))
 
     print(f"Significant buy signals: {data['Significant buy signals'].mean().round(2)}")
     print(
@@ -78,34 +75,28 @@ def bests_and_means(include: list[str] = None, exclude: list[str] = None) -> Non
         "Most occurring best buy pattern with mean p-value and win rate: "
         f"{best_buy}, "
         f"{best_buy_mean_pvalue:.4g}, "
-        f"{best_buy_mean_win_rate:.2f}%",
+        f"{best_buy_mean_win_rate:.2%}",
     )
     print(
         "Most occurring best sell pattern with mean p-value and win rate: "
         f"{best_sell}, "
         f"{best_sell_mean_pvalue:.4g}, "
-        f"{best_sell_mean_win_rate:.2f}%",
+        f"{best_sell_mean_win_rate:.2%}",
     )
 
     most_profitable = data["Most profitable pattern"].mode().iloc[0]
     most_profitable_idx = data[data["Most profitable pattern"] == most_profitable].index
-    most_profitable_mean = data["Most profitable score"].loc[most_profitable_idx].mean()
+    most_profitable_mean = (
+        data["Highest adjusted z-score"].loc[most_profitable_idx].mean()
+    )
     print(
-        "Most occurring most profitable pattern with mean profitability score: "
+        "Most occurring most profitable pattern with mean z-score: "
         f"{most_profitable}, "
         f"{most_profitable_mean:.2f}"
     )
 
-    print(f"Mean profitability: {data['Average profitability score'].mean().round(4)}")
     print(
-        "Average profitability score per pattern: "
-        f"{
-            data['Average profitability score'].mean()
-            / (
-                data['Significant buy signals'].sum()
-                + data['Significant sell signals'].sum()
-            ):.4g
-        }"
+        f"Average adjusted z-score: {data['Average adjusted z-score'].mean().round(4)}"
     )
 
 

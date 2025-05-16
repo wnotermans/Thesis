@@ -111,8 +111,8 @@ COLUMN_HEADERS = [
     "Number detected",
     "Signal type",
     "Win rate",
-    "Binomial test <",
-    "Binomial test >",
+    "Binomial test sell",
+    "Binomial test buy",
     "Significance",
 ]
 
@@ -176,7 +176,11 @@ def make_summary_table(*, run_name: str) -> None:
 
             down_test = down_test if down_test != "/" else 2
             up_test = up_test if up_test != "/" else 2
-            ser["Win rate"], ser["Binomial test <"], ser["Binomial test >"] = (
+            (
+                ser["Absolute win rate"],
+                ser["Binomial test sell"],
+                ser["Binomial test buy"],
+            ) = (
                 win_rate,
                 down_test,
                 up_test,
@@ -191,14 +195,14 @@ def make_summary_table(*, run_name: str) -> None:
             elif best_significance < constants.ONE_STAR_SIGNIFICANCE:
                 ser["Significance"] = "*"
 
-            if ser["Win rate"] != "/":
-                x = int(ser["Number detected"])
-                number_factor = max(200 / (1 + np.exp(-(x - 100) / 100)) - 100, 0)
-                win_factor = float(ser["Win rate"][:5]) / 100 - 0.5
-                signif_factor = len(ser["Significance"])
-                ser["Profitability score"] = number_factor * win_factor * signif_factor
+            if ser["Absolute win rate"] != "/":
+                ser["Adjusted z-score"] = (
+                    (2 * win_rate - 1)
+                    * np.sqrt(number_detected)
+                    * min(np.log(number_detected), np.log(5000))
+                )
             else:
-                ser["Profitability score"] = 0
+                ser["Adjusted z-score"] = 0
             dataframe_rows.append(ser)
     pd.DataFrame(dataframe_rows).to_csv(
         f"data/runs/{run_name}/summary.csv", index=False
@@ -218,10 +222,10 @@ def make_meta_summary(*, run_name: str) -> None:
     data = pd.read_csv(f"data/runs/{run_name}/summary.csv")
     data_exclude_low_count = data[data["Number detected"] > 0]
     significant_buy_signals = (
-        data_exclude_low_count["Binomial test >"] < constants.ONE_STAR_SIGNIFICANCE
+        data_exclude_low_count["Binomial test buy"] < constants.ONE_STAR_SIGNIFICANCE
     ).sum()
     significant_sell_signals = (
-        data_exclude_low_count["Binomial test <"] < constants.ONE_STAR_SIGNIFICANCE
+        data_exclude_low_count["Binomial test sell"] < constants.ONE_STAR_SIGNIFICANCE
     ).sum()
     low_count_signals = (data["Number detected"] == 0).sum()
     non_significant_signals = (
@@ -230,16 +234,16 @@ def make_meta_summary(*, run_name: str) -> None:
         - significant_sell_signals
         - low_count_signals
     )
-    best_indices = data[["Binomial test >", "Binomial test <"]].idxmin()
+    best_indices = data[["Binomial test buy", "Binomial test sell"]].idxmin()
     best_buy_pattern, best_sell_pattern = data.iloc[best_indices]["Pattern"].to_numpy()
-    best_buy_pvalue = data.iloc[best_indices.iloc[0]]["Binomial test >"]
-    best_sell_pvalue = data.iloc[best_indices.iloc[1]]["Binomial test <"]
+    best_buy_pvalue = data.iloc[best_indices.iloc[0]]["Binomial test buy"]
+    best_sell_pvalue = data.iloc[best_indices.iloc[1]]["Binomial test sell"]
     best_buy_win_rate, best_sell_win_rate = (
-        data.iloc[best_indices.iloc[0]]["Win rate"][:6],
-        data.iloc[best_indices.iloc[1]]["Win rate"][:6],
+        data.iloc[best_indices.iloc[0]]["Absolute win rate"],
+        data.iloc[best_indices.iloc[1]]["Absolute win rate"],
     )
-    most_profitable_pattern, most_profitable_score = data.loc[
-        data["Profitability score"].idxmax(), ["Pattern", "Profitability score"]
+    most_profitable_pattern, highest_z_score = data.loc[
+        data["Adjusted z-score"].idxmax(), ["Pattern", "Adjusted z-score"]
     ]
     total_patterns_detected = (data["Number detected"]).sum()
     meta = pd.Series()
@@ -258,14 +262,14 @@ def make_meta_summary(*, run_name: str) -> None:
         best_sell_pvalue,
         best_sell_win_rate,
     )
-    meta["Most profitable pattern"], meta["Most profitable score"] = (
+    meta["Most profitable pattern"], meta["Highest adjusted z-score"] = (
         most_profitable_pattern,
-        most_profitable_score,
+        highest_z_score,
     )
-    meta["Average profitability score"] = data.loc[
-        data["Profitability score"] != 0, "Profitability score"
+    meta["Average adjusted z-score"] = data.loc[
+        data["Adjusted z-score"] != 0, "Adjusted z-score"
     ].mean()
-    meta["Total number detected"] = total_patterns_detected
+    meta["Total number detected"] = int(total_patterns_detected)
     meta.to_csv(f"data/runs/{run_name}/meta_summary.csv", header=False)
 
 
