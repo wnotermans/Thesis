@@ -9,7 +9,7 @@ from shared import constants
 ONE_PARAMETER_DIFFERENT = 2
 
 
-def print_tables(filter_string: str = "") -> None:
+def print_tables(include: list[str] = None, exclude: list[str] = None) -> None:
     """
     Print all (2x2) contingency tables.
 
@@ -21,6 +21,10 @@ def print_tables(filter_string: str = "") -> None:
         String to filter by, if the string is not present in the symmetric difference,
         the corresponding contingency table is skipped.
     """
+    if include is None:
+        include = [""]
+    if exclude is None:
+        exclude = []
     folders = os.listdir(f"{DIRECTORY}")
     parameter_list = []
     for folder in folders:
@@ -30,7 +34,15 @@ def print_tables(filter_string: str = "") -> None:
         for j in range(i):
             symmetric_difference = set(parameter_list[i]) ^ set(parameter_list[j])
             if len(symmetric_difference) <= ONE_PARAMETER_DIFFERENT:
-                if not any(f"{filter_string}" in s for s in symmetric_difference):
+                if not all(
+                    filter_string in "".join(symmetric_difference)
+                    for filter_string in include
+                ):
+                    continue
+                if any(
+                    filter_string in "".join(symmetric_difference)
+                    for filter_string in exclude
+                ):
                     continue
                 print_contingency_table(
                     folders, parameter_list, symmetric_difference, i, j
