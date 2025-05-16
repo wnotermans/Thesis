@@ -32,10 +32,10 @@ def calculate_percentiles(df: np.ndarray) -> tuple:
     def lower_shadow_length(OP: np.ndarray, L: np.ndarray, C: np.ndarray) -> np.ndarray:
         return np.minimum(OP, C) - L
 
-    OP = df[:, 0]
-    H = df[:, 1]
-    L = df[:, 2]
-    C = df[:, 3]
+    OP = df[:, 0].astype(float)
+    H = df[:, 1].astype(float)
+    L = df[:, 2].astype(float)
+    C = df[:, 3].astype(float)
 
     black_idx = OP > C
     white_idx = C > OP
