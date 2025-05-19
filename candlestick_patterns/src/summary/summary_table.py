@@ -272,7 +272,8 @@ def make_meta_summary(*, run_name: str) -> None:
         meta["Best sell adjusted z-score"],
     ) = (best_sell_pattern, best_sell_pvalue, best_sell_win_rate, best_sell_z_score)
     meta["Average adjusted z-score"] = data.loc[
-        data["Adjusted z-score"] != 0, "Adjusted z-score"
+        (data["Adjusted z-score"] != 0) & (~data["Significance"].isna()),
+        "Adjusted z-score",
     ].mean()
     meta["Total number detected"] = int(total_patterns_detected)
     meta.to_csv(f"data/runs/{run_name}/meta_summary.csv", header=False)
