@@ -9,11 +9,11 @@ COLS = {
     "Best buy pattern": str,
     "Best buy p value": float,
     "Best buy win rate": float,
+    "Best buy adjusted z-score": float,
     "Best sell pattern": str,
     "Best sell p value": float,
     "Best sell win rate": float,
-    "Most profitable pattern": str,
-    "Highest adjusted z-score": float,
+    "Best sell adjusted z-score": float,
     "Average adjusted z-score": float,
     "Total number detected": int,
 }
