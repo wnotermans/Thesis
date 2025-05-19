@@ -56,11 +56,9 @@ def bests_and_means(include: list[str] = None, exclude: list[str] = None) -> Non
     data.loc[data["Best buy win rate"] == "/", "Best buy win rate"] = 50
     data.loc[data["Best sell win rate"] == "/", "Best sell win rate"] = 50
 
-    print(f"Significant buy signals: {data['Significant buy signals'].mean().round(2)}")
-    print(
-        f"Significant sell signals: {data['Significant sell signals'].mean().round(2)}"
-    )
-    print(f"Non significant signals: {data['Non significant signals'].mean().round(2)}")
+    print(f"Significant buy signals: {data['Significant buy signals'].mean():.2f}")
+    print(f"Significant sell signals: {data['Significant sell signals'].mean():.2f}")
+    print(f"Non significant signals: {data['Non significant signals'].mean():.2f}")
     print(f"Mean number detected: {data['Total number detected'].mean().astype(int)}")
 
     best_buy = data["Best buy pattern"].mode().iloc[0]
@@ -95,9 +93,7 @@ def bests_and_means(include: list[str] = None, exclude: list[str] = None) -> Non
         f"{most_profitable_mean:.2f}"
     )
 
-    print(
-        f"Average adjusted z-score: {data['Average adjusted z-score'].mean().round(4)}"
-    )
+    print(f"Average adjusted z-score: {data['Average adjusted z-score'].mean():.2f}")
 
 
 if __name__ == "__main__":
