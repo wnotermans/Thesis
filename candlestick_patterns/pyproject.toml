@@ -6,14 +6,12 @@ readme = "README.md"
 authors = [{ name = "wnotermans", email = "woutnotermans1@gmail.com" }]
 requires-python = ">=3.13"
 dependencies = [
-    "mplfinance>=0.12.10b0",
-    "numba>=0.61.0",
-    "pyarrow>=19.0.0",
-    "scipy>=1.15.1",
-    "seaborn>=0.13.2",
+    "pandas[computation,parquet,performance]>=2.2.3",
     "word2number>=1.1",
-    "yfinance>=0.2.59",
 ]
+
+[project.optional-dependencies]
+plotting = ["mplfinance>=0.12.10b0", "seaborn>=0.13.2", "yfinance>=0.2.61"]
 
 [dependency-groups]
 dev = ["pytest-cov>=6.0.0"]
