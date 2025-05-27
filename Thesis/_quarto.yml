@@ -1,0 +1,34 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  chapters:
+    - index.qmd
+    - literature.qmd
+    - methodology.qmd
+    - results.qmd
+    - conclusion.qmd
+    - bibliography.qmd
+
+bibliography: bib.bib
+csl: ieee.csl
+
+format:
+  pdf:
+    pdf-engine: lualatex
+    documentclass: book
+    include-in-header: LaTeX/preamble.tex
+    include-before-body:
+      - LaTeX/before_body/1_titlepage.tex
+      - LaTeX/before_body/2_before_toc.tex
+      - LaTeX/before_body/3_toc.tex
+    include-after-body: LaTeX/backcover.tex
+    keep-tex: false
+    fontsize: 12pt
+    papersize: a4
+    classoption: oneside
+    toc: false
+    lof: false
+    lot: false
+    cite-method: biblatex

@@ -1,4 +1,4 @@
-# Preliminary results
+# Results {#sec-results}
 
 ## Detection results
 
@@ -11,21 +11,6 @@ When looking at the results of pattern detection, we first note that quite a num
    \caption["Window, Falling"]{The candlestick pattern "Window, Falling", that requires a gap between the real bodies.}
    \label{fig:window-falling}
 \end{figure}
-```
-
-```{=latex}
-\begin{center}
-\begin{longtable}{p{0.35\linewidth} | p{0.6\linewidth}}
-\caption[Overview of gapping patterns]{Overview of gapping patterns, that require either a real body gap or shadow gap in their definition.}
-\label{tab:gapping-patterns}\\ \toprule
-Group & Gapping patterns \\ \midrule
-One-Line Candles & / \\ \midrule
-Two-Line Candles & "Doji, Gapping Down", "Doji, Gapping Up", "Doji Star, Bearish", "Doji Star, Bullish", "Kicking, Bearish", "Kicking, Bullish", "Shooting Star, Two-Candle", "Window, Falling", "Window, Rising", "Two Black Gapping Candles", "Hammer, Inverted", "On Neck" \\ \midrule
-Three-Line Candles & "Abandoned Baby, Bearish", "Abandoned Baby, Bullish", "Doji Star, Collapsing", "Evening Doji Star", "Evening Star", "Morning Doji Star", "Morning Star", "Tri-Star, Bearish", "Tri-Star, Bullish", "Side-by-Side White Lines, Bearish", "Side-by-Side White Lines, Bullish", "Two Crows", "Upside Gap, Three Methods", "Downside Gap Three Methods", "Downside Tasuki Gap", "Upside Tasuki Gap", "Upside Gap Two Crows", "Unique Three-River Bottom" \\ \midrule
-Four-Line Candles & "Concealing Baby Swallow" \\ \midrule
-Five(+)-Line Candles & "Breakaway, Bearish", "Breakaway, Bullish", "Mat Hold", "Ladder Bottom" \\ \bottomrule
-\end{longtable}
-\end{center}
 ```
 
 Secondly, we find that the patterns detected depend on the data set, or more specifically the asset class of the data set. Just to name an example, the pattern "Stick Sandwich" appears about 5 times as frequent in the stock indices SPY and QQQ as it does in the bond index BND. This behavior will also be reflected later in the evaluation results.
@@ -44,32 +29,19 @@ The results of evaluating the candlestick patterns on the BND data set are very 
 
 The results of evaluation on the GLD data set are largely the same as for BND: there a quite a few significant buy signals. The number of significant patterns is a bit smaller than BND. There is one important exception: the "New Price Lines" patterns, see also \autoref{fig:new-price-lines}. These patterns signal the reversal of an uptrend, hence they are sell signals. They are made up of 8, 10, 12 or 13 candles that each reach a new High. These patterns are all significant as sell signals at the 5% significance level, for all aggregation levels except the 10 minute one. However, at this level of aggregation the sample size also becomes quite low. The winning rates can be as high as 70%.
 
+```{=latex}
 \begin{figure}
    \includegraphics[width=\textwidth]{Images/new_price_lines.png}
    \caption["New Price Lines"]{The "New Price Lines" patters. (a): 8 (b): 10 (c): 12 (d): 13 \cite{hu2019}.}
    \label{fig:new-price-lines}
 \end{figure}
+```
 
 ### QQQ
 
 Moving on the stock indices, here we find quite similar results. There are no consistently significant sell signals. There are again quite a number of significant buy signals, however they are much less consistent than in the previous data sets. Curiously, the "New Price Lines" patterns now behave in exactly the opposite manner as in the case of GLD: they are now consistent buy signals, contrary to the theoretical prediction. After combing through the results, we find that the patterns in \autoref{tab:QQQ-buy-signals} act as consistent and significant buy signals.
 
 \newpage
-
-```{=latex}
-\begin{center}
-\begin{longtable}{p{0.35\linewidth} | p{0.6\linewidth}}
-\caption[Consistent buy signals]{Overview of patterns that are consistent buy signals on the QQQ data set.}
-\label{tab:QQQ-buy-signals}\\ \toprule
-Group & Name of patterns \\ \midrule
-One-Line Candles & "Candle, Black", "Candle, White", "Doji, Northern", "Doji, Southern", "Marubozu, Closing Black", "Marubozu, Closing White", "Marubozu, Opening Black", "Marubozu, Opening White", "Marubozu, White", "Spinning Top, Black", "Spinning Top, White" \\ \midrule
-Two-Line Candles & "Above the Stomach", "Engulfing, Bearish", "Engulfing, Bullish", "Harami, Bearish", "Harami, Bullish", "Last Engulfing Bottom", "Last Engulfing Top", "Meeting Lines, Bearish", "Separating Lines, Bearish", "Separating Lines, Bullish", "Tweezers, Bottom", "Tweezers, Top" \\ \midrule
-Three-Line Candles & "Identical Three Crows", "Stick Sandwich", "Three Outside Down", "Three Outside Up" \\ \midrule
-Four-Line Candles & / \\ \midrule
-Five(+)-Line Candles & "8/10/12/13 New Price Lines" \\ \bottomrule
-\end{longtable}
-\end{center}
-```
 
 We remark here that many of these patterns come in groups, some of them being "variations of a theme", others being opposite to each other (e.g. "Bottom"/"Top").
 

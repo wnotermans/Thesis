@@ -1,0 +1,146 @@
+# Methodology {#sec-methodology}
+
+This chapter will present the methodology we employ to obtain and analyse results. First, we discuss the selection of data sets and the pre-processing that has to take place. Second, we explain the different definitions that are used. This ranges from the candlestick pattern definitions, methods to define trends in the data to how false discovery is handled. Lastly, a description of the evaluation method is given.
+
+## Selection of data sets
+
+During our analysis, we will be making use of a number of different data sets. This data was sourced from the London Stock Exchange. In order to study the effects of different asset types, and to have a sufficiently large sample size, several large indices were chosen. To study the effectiveness of candlestick patterns on (government) bonds, we selected the index BND. For commodities, we picked GLD, which tracks gold prices. Due to the large amount of trading volume regarding stocks, we opted to choose two indices here: QQQ and SPY. All these data sets contain OHLC data on one-minute intervals. Some of the data points are missing, the reason for which cannot be ascertained from the data itself, but this only accounts for a very small fraction of the total data. An overview of these data sets can be found in \autoref{tab:summary-data-set}. In order to study whether these candlestick patterns are the results of human trading behavior, we also generated data through a geometric Brownian motion (Wiener) process. Of course, this data does not contain any missing data points. In order to study the possible effects of inflation, we generated Wiener data both with and without a positive drift.
+
+```{=latex}
+\begin{table}[h!]
+\caption[Summary table of the studied data sets]{Summary table of the studied data sets. The split date refers to the date at which the data set is split in two for calibration.}
+\centering
+\begin{tabular}{llcccc}
+\label{tab:summary-data-set}\\ \toprule
+Ticker & Asset type & Start date & Split date & Missing data \\ \midrule
+BND & Bonds & 2007-04-10 & 2012-04-10 & 0.20\% \\
+GLD & Gold & 2004-11-18 & 2009-11-18 & 0.01\% \\
+QQQ & Stocks & 1999-03-10 & 2007-01-01 & 0.01\% \\
+SPY & Stocks & 1998-01-02 & 2007-01-01 & 0.02\% \\
+Wiener & Generated & 2001-01-01 & 2007-01-01 & 0.00\% \\ \bottomrule
+\end{tabular}
+\end{table}
+```
+
+## Preprocessing
+
+### Filtering and aggregation
+
+The London Stock Exchange is opened from 9:30 to 16:00. However, sometimes it is also possible to trade outside of these regular market hours. As such, the original data sets include some data during pre-market and after-market hours. Because the trading volume outside regular market hours is typically very small, with trades happening very infrequently leading to lots of missing data points, we first filter down our data to the regular market hours of 09:30-16:00. After this filtering operation, a small amount of data is still missing, which could be due to no transactions taking place during that specific minute, or possibly failure to record the information. As this missing data might have an effect on the candlestick patterns, we place a special "missing data" flag on such points. The same thing is done for the first data point after the markets closed for the night. Because we are interested in the performance of candlestick patterns on intraday market data, candlestick patterns containing missing data points are excluded initially. Besides analyzing the entire trading day, we are also interested in smaller subsets of it. After the markets open at 9:30, before they close at 16:00, and when the New York Stock Exchange opens at 14:30 London time, there tends to be a lot of trading activity. The performance of these smaller time windows will also be analyzed.
+
+In the long term, asset prices (especially when combined into an index) tend to increase due to the effects of inflation. Because of various crises, such as the Russian invasion of Ukraine, the aftereffects of the COVID-19 epidemic and the computer chip shortage, the financial markets have been somewhat turbulent these past few years. In order to test whether this has any effect, we also focus on just the last two years of data, starting in 2022.
+
+During this study, we are not only interested in the original data on 1-minute intervals, we also wish to test whether the performance of candlestick patterns depends on the length of the time interval. To do this, we need to aggregate the data into longer time intervals. This aggregation is performed according to how a candlestick is constructed: the Open of the aggregated candlestick is the Open of the first candlestick in the aggregation interval; similarly, the Close is the Close of the last candlestick in the aggregation interval. The High and the Low are the maximum and minimum of the Highs and Lows in the aggregation interval, respectively. The volume is the sum of the volumes over the aggregation interval. We aggregate our data from the initial 1-minute intervals all the way up to one hour intervals.
+
+Next, an additional filter we employ are the so-called "economic news events". These are government publications of various economic parameters, e.g. unemployment statistics, imports and exports, price indices, etc. They are assigned an "impact score", ranging from low to high. It is possible that these news events have an impact on the performance of candlestick patterns, which we will try to analyze by filtering down our data to only include windows of time after important news events.
+
+Finally, as mentioned in the literature study, some authors find that technical indicators improve the performance of candlestick patterns or that they are necessary for them to be significant in the first place. As such, we would like to analyze this to see if we come to the same conclusion. The technical indicators we study are listed in the appendix.
+
+### Calibration
+
+As mentioned previously, the majority of candlestick patterns specify the length that the real bodies or shadows must adhere to. This is typically a rather vague description, such as "short" or "long". In order to arrive at a concrete description, we make use of length percentiles that are calibrated from the data itself. We follow the definitions of [-@etschberger2006], which can be found in \autoref{tab:summary-body-shadow-length}. The authors only specify lengths of the real body, but the given percentiles can be easily expanded for shadow lengths as well. Since certain candlestick patterns call for an additional "extremely tall" length tier for the lengths of the shadows, we divide the upper tier into two parts, with the largest 10% being classified as extremely tall. This mirrors the classification of short candlesticks, where the 10% smallest are called "doji's".
+
+```{=latex}
+\begin{table}[h!]
+\caption[Percentile definitions of body and shadow lengths]{Percentile definitions of body and shadow lengths \cite{etschberger2006}.}
+\centering
+\begin{tabular}{cccccc}
+\label{tab:summary-body-shadow-length}\\ \toprule
+& Doji & Short & Normal & Tall & Extremely tall \\
+Real body & $[0-10)$ & $[10-30)$ & $[30-70)$ & $[70-100]$ &  \\ \midrule
+Shadow & $[0-10)$ & $[10-30)$ & $[30-70)$ & $[70-90)$ & $[90-100]$ \\ \bottomrule
+\end{tabular}
+\end{table}
+```
+
+```{=latex}
+\begin{figure}[h!]
+\centering
+\hspace*{-3cm}
+\includegraphics[width=0.75\textwidth]{Images/Matching_low.pdf}
+\caption{The candlestick pattern "matching low". Here, the first candle needs to be "normal" and the second candle "short". In order to define which lengths are normal and which are short, we need a rigid classification of candlestick lengths.}
+\label{fig:matching_low}
+\end{figure}
+```
+
+In order to perform this calibration, we need to split our data set into two parts: a calibration and a main set. If we were to not do this, we might possibly be biasing the results of evaluation by not testing out-of-sample. If we were to calibrate on the entire data set, data "from the future" would be used to classify the lengths of candlesticks in the past. Of course, we do not know the future in advance, so the chronology has to be respected. Because of this, we select the first part of our data as the calibration set. This set includes the data before January 1st, 2007. If less than five years of data is available (e.g. for the data set BND), the first five years of data are selected. This results in the split dates seen in \autoref{tab:summary-data-set}. The data after this split date is called the main set which will be used for evaluation of the candlestick patterns. The cutoff date of January 1st, 2007 was chosen because of the global financial crisis that started later that year. Since the markets were relatively stable before this date, we calibrate on this period.
+
+With regards to calculation, the length of the real body of a candlestick is simply calculated as $|O-C|$, where $O$ is the Open and $C$ is the Close. The upper shadow length is calculated as $H-\max(O,C)$, with $H$ the High. Similarly, the length of the lower shadow is calculated as $\min(O,C)-L$, with $L$ the Low. These lengths are of course non-negative. Here, we opt to use absolute lengths, buy this is not the only possibility. One could also make use of relative lengths by, e.g., dividing by the Close or the Open.
+
+An important remark made in [-@etschberger2006] has to be taken into consideration with regards to the classification of real body lengths. In defining just a single classification for these lengths, an implicit assumption is made that the length of the real body is statistically independent of the color (white/black) of the real body (see also \autoref{fig:black_white}). This assumption is checked through the use of a two-sample Kolmogorov-Smirnov test with hypotheses: $$H_0:W=B\qquad\qquad H_1:W\neq B.$$ Here, $W$ is the distribution of the lengths of the white candles, and $B$ is the distribution of the lengths of the black candles. We reject the null hypothesis $H_0$ in favor of the alternative hypothesis if it does not pass the Kolmogorov-Smirnov test at the 5% significance level. In that case, separate classifications for black and white real body lengths are used. A similar remark could be made about the lengths of the upper and lower shadows, but the assumption that the distributions of their lengths are equal was never rejected at the 5% significance level across all our analysis.
+
+```{=latex}
+\begin{figure}[h!]
+\centering
+\hspace*{-1cm}
+\includegraphics[width=0.75\textwidth]{Images/black_white.pdf}
+\caption{A black and a white candle. Their length distributions could be different, which is why we cannot use the same percentile classifications recklessly. We utilize the Kolmogorov-Smirnov test to check if their distributions are equal.}
+\label{fig:black_white}
+\end{figure}
+```
+
+## Candlestick patterns
+
+Up until this point, we have mentioned candlestick patterns quite a bit and given a few examples of patterns. However, we have refrained from defining specific patterns up until this point. This is a task more easily said than done. Candlestick patterns are, for the most part, vaguely defined at best. This doesn't present much of an issue to traders, as they can simply identify the patterns visually. In an academic setting, such classifications are not sufficient, especially when we need to analyse more than twenty years of data. We require a rigid classification of candlestick patterns, in order to detect and analyse them unequivocally. Fortunately, such a classification already exists in the literature, and we will be using the 103 candlestick patterns defined in [-@hu2019]. This paper defines the candlestick patterns through first-order logic, by making use of very specific conditions on the parameters of the candlesticks, such as the High, Low, real body and shadow lengths... The original intent of [-@hu2019] was for these patterns to be used in conjunction with daily candlesticks, which leads into a few problems, as we will see in the next chapter. The only notable difference between our implementation of the candlestick patterns and the ones in [-@hu2019] are the definitions of lengths of shadows and real bodies (small, normal, etc.). For this, we make use of the definition laid out in the previous section in \autoref{tab:summary-body-shadow-length}, as they are more appropriate for our intraday setting. The 103 candlestick patterns are made up of a varying number of candlesticks, ranging from 1 to 13 candles. A summary can be found in \autoref{tab:number-candles}. We note that the number of candles are typically called the amount of candle *lines*, hence the naming convention.
+
+```{=latex}
+\begin{table}[h!]
+\caption[Overview of number of candles in the patterns]{Overview of number of candles in the patterns.}
+\centering
+\begin{tabular}{lc}
+\label{tab:number-candles}\\ \toprule
+Group & Number of patterns \\ \midrule
+One-Line Candles & 29 \\
+Two-Line Candles & 32 \\
+Three-Line Candles & 29 \\
+Four-Line Candles & 3 \\
+Five(+)-Line Candles & 10 \\ \bottomrule
+\end{tabular}
+\end{table}
+```
+
+### Trend
+
+Most candlestick patterns also include a specific trend in their definition: these patterns are only valid when either an uptrend or a downtrend is present. Defining a trend is again no simple matter. The literature considers quite a few definitions, mainly making use of different types of running averages. We consider four methods to define trends.
+
+1. Monotonic: this method makes use of a running average, and defines a trend after a number of monotonic increases (for an uptrend) or decreases (for a downtrend) have taken place.
+2. Counting: similar to monotonic, but now the amount of increases and decreases are counted. When one has a 2:1 majority over the other, the trend is defined accordingly.
+3. High and Low: a rather simple method of trend definition: when the High and Low of the candlestick increase at the same time, an uptrend is defined. Similarly, simultaneous decreases of the High and Low define a downtrend.
+4. Parabolic stop and reverse (PSAR): A rather involved method of defining a trend, see appendix.
+
+For the trend definition methods that require a moving average, there are multiple possibilities as well. We consider three different ones.
+
+1. Simple moving average ($\text{SMA}_n$): the arithmetic mean of the last $n$ data points.
+2. Weighted moving average ($\text{WMA}_n$): the weighted arithmetic mean of the last $n$ data points with linearly decreasing weights. The most recent data point has a weight of $n$, the one before that $n-1$, and so on.
+3. Exponentially weighted moving average ($\text{EMA}_n$): the weighed arithmetic mean of the last $n$ data points with exponentially decreasing weights. Each previous observation is successively multiplied with the factor $\dfrac{2}{n+1}$.
+
+One thing to note regarding trends is that there is always some "lag" with respect to the data. What one might consider an obvious visual up- or downtrend might not be immediately recognized by the trend defining method as such. We also test whether the trend makes any difference at all, by testing the patterns without considering the trend and even by testing the opposite trend. This triples the number of patterns we consider to 309.
+
+### False discovery
+
+When performing statistical testing and analysis on these 309 different candlestick patterns, special care has to be taken with regards to the method of testing. With such a large sample size, false positives are likely to occur. In statistics this is known as the multiplicity or multiple testing problem. When testing a large number of different (not necessarily independent) hypotheses at e.g. the 5% significance level, sometimes a significant result is obtained through sheer coincidence. To limit the number of false positive results and thereby control the false discovery rate (FDR), we need to employ methods developed to counteract these problems. We shall be making use of the Benjamini-Hochberg (BH) procedure, which controls the FDR at the level $\alpha$ [-@benjaminihochberg1995]. We opt for a significance level of 5%. The BH procedure works as follows. Sort the p-values of the hypothesis tests from small to large as $P_{(1)}\leq P_{(2)}\leq...\leq P_{(m)}$, with $m=309$ the total number of tests. Let the associated hypothesis tests be called $H_{(1)},...,H_{(m)}$. Then, find the largest $k$ such that $P_{(k)}\leq\dfrac{k}{m}\alpha$, for a given $\alpha$ (5%). Finally, reject the null hypotheses $H_{(1)},...,H_{(k)}$ in favor of the alternative hypotheses. See \autoref{fig:FDR} for a graphical presentation of this process. Through the Benjamini-Hochberg procedure, we try to minimize the amount of false positives, such that most of the significant results are indeed truly significant and not the consequence of random chance.
+
+```{=latex}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.75\textwidth]{Images/FDR.pdf}
+\caption{The Benjamini-Hochberg procedure graphically. The p-values are sorted and plotted versus the line with slope $\dfrac{\alpha}{m}$, with $\alpha$ the desired FDR control level and $m$ the amount of data points. All the hypotheses corresponding to the p-values before the (last) crossing with the rejection line are rejected in favor of the null (colored green). The hypotheses corresponding to the p-values in red, the ones after the (last) crossing with the rejection line, are not rejected \cite{benjaminihochberg1995}.}
+\label{fig:FDR}
+\end{figure}
+```
+
+### Theoretical prediction
+
+Candlestick patterns are usually accompanied by a theoretical prediction. This prediction originates with the observations of traders and lacks a scientific backing. There are multiple possibilities with regards to these predictions, but the outcome is a binary classification as either a "buy signal" or a "sell signal". Assume that prices are currently trending up, and a specific candlestick pattern is detected. Now, there are two possible predictions: either the prices will continue to climb, meaning one should buy the asset or hold on to their current shares to make (more) profit; or prices will fall after this candlestick patterns, meaning one should (short-)sell to make money. This predictions are then, respectively, a buy signal and a sell signal. Similarly, if prices are trending down, buy and sell signals can be defined in a similar way.
+
+In our research, we do not consider these (unfounded) theoretical predictions made by traders. Instead, we prefer to let the data and the results speak for themselves. If a pattern acts as a buy signal more often than as a sell signal, we consider it to be a buy signal and vice versa. This also extends to the evaluation, where we evaluate buy signals as buy signals and sell signals as sell signals.
+
+### Evaluation
+
+Finally, after having detected the candlestick patterns by the methodology laid out in the previous subsections, we have to evaluate the performance of the patterns. Again, as might by expected at this point, many different methods of evaluation have been proposed in the literature. For the case of daily candles, a simple buy-and-hold strategy is often employed. In our study of intraday data, this specific method of evaluation would not really provide an accurate measure of performance, considering that intraday data is mainly used for day trading with a higher frequency, contrary to a buy-and-hold strategy as is mainly employed by longer term investors [-@fock2005]. For this reason, we make use of a stop-loss/take-profit strategy. For patterns that signal it is opportune to buy (a buy signal), this works as follows. When the candlestick pattern of interest is detected, the asset currently being studied is bought at the earliest possible time: the Open of the next candle. Also, two different margins are set: a take-profit margin above the buy-in price, and a stop-loss margin below the buy-in price. The performance of this transaction is then evaluated by looking which margin is breached first. If the take profit margin is breached first, the asset is sold again for a small profit. Similarly, if the stop loss margin is breached first, the asset is sold at a small loss to prevent the possibility of even larger losses in the future. Obviously, a breach of the take profit margin is counted as a win and a breach of the stop loss margin as a loss. This results in a binary win/loss classification. By tallying up all the wins and losses of all the detected instances of a pattern, we arrive at a win rate. Note that this entire process is perfectly symmetric and can also be inverted, with buying becoming selling and vice versa and with the margins switching places. This also means that wins and losses change places. If, for example, a pattern has a 30% winning rate when buying the asset after the pattern is detected, it consequently has a 70% winning rate when we (short-)sell the asset after detection. For each pattern, we select the best result. Because of this, our win rate is at least 50%. If this win rate is the result of buying the asset, we consider this pattern to be a buy signal. Oppositely, if the win rate is the result of (short-)selling, we call it a sell signal.
+
+Under the assumption that the movements of asset prices is purely random, a win rate of 50% is to be expected. Significant deviations from this baseline would provide evidence of candlestick patterns having some measure of predictive power. To test this, we employ a one-sided binomial test, since the outcome of our evaluation is binary: either win or lose. Again, as our winning rate cannot be lower than 50%, a two-sided test would not make much sense. The hypothesis we consider is $$H_0:\pi=0.5\qquad\qquad H_1:\pi>0.5$$ with $\pi$ the win rate. This hypothesis is the same for each of the 309 patterns. For each pattern, we calculate the p-value corresponding to this hypothesis. This results in 309 p-values, to which we apply the Benjamini-Hochberg FDR control procedure with $\alpha=0.05$. The candlestick patterns corresponding to the rejected null hypotheses are found to possess statistically significant evidence of performing better than one would expect by trading randomly. In our testing, we limit ourselves to candlestick patterns that are detected at least 100 times in the main set, since patterns that appear too infrequently are not all that useful when trying to trade based on them. The cutoff of 100 means that the pattern needs to appear roughly once every one to two months, which is still quite rare.
+
+This does raise a point with regards to the evaluation: purely testing (and ranking) based on statistical significance alone might not encompass the entirety of how a candlestick pattern performs. In our opinion, the frequency at which a pattern appears should also play a role in the evaluation. After all, a pattern with an 80% win rate that appears once a week might be considered inferior to a pattern with the same statistical significance, a 60% win rate but a much higher frequency, e.g. 10 times per day. For this reason, we employ a second statistic that takes the amount of times a pattern is detected into account. This statistic is derived from the $z$-score of the binomial test, and will be called the adjusted $z$-score. Because we limit ourselves to candlestick patterns that are detected at least 100 times, we can make approximate the binomial test very close with the $z$-test from a normal distribution. This $z$-test is then multiplied by the natural logarithm of the amount of detections, up to a maximum of 5000. This results in the expression $$\overbrace{\dfrac{\hat{p}-p_0}{\sqrt{\dfrac{p_0(1-p_0)}{n}}}}^{z\text{-test}}\cdot\overbrace{\ln(\{\min(n,5000)\})}^{\text{Frequency adjustment}}$$ with $\hat{p}$ the observed win rate, $p_0$ the null hypothesis for the win rate (0.5) and $n$ the number of times a pattern is detected. This expression can be simplified to ${(2\hat{p}-1)\sqrt{n}\ln(n)}$.
+
+Not all candlestick patterns are created equally however, as some patterns are much simpler than other patterns. Patterns that consist of e.g. one or two candlesticks automatically have more possibilities to be detected then patterns of five candlesticks. Similarly, if one aggregates the the data into longer time intervals, the sample size automatically becomes smaller. The logarithm hence serves to limit the "bonus" obtained by a pattern that appears very frequently, while still always providing a larger multiplier for a larger amount of detections since it is a strictly increasing function. For the same reasons, we limit the maximum "bonus" to $\ln(5000)$.

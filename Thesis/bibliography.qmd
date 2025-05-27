@@ -1,0 +1,7 @@
+# Bibliography {.unnumbered}
+
+\begingroup
+\raggedright
+::: {#refs}
+:::
+\endgroup

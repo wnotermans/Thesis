@@ -1,0 +1,53 @@
+# Introduction
+
+> "*If active managers win, it has to be at the expense of other active managers. And when you add them all up, the returns of active managers have to be literally zero, before costs. Then after costs, it's a big negative sign.*" \quad--- Eugene Fama [@fama2014]
+
+When reading this quote by Nobel Prize laureate Eugene Fama, one might be inclined to think that methods of active financial management, such as technical analysis for example, do not work as advertised. Technical analysis here means the analysis and forecasting of (stock) price movements by studying historical market data, typically price and volume (the number of transactions) [@kirkpatrick2007]. Many traders also make use of technical analysis [@lu2012]. So are traders wrong, or are they just hoping to win at the expense of others?
+
+One type of technical analysis is the method of *Japanese Candlesticks*. These candlesticks are formed by tracking the price of an asset, typically a stock or an index, over a specific time interval. During this interval, four parameters are recorded:
+
+1.  the price at the start of the interval, called the *Open* (O),
+
+2.  the highest observed price during the interval, called the *High* (H),
+
+3.  the lowest observed price during the interval, called the *Low* (L),
+
+4.  the price at the end of the interval, called the *Close* (C),
+
+which leads to the common acronym *OHLC* data. Typically, also the volume is recorded. A graphical representation of how a candlestick is constructed can be found in \autoref{fig:candlestick-construction}. In this figure, we can see the three parts of a candlesticks ``anatomy'': the difference between the open and the close is called the real body. There are two possibilities here: if the asset increases in price during the time interval, then the close will be above the open, in which case the body of the candle is colored white; on the other hand, if the price decreased, the close will be below the open and the body will be colored black. The differences between the high and the top of the real body is called the upper shadow, similarly the difference between the low and the bottom of the real body is called the lower shadow. By repeating this process many time intervals in sequence, one gets an alternative representation of financial data, called a *candlestick chart*. Candlesticks can be defined over any length of time, though some time intervals are more common than others. Daily candles are common among regular investors, whereas shorter intervals, e.g. 5 minute candles are typically used by day (high frequency) traders.
+
+```{=latex}
+\begin{figure}
+\includegraphics[width=\textwidth]{Images/candlestick_construction.png}
+\caption[Construction of a candlestick]{Construction of a candlestick \cite{chen2020}.}
+\label{fig:candlestick-construction}
+\end{figure}
+```
+
+The candles in a candlestick chart can be grouped into so-called *candlestick patterns*, the topic of this thesis. These patterns come in various shapes and sizes, and often with very exotic (Japanese) names. This can be traced back to the origin of candlestick patterns, which are said to have been developed by a Japanese trader called Munehisa Honma, who developed the technique in the 18th century [-@nison1991]. A few examples of candlestick patterns can be found in \autoref{fig:stick_sandwich}. For almost two hundred years, the technique remained exclusive to Eastern Asia, where the technique was and still is well-known [@lu2012]. This is also reflected in the scientific literature on candlestick patterns, many studies being authored by Asian researchers. Candlestick patterns were introduced in the Western world in 1991, when Steve Nison published the book "Japanese candlestick charting techniques" [@nison1991].
+
+```{=latex}
+\begin{figure}
+\centering
+\hspace*{-3cm}
+\includegraphics[width=0.75\textwidth]{Images/Stick_sandwich.pdf}
+\caption[Examples of candlestick patterns]{The candlestick pattern ``stick sandwich''. The markings in the top left indicate this pattern is only valid in a downtrend. The arrow pointing up means that prices are predicted to go up after this pattern is detected.}
+\label{fig:stick_sandwich}
+\end{figure}
+```
+
+These candlestick patterns typically feature a prediction of what asset prices are likely to do in the future. This prediction can be either up or down. If a pattern predicts an imminent increase of asset prices, profit could be made by purchasing the asset or index. Similarly, if the prediction is downwards, one could turn a profit by short-selling. This leads to a classification of "buy signals" and "sell signals". Naturally, one might wonder whether there is any truth to these claims. Do candlestick patterns indeed possess some kind of predictive power? Can we profit by trading based off of these predictions?
+
+We are not the first ones to ask these questions, as there already exists literature regarding this subject. The results found are quite erratic, some authors find negative results for a specific pattern, whereas others find positive results for the exact same pattern. An interesting observation can be made regarding the time interval that researchers look at: nearly all research is focused on daily candlesticks. Literature regarding intraday data is, to our knowledge, quite scarce. Our goal in this thesis is to expand upon the previous literature regarding candlestick patterns, and to evaluate their predictive power on intraday market data by making use of formal definitions of candlestick patterns and recent evaluation techniques.
+
+This leads us to our research question:
+
+> Do candlestick patterns have any predictive power on intraday market data?
+
+## Outline
+
+The remainder of this work is structured as follows. First, in @sec-literature, we shall take a look at the existing literature concerning various aspects of candlestick patterns, such as definitions, detection and evaluation. Following this, we explain all of the employed methodology in @sec-methodology. This covers the selection of data sets, definitions of the patterns and trends, detection and evaluation. The results we obtain are presented and discussed in @sec-results. Finally, the general conclusions and ideas for further research are stated in @sec-conclusion.
+
+## A note about the code {.unnumbered .unlisted}
+
+The code behind this thesis was written in Python and contains more than 12,000 lines of code, spread over more than 50 files. As such, it is not possible to include it as an appendix, otherwise it would span hundreds of pages. Instead the code is available (under KU Leuven copyright) on [GitHub](https://github.com/wnotermans/Thesis): [https://github.com/wnotermans/Thesis](https://github.com/wnotermans/Thesis).
