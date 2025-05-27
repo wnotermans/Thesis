@@ -20,7 +20,7 @@ def weighted_moving_average(ser: pd.Series, *, averaging_kwargs: dict) -> pd.Ser
 
 
 def exponential_moving_average(ser: pd.Series, *, averaging_kwargs: dict) -> pd.Series:
-    return ser.rolling(averaging_kwargs["window"]).mean()
+    return ser.ewm(span=averaging_kwargs["window"]).mean()
 
 
 def monotonic(df: pd.DataFrame, *, decision_kwargs: dict) -> pd.Series:
