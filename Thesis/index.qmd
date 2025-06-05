@@ -1,20 +1,34 @@
 # Introduction
 
-> "*If active managers win, it has to be at the expense of other active managers. And when you add them all up, the returns of active managers have to be literally zero, before costs. Then after costs, it's a big negative sign.*" \quad--- Eugene Fama [@fama2014]
+## Technical analysis
 
-When reading this quote by Nobel Prize laureate Eugene Fama, one might be inclined to think that methods of active financial management, such as technical analysis for example, do not work as advertised. Technical analysis here means the analysis and forecasting of (stock) price movements by studying historical market data, typically price and volume (the number of transactions) [@kirkpatrick2007]. Many traders also make use of technical analysis [@lu2012]. So are traders wrong, or are they just hoping to win at the expense of others?
+In his well-known critique of active investment management, Nobel Prize-winning economist Eugene Fama famously remarked:
 
-One type of technical analysis is the method of *Japanese Candlesticks*. These candlesticks are formed by tracking the price of an asset, typically a stock or an index, over a specific time interval. During this interval, four parameters are recorded:
+> "If active managers win, it has to be at the expense of other active managers. And when you add them all up, the returns of active managers have to be literally zero, before costs. Then after costs, it’s a big negative sign [-@fama2014]."
 
-1.  the price at the start of the interval, called the *Open* (O),
+Fama argues that since active managers are essentially trading with one another in the same market, any trader outperforming the market must necessarily be offset by underperformance by another. When adding this all up, the net gains of all active managers before costs should sum to zero. Once fees, transaction costs, and other expenses are taken into account, the overall returns of active managers tend to become negative relative to passive strategies.
 
-2.  the highest observed price during the interval, called the *High* (H),
+This line of reasoning leads to an important and often controversial implication: if active management is, on average, a losing game after costs, then many of the techniques used in active investing---such as technical analysis---may not be as effective as commonly believed. Technical analysis refers to the study and interpretation of past market data, particularly price and volume (the number of transactions), to predict future movements in stock prices [-@kirkpatrick2007]. Despite its widespread use among traders and investors, critics often question its scientific basis and predictive power [-@lu2012].
 
-3.  the lowest observed price during the interval, called the *Low* (L),
+Eugene Fama's critical views on active investment strategies can be traced back to his influential 1970 paper *"Efficient Capital Markets: A Review of Theory and Empirical Work"* [-@fama1970]. In this seminal work, Fama systematically reviewed both theoretical models and empirical studies concerning the Efficient Market Hypothesis (EMH). According to the EMH, financial markets are *efficient* in the sense that asset prices fully reflect all available information relevant to a company's value. Fama identified three gradations of market efficiency: weak, semi-strong, and strong. The **weak** form of the EMH asserts that all past trading information, such as historical prices and volumes, is already incorporated into current stock prices. The **semi-strong** form extends this by asserting that all publicly available information---including financial statements, news reports, and earnings announcements---is also reflected in current prices. Finally, the **strong** form of the EMH claims that even private or non-public information is already embedded in stock prices. A direct consequence of the EMH is that active investing in stocks can never consistently beat the passive performance of the market. This calls into question the effectiveness of technical analysis, which relies on patterns in historical market data to forecast future price movements. If markets are indeed efficient in the way Fama describes, then technical analysis would be largely ineffective, since all relevant price information would already be accounted for in current valuations [-@fama1970].
 
-4.  the price at the end of the interval, called the *Close* (C),
+Given Fama's critique, one might reasonably ask: are traders who rely on technical analysis simply misguided? Or are they fully aware that their strategy is speculative and hope to gain only by being quicker, more skilled, or luckier than others who are also using similar tools? In other words, are they merely attempting to outperform their peers in a competitive and crowded arena, knowing that for every winner, there must also be a loser? In this thesis, we will take a look at what is possibly the first method of technical analysis to be invented, the method of Japanese Candlesticks [-@nison1991].
 
-which leads to the common acronym *OHLC* data. Typically, also the volume is recorded. A graphical representation of how a candlestick is constructed can be found in \autoref{fig:candlestick-construction}. In this figure, we can see the three parts of a candlesticks ``anatomy'': the difference between the open and the close is called the real body. There are two possibilities here: if the asset increases in price during the time interval, then the close will be above the open, in which case the body of the candle is colored white; on the other hand, if the price decreased, the close will be below the open and the body will be colored black. The differences between the high and the top of the real body is called the upper shadow, similarly the difference between the low and the bottom of the real body is called the lower shadow. By repeating this process many time intervals in sequence, one gets an alternative representation of financial data, called a *candlestick chart*. Candlesticks can be defined over any length of time, though some time intervals are more common than others. Daily candles are common among regular investors, whereas shorter intervals, e.g. 5 minute candles are typically used by day (high frequency) traders.
+To perform technical analysis, *technical indicators* are often used. These indicators are numbers or statistics that were derived from stock market data, typically OHLC data and volume [-@kirkpatrick2007]. We consider 14 different technical indicators. An overview can be found in \autoref{app:B}.
+
+## Candlestick patterns
+
+*Japanese Candlesticks* are formed by tracking the price of an asset, typically a stock or an index, over a specific time interval. During this interval, four parameters are recorded:
+
+1.  the price at the start of the interval, called the *Open* ($O$),
+
+2.  the highest observed price during the interval, called the *High* ($H$),
+
+3.  the lowest observed price during the interval, called the *Low* ($L$),
+
+4.  the price at the end of the interval, called the *Close* ($C$).
+
+This gives rise to the commonly used acronym *OHLC* data. Typically, also the volume is recorded. A graphical representation of how a candlestick is constructed can be found in \autoref{fig:candlestick-construction}. The figure illustrates the three key components of a candlestick's "anatomy": the section between the open and close prices is known as the *(real) body*. There are two distinct scenarios here: if the asset's price rises during the time interval, the close will be higher than the open, and the candle’s body is typically colored white. Conversely, if the price falls, the close will be lower than the open, and the body is colored black. It is also possible that the close and the open are very close to each other, which leads to a very small body. This is called a *doji*. The difference between the high and the top of the real body forms the upper shadow, while the difference between the low and the bottom of the real body is referred to as the lower shadow. By repeating this process many time intervals in sequence, one gets an alternative representation of financial data, called a *candlestick chart*. Candlesticks can be defined over any length of time, though some time intervals are more common than others. Daily candles are common among regular investors, whereas shorter intervals, e.g. 5 minute candles are typically used by day (high frequency) traders [-@fock2005].
 
 ```{=latex}
 \begin{figure}
@@ -24,7 +38,7 @@ which leads to the common acronym *OHLC* data. Typically, also the volume is rec
 \end{figure}
 ```
 
-The candles in a candlestick chart can be grouped into so-called *candlestick patterns*, the topic of this thesis. These patterns come in various shapes and sizes, and often with very exotic (Japanese) names. This can be traced back to the origin of candlestick patterns, which are said to have been developed by a Japanese trader called Munehisa Honma, who developed the technique in the 18th century [-@nison1991]. A few examples of candlestick patterns can be found in \autoref{fig:stick_sandwich}. For almost two hundred years, the technique remained exclusive to Eastern Asia, where the technique was and still is well-known [@lu2012]. This is also reflected in the scientific literature on candlestick patterns, many studies being authored by Asian researchers. Candlestick patterns were introduced in the Western world in 1991, when Steve Nison published the book "Japanese candlestick charting techniques" [@nison1991].
+The candles in a candlestick chart can be grouped into so-called *candlestick patterns*. These patterns vary widely in appearance and are often identified by distinctive, sometimes exotic, names—many of which are rooted in Japanese tradition. This cultural influence can be traced back to the origins of candlestick charting, which is believed to have been developed in the 18th century by a Japanese rice trader named Munehisa Honma [-@nison1991]. A few examples of candlestick patterns can be found in \autoref{fig:stick_sandwich}. For almost two hundred years, the technique remained largely exclusive to Eastern Asia, where the technique was---and still is---well-known [-@lu2012]. This is also reflected in the scientific literature on candlestick patterns, many studies being authored by Asian researchers. Candlestick patterns were introduced in the Western world in 1991, when Steve Nison published the book "Japanese candlestick charting techniques" [-@nison1991].
 
 ```{=latex}
 \begin{figure}
@@ -36,13 +50,11 @@ The candles in a candlestick chart can be grouped into so-called *candlestick pa
 \end{figure}
 ```
 
-These candlestick patterns typically feature a prediction of what asset prices are likely to do in the future. This prediction can be either up or down. If a pattern predicts an imminent increase of asset prices, profit could be made by purchasing the asset or index. Similarly, if the prediction is downwards, one could turn a profit by short-selling. This leads to a classification of "buy signals" and "sell signals". Naturally, one might wonder whether there is any truth to these claims. Do candlestick patterns indeed possess some kind of predictive power? Can we profit by trading based off of these predictions?
+These candlestick patterns typically feature a prediction of what asset prices are likely to do in the future. This prediction can be either up or down. If a pattern predicts an imminent increase of asset prices, profit could be made by purchasing the asset or index. Similarly, if the prediction is downwards, one could turn a profit by short-selling. This leads to a classification of "buy signals" and "sell signals". Naturally, this raises the question: Do candlestick patterns actually have any predictive power? Can one make a profit by trading based on these patterns?
 
-We are not the first ones to ask these questions, as there already exists literature regarding this subject. The results found are quite erratic, some authors find negative results for a specific pattern, whereas others find positive results for the exact same pattern. An interesting observation can be made regarding the time interval that researchers look at: nearly all research is focused on daily candlesticks. Literature regarding intraday data is, to our knowledge, quite scarce. Our goal in this thesis is to expand upon the previous literature regarding candlestick patterns, and to evaluate their predictive power on intraday market data by making use of formal definitions of candlestick patterns and recent evaluation techniques.
+We are not the first ones to ask these questions, as there already exists literature regarding this subject. The findings are quite erratic, some authors find negative results for a specific pattern, whereas others find positive results for the exact same pattern. One notable trend in the research is that most studies focus on daily candlesticks, with limited attention given to intraday data. Literature regarding intraday data is, to our knowledge, quite scarce. The objective of this thesis is to expand upon the previous literature regarding candlestick patterns, and to evaluate their predictive power on intraday market data by making use of formal definitions of candlestick patterns and recent evaluation techniques.
 
-This leads us to our research question:
-
-> Do candlestick patterns have any predictive power on intraday market data?
+This leads us the the research question which we will try to answer in this work: "Do candlestick patterns have any predictive power on intraday market data?".
 
 ## Outline
 
@@ -50,4 +62,4 @@ The remainder of this work is structured as follows. First, in @sec-literature, 
 
 ## A note about the code {.unnumbered .unlisted}
 
-The code behind this thesis was written in Python and contains more than 12,000 lines of code, spread over more than 50 files. As such, it is not possible to include it as an appendix, otherwise it would span hundreds of pages. Instead the code is available (under KU Leuven copyright) on [GitHub](https://github.com/wnotermans/Thesis): [https://github.com/wnotermans/Thesis](https://github.com/wnotermans/Thesis).
+The code behind this thesis was written in Python and contains more than 12,000 lines of code, spread over more than 50 files. As such, it is not possible to include it as an appendix, otherwise it would span hundreds of pages. Instead, the code is available (under KU Leuven copyright) on [GitHub](https://github.com/wnotermans/Thesis): [https://github.com/wnotermans/Thesis](https://github.com/wnotermans/Thesis).

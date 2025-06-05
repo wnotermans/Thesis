@@ -5,3 +5,129 @@
 ::: {#refs}
 :::
 \endgroup
+
+\newpage
+
+```{=latex}
+\begin{appendices}
+  \chapter{Additional figures for section 5.3}
+  \label{app:A}
+  Here we present the plots we left out of section 5.3.\\
+
+  \autoref{fig:A.1} shows the effect of including the correct, no, or the opposite trend. \autoref{fig:A.2} and \autoref{fig:A.3} the effects of trend averaging and definition methods, respectively. \autoref{fig:A.4}, \autoref{fig:A.5} and \autoref{fig:A.6} show the results of using different margins: the influence of the constant and percentage margins on the adjusted $z$-score; and the number of significant buy signals. \autoref{fig:A.7} and \autoref{fig:A.8} show the effect of filtering by time of day and by economic news events, respectively. Finally, \autoref{fig:A.9}, \autoref{fig:A.10} and \autoref{fig:A.11} show the results of filtering by technical indicators.
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/z_score_trend_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_trend_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_trend_QQQ.pdf}
+      \caption{Effect of including trend.}
+      \label{fig:A.1}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/z_score_average_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_average_QQQ.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_average_SPY.pdf}
+      \caption{Effect of trend averaging methods.}
+      \label{fig:A.2}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/z_score_decision_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_decision_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_decision_SPY.pdf}
+      \caption{Effect of trend definitions.}
+      \label{fig:A.3}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_constant_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_constant_QQQ.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_constant_SPY.pdf}
+      \caption{Effect of different margins (constant).}
+      \label{fig:A.4}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_percent_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_percent_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_percent_QQQ.pdf}
+      \caption{Effect of different margins (percentage).}
+      \label{fig:A.5}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/buy_signals_evaluation_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/buy_signals_evaluation_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/buy_signals_evaluation_SPY.pdf}
+      \caption{Significant buy signals with the different margins.}
+      \label{fig:A.6}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/z_score_time_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_time_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_time_SPY.pdf}
+      \caption{Effect of filtering by time of day.}
+      \label{fig:A.7}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/z_score_news_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_news_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_news_QQQ.pdf}
+      \caption{Effect of filtering by economic news.}
+      \label{fig:A.8}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_1_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_1_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_1_SPY.pdf}
+      \caption{Effect of filtering by technical indicators (1).}
+      \label{fig:A.9}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_2_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_2_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_2_SPY.pdf}
+      \caption{Effect of filtering by technical indicators (2).}
+      \label{fig:A.10}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_3_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_3_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_3_QQQ.pdf}
+      \caption{Effect of filtering by technical indicators (3).}
+      \label{fig:A.11}
+    \end{figure}
+
+  \chapter{Technical indicators}
+  \label{app:B}
+  Here we present the various technical indicators we used throughout this thesis. They were taken from \cite{kirkpatrick2007}, \cite{murphy1999} and \cite{pring1991}.\\
+
+  The following are included:\\
+  \begin{tabular}{ll}
+    \textbf{ATR} & Average True Range.\\
+    \textbf{ADX} & Average Directional Movement Index.\\
+    \textbf{BB} & Bollinger Bands.\\
+    \textbf{DPO} & Detrended Price Oscillator.\\
+    \textbf{MA} & Moving Average.\\
+    \textbf{MACD} & Moving Average Convergence Divergence.\\
+    \textbf{MFI} & Money Flow Index.\\
+    \textbf{PSAR} & Parabolic Stop and Reverse.\\
+    \textbf{RSI} & Relative Strength Index.\\
+    \textbf{TRIX} & Triple Exponential.\\
+    \textbf{VI} & Vortex Indicator.\\
+    \textbf{VW} & Volume Weight.\\
+    \textbf{WMA} & Weighted Moving Average.\\
+    \textbf{\%R} & Williams' \%R.\\
+  \end{tabular}
+  \newpage
+  \section*{\texttt{indicators.py} (7--413)}
+  \inputpythonfile{indicators.py}[7][413]
+
+\end{appendices}
+```

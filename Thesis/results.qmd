@@ -1,70 +1,262 @@
 # Results {#sec-results}
 
+In this chapter, we present and analyze the results of our evaluation. To assess the impact of various parameters on strategy performance, we use a baseline configuration as a reference point. This baseline is defined as follows:
+
+- Time aggregation: 1-minute intervals up to 15 minutes, followed by 5-minute increments up to 60 minutes (see @sec-signif-buy).
+- Trading hours: 9:30 AM to 4:00 PM (market open to close).
+- Trend definition: "monotonic".
+- Trend averaging method: Simple Moving Average (SMA).
+- Margins: Based on the Average True Range (ATR).
+
+Using this baseline, we systematically vary key parameters to observe their effects. Each parameter is varied in isolation to ensure that changes can be attributed directly to that specific factor. The parameters under investigation include:
+
+- Filtering by economic news: To assess whether excluding periods after major economic announcements improves signal reliability.
+- Filtering by technical indicators: To determine if incorporating additional technical filters enhances performance.
+- Trend definition methods: We compare alternative approaches such as "counting", "high and low", and "Parabolic SAR" (PSAR).
+- Trend averaging methods: We test Weighted Moving Average (WMA) and Exponential Moving Average (EMA) as alternatives to SMA.
+- Margin types: We evaluate fixed percentage margins (1%, 3%, 5%) and flat value margins ($1, $2, $5) in contrast to the ATR-based baseline.
+
+This structured approach allows us to isolate the contribution of each parameter to overall performance.
+
 ## Detection results
 
-When looking at the results of pattern detection, we first note that quite a number of the 103 patterns are detected quite frequently, regardless of the data set. There are some exceptions to this general statement however. First, some patterns, particularly those that require "gaps" between the real bodies, are very rare. This is largely due to the intraday nature of the data we work with. When looking at candles minute-by-minute, the Close of the previous candle is almost always the Open of the next candle, since there is only a gap of a single second between them. Conversely, when working with daily data, this gap spans seventeen and a half hours. This of course allows the prices to shift a lot more than on intraday data, leading to more gaps. The most common sources of gaps between the real bodies on intraday data is due to gaps in the data, either because the data was missing or the market was closed. Because we wish to study the intraday performance and not the overnight one, we filter the candlestick patterns that we detect after a data gap away, which leaves very few instances of patterns with gaps being detected. For an example of such a pattern, see \autoref{fig:window-falling}. Similarly, the same remark applies to candlestick patterns that require a gap between shadows in their definition. Due to the low number of detections of these types of patterns, we will not remark on their performance here. These patterns do not seem very interesting to study in the intraday setting we consider here. A list of these "gapping patterns" can be found in \autoref{tab:gapping-patterns}. These gapping patterns number 35 in total.
+When analyzing the results of candlestick pattern detection, we find that the majority of the 309 recognized patterns occur relatively frequently across various data sets. However, the total number of detected patterns varies significantly depending on whether trend direction is included as part of the detection criteria. In particular, when trend direction is not considered, the number of detected patterns tends to be higher. Conversely, when we restrict detection to patterns occurring against the theoretical trend, the total number of matches drops sharply. This relationship is illustrated in \autoref{fig:number_detected_trend}. The discrepancy between patterns aligned with the trend and those occurring against it may reflect behavioral differences in how market participants---whether human traders or algorithmic systems---respond to price movements. Interestingly, this variation appears to be symmetrical: the number of detected patterns is similarly affected whether the specified trend is upward or downward. This symmetry suggests that the underlying mechanism influencing pattern frequency is not biased by trend direction, but rather by the presence or absence of a trend constraint itself.
+
+Despite these general patterns, there are notable exceptions. Some candlestick patterns---especially those that require gaps between the real bodies of consecutive candles---are rarely observed in our data. This is likely in large part due to the intraday nature of the data sets we analyze. Since our candles span intervals of up to one hour, and the time between consecutive candles is typically just one second, the Close of one candle almost always matches the Open of the next. As a result, natural gaps rarely occur within regular trading hours. In contrast, daily candle data spans much longer intervals, including periods when the market is closed (overnight), allowing significant price changes to occur and gaps to form more naturally. Thus, the rarity of gap-based patterns in our intraday data sets reflects a structural limitation rather than a market anomaly.Additionally, gaps that do appear within intraday data are often the result of missing data or periods when the market is closed (e.g., overnight or during halts), rather than genuine price dislocations. For an example of this kind of pattern, see \autoref{fig:window_falling}. Because our objective is to study continuous intraday price behavior, we filter out any candlestick patterns that occur immediately after such data gaps. This filtering further reduces the number of detectable gap-based patterns. A similar limitation applies to patterns requiring gaps between the shadows of the candles. Given the fine-grained and continuous nature of intraday price action, such gaps are rare and typically do not satisfy the strict structural criteria necessary for detection.
 
 ```{=latex}
 \begin{figure}
    \centering
-   \includegraphics[width=0.2\textwidth]{Images/window_falling.png}
-   \caption["Window, Falling"]{The candlestick pattern "Window, Falling", that requires a gap between the real bodies.}
-   \label{fig:window-falling}
+   \includegraphics[width=0.75\textwidth]{Images/number_detected_trend.pdf}
+   \caption[Number of detections, trend]{The mean amount of detected candlesticks, when considering the correct trend, no trend and the opposite trend.}
+   \label{fig:number_detected_trend}
 \end{figure}
 ```
-
-Secondly, we find that the patterns detected depend on the data set, or more specifically the asset class of the data set. Just to name an example, the pattern "Stick Sandwich" appears about 5 times as frequent in the stock indices SPY and QQQ as it does in the bond index BND. This behavior will also be reflected later in the evaluation results.
-
-Lastly, there are some patterns that don't require gaps but are nevertheless rarely detected in any data set, regardless of the level of aggregation. These are the patterns with the most stringent conditions for detection. The patterns "Three Stars in the South", "Falling Three Methods" and "Rising Three Methods" almost never appear, likely due to each of them requiring 10 conditions to be satisfied in order to be detected. Lastly, the patterns "Long Black Day" and "Long White Day" are never detected, again likely due to their strict conditions.
-
-## Selected evaluation results
-
-After the previous section, we are now left with 63 different patterns that are detected frequently and are subject to further evaluation. We look at the data sets separately, as the results are quite different among the different asset classes.
-
-### BND
-
-The results of evaluating the candlestick patterns on the BND data set are very one-note. We do not find any significant sell signals, almost all patterns are statistically significant buy signals. Most patterns have winning rates above 55%, some even have winning rates as high as 60% when buying after detection. This result remains true regardless of the level of aggregation that is performed. Most winning rates have $p$-values below 0.001, which indicates strong statistical significance. These results are quite surprising, and definitely bears further investigation.
-
-### GLD
-
-The results of evaluation on the GLD data set are largely the same as for BND: there a quite a few significant buy signals. The number of significant patterns is a bit smaller than BND. There is one important exception: the "New Price Lines" patterns, see also \autoref{fig:new-price-lines}. These patterns signal the reversal of an uptrend, hence they are sell signals. They are made up of 8, 10, 12 or 13 candles that each reach a new High. These patterns are all significant as sell signals at the 5% significance level, for all aggregation levels except the 10 minute one. However, at this level of aggregation the sample size also becomes quite low. The winning rates can be as high as 70%.
 
 ```{=latex}
 \begin{figure}
-   \includegraphics[width=\textwidth]{Images/new_price_lines.png}
-   \caption["New Price Lines"]{The "New Price Lines" patters. (a): 8 (b): 10 (c): 12 (d): 13 \cite{hu2019}.}
-   \label{fig:new-price-lines}
+   \centering
+   \hspace*{-4cm}
+   \includegraphics[width=0.75\textwidth]{Images/window_falling.pdf}
+   \caption["Window, Falling"]{The candlestick pattern "Window, Falling", that requires a gap between the real bodies.}
+   \label{fig:window_falling}
 \end{figure}
 ```
 
-### QQQ
+```{=latex}
+\begin{figure}
+   \centering
+   \subfigure[]{\includegraphics[width=0.4\textwidth]{Images/falling_three_methods.pdf}}
+   \subfigure[]{\includegraphics[width=0.4\textwidth]{Images/three_stars_in_the_south.pdf}}
+   \caption[Rare patterns]{The candlestick patterns "Falling Three Methods" (a), and "Three Stars in the South" (b), that have very stringent conditions.}
+   \label{fig:rare_patterns}
+\end{figure}
+```
 
-Moving on the stock indices, here we find quite similar results. There are no consistently significant sell signals. There are again quite a number of significant buy signals, however they are much less consistent than in the previous data sets. Curiously, the "New Price Lines" patterns now behave in exactly the opposite manner as in the case of GLD: they are now consistent buy signals, contrary to the theoretical prediction. After combing through the results, we find that the patterns in \autoref{tab:QQQ-buy-signals} act as consistent and significant buy signals.
+We also observe that certain candlestick patterns, which do not require gaps between the candles, are nonetheless rarely detected across any data set, regardless of the aggregation level. These patterns typically have the most stringent detection criteria, making them far less likely to occur. For instance, patterns such as “Three Stars in the South” and “Falling Three Methods” almost never appear in our data. The rarity of these patterns is likely due to the fact that each one demands the simultaneous fulfilling of up to ten different conditions, thereby creating a very narrow window for detection. For a visual reference, see \autoref{fig:rare_patterns}.
 
-\newpage
+Turning to our analysis of geometric Brownian motion (GBM) data, we also detect candlestick patterns on the synthetic data. The number of detected patterns is quite similar to the real-world data, with an average of around 230,000 patterns identified across the synthetic data set. In comparison, the real-world data yields slightly more detections, at about 250,000 patterns. Notably, the distribution of detected pattern types is also roughly equivalent across both the real and simulated data sets, suggesting that the generated data exhibits a similar pattern structure to that of real market data, at least from the perspective of candlestick pattern detection.
 
-We remark here that many of these patterns come in groups, some of them being "variations of a theme", others being opposite to each other (e.g. "Bottom"/"Top").
+## Evaluation results
 
-### SPY
+Concerning the evaluation results, one thing is clear: significant candlestick patterns are found. The amount and their consistency varies however, as we shall see in the next subsections.
 
-The results of SPY are quite similar to those of QQQ. Since these indices both track stock prices, this might not come as a surprise. There are again no consistently significant sell signals. There are quite a few consistently significant buy signals, many being the same as in QQQ. Some exceptions are: "Above the Stomach" is no longer consistently significant. "Deliberation" has become consistently significant. Also, the variations of "New Price Lines" have all lost their significance.
+### Significant candlestick patterns {#sec-signif-buy}
 
-## Preliminary conclusion
+```{=latex}
+\begin{figure}
+   \centering
+   \subfigure[]{\includegraphics[width=0.35\textwidth]{Images/buy_signals_BND.pdf}}
+   \subfigure[]{\includegraphics[width=0.35\textwidth]{Images/buy_signals_GLD.pdf}}
+   \subfigure[]{\includegraphics[width=0.35\textwidth]{Images/buy_signals_QQQ.pdf}}
+   \subfigure[]{\includegraphics[width=0.35\textwidth]{Images/buy_signals_SPY.pdf}}
+   \caption[Significant buy signals]{Significant buy signals across the different data sets and different levels of aggregation with the baseline evaluation. We can clearly see a decreasing trend in the amount of significant patterns with longer intervals. The stock indices (c), (d) have more significant patterns than the other two (a), (b).}
+   \label{fig:buy_signals}
+\end{figure}
+```
+```{=latex}
+\begin{figure}
+   \centering
+   \subfigure[]{\includegraphics[width=0.35\textwidth]{Images/z_score_minutes_BND.pdf}}
+   \subfigure[]{\includegraphics[width=0.35\textwidth]{Images/z_score_minutes_GLD.pdf}}
+   \subfigure[]{\includegraphics[width=0.35\textwidth]{Images/z_score_minutes_QQQ.pdf}}
+   \subfigure[]{\includegraphics[width=0.35\textwidth]{Images/z_score_minutes_SPY.pdf}}
+   \caption[Adjusted $z$-scores]{Adjusted $z$-scores across the different data sets and different levels of aggregation with the baseline evaluation. A slightly decreasing score can be observed with longer intervals. The performance does not vary that hugely however.}
+   \label{fig:z_score_minutes}
+\end{figure}
+```
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_base.pdf}
+   \caption[Base adjusted $z$-score]{The adjusted $z$-score across the different data sets. There does not appear to be a clearly better performing set.}
+   \label{fig:z_score_base}
+\end{figure}
+```
 
-With these results, we can make a few early conclusions.
+In \autoref{fig:buy_signals}, significant buy signals are plotted for the different data sets and with multiple levels of aggregation. We can clearly see that the amount of significant patterns fluctuates quite heavily, though we do clearly see a decrease when using longer time intervals. There do appear to be some upticks around time intervals with a "round" number of minutes, such as 10, 15, ..., 60 minutes. For this reason, and to keep the graphs more readable, we shall limit the graphed data to 1--15 minute intervals plus multiples of five minutes, up to one hour.
 
-1.  Candlestick patterns appear to possess some level of predictive power.
+We also observe that more significant patterns are detected on the asset indices than the other two. Especially GLD seems to perform pretty poorly, with a lot of intervals without any significant patterns. The generated data sets of geometric Brownian motion data are missing from \autoref{fig:buy_signals}. The reason for this is simple: we did not detect a single significant pattern---neither on the regular GBM data nor the one with a positive drift. This seems to indicate that the significance of candlestick patterns is dependent on human trading behavior, as we did detect a very similar number of candlestick patterns on the GBM data compared to the real data.
 
-    Of course, these results have to be taken with a grain of salt, as the methods of defining trends and evaluation used thus far are quite simple. But to see the same patterns consistently having (statistically significant) winning rates far in excess of 50%, regardless of the length of the time interval and data set one looks at, does seem to imply that "there is something here". This "something" definitely bears further investigation, making use of different evaluations, combinations with other technical indicators,... to see if these results hold up.
+Note that we only talked about **buy** patterns here, as curiously, we detected almost no significant sell signals. These do occur, but only on very short intervals, typically only the 1-minute interval, see also \autoref{tab:sell_signals}. This is definitely a curious result. One may expect to find more significant buy signals than sell signals because of inflation, but not on such short time frames. Again, we did not detect any significant sell patterns on the GBM data, so we can not compare the data with drift and the one without to conclusively state that inflation is the driving factor behind this result.
 
-2.  There are many more significant buy signals then sell signals.
+In \autoref{fig:buy_signals}, we plot significant buy signals across different data sets with varying levels of aggregation. The results clearly show that the number of significant patterns fluctuates quite remarkably. However, there is a noticeable decrease in the number of significant patterns as the time intervals increase in length. We also observe occasional upticks at time intervals corresponding to "round" minute numbers, such as 10, 15, 30, and 60 minutes. To make the graphs more readable and reduce noise, we will limit the displayed data to 1--15 minute intervals and multiples of five minutes up to one hour. Furthermore, we note that asset indices tend to show more significant patterns compared to the other asset classes. In particular, the GLD data set appears to perform poorly, with many intervals showing no significant patterns at all.
 
-    This is a quite surprising result, as one would expect prices to behave quite randomly on such short time intervals. Long term effects like inflation shouldn't play any role here, so to see that prices are "more likely" to move up than down after specific candlestick patterns warrants a further look.
+One might have noticed that the GBM data sets are not included in \autoref{fig:buy_signals}, as we did not detect a single significant buy pattern---neither in the regular GBM data nor in the version with a positive drift. This result suggests that the significance of candlestick patterns may be dependent on human trading behavior, as we did detect a similar number of candlestick patterns on the GBM data as we did on the real-world data sets. This discrepancy points to the possibility that market participant behavior plays a critical role in the occurrence of significant patterns.
 
-3.  Some patterns behave "as advertised" in theory. Other patterns behave opposite to the theory.
+It is also worth noting that we have only discussed **buy** signals in this context. Curiously, we detected almost no significant sell signals across the data. While some significant sell patterns were identified, they were almost exclusively limited to the 1-minute intervals, as shown in \autoref{tab:sell_signals}. One might expect to see more significant buy signals than sell signals due to factors like inflation, but the fact that the significant sell signals are so rare---and primarily confined to such short time frames---is unexpected. We did not detect any significant sell patterns in the GBM data, so it’s difficult to make a definitive conclusion about whether inflation or other factors are behind this phenomenon. Nonetheless, we would have expected the markets to behave very erratically on such short time frames, so this result is definitely a curious one.
 
-    With many patterns behaving as buy signals and sell signals being very rare, it is to be expected that mainly the predicted sell signals are wrong.
+```{=latex}
+\begin{table}
+\caption[Significant sell signals]{Overview of the significant sell signals on the 1-minute intervals.}
+\centering
+\begin{tabular}{ll}
+\label{tab:sell_signals}\\ \toprule
+Data set & Number of significant sell patterns \\ \midrule
+BND & 29 \\
+GLD & 21 \\
+QQQ & 11 \\
+SPY & 27 \\ \bottomrule
+\end{tabular}
+\end{table}
+```
 
-4.  The level of aggregation doesn't appear to influence the results much.
+When examining the adjusted $z$-scores in \autoref{fig:z_score_minutes}, we observe a similar downward trend in performance as we move towards larger time intervals. However, this decline is more gradual than the sharp drop in the number of significant patterns. When we plot the adjusted $z$-score for each data set, it becomes clear that the mean performance of the candlestick patterns remains relatively consistent across the different data sets. This suggests that, despite fluctuations in the number of significant patterns, the overall predictive quality of the detected patterns is fairly stable across various asset classes and time intervals.
 
-    The longer the time interval one looks at, the smaller the total data set becomes, which also reduces the sample size of the patterns that are detected. It is interesting to see that the amount of detections of a specific candlestick pattern being detected behaves quite linearly with respect to the length of the time interval. There are almost no cases of sharp declines in this amount from one aggregation level to the next.
+## Effects of parameters
+
+Next, we will analyze the impact of the various parameters on the evaluation results. Since the number of significant buy patterns remains relatively consistent across different parameters (with one notable exception), resulting in nearly identical graphs, we will primarily focus on the adjusted $z$-score as the main metric for assessing pattern performance.
+
+Given the large number of plots, many of which are difficult to interpret when presented together, we have chosen to highlight only the most relevant or interesting results here. The plots not included here can be found in \autoref{app:A}.
+
+### Trend inclusion
+
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_trend_SPY.pdf}
+   \caption[Effect of trend]{The combined performance, along with the effect of the considering the correct, no and the opposite trend. Not considering the trend seems to have a somewhat positive influence on the performance.}
+   \label{fig:z_score_trend}
+\end{figure}
+```
+
+When analyzing the candlestick patterns with respect to the correct, no, or even the opposite trend, we observe some slightly positive effects of not considering the trend on the QQQ and SPY data sets. In fact, ignoring the trend often outperforms the other adjusted $z$-scores for these two data sets, as shown in \autoref{fig:z_score_trend}. This further underscores the similarity in performance between these two stock indices.
+
+On the other hand, the BND and GLD data sets present less clear results. While ignoring the trend seems to offer some positive effects, the improvement is not as consistent or pronounced as with the stock indices. In these cases, the trendless approach yields mixed outcomes, indicating that the absence of trend consideration is less impactful for bond and gold asset classes.
+
+### Trend averaging method
+
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_average_GLD.pdf}
+   \caption[Effect of trend averaging method]{Effect of different trend averaging methods on the adjusted $z$-score. The different averaging methods do not seem to have much effect.}
+   \label{fig:z_score_average}
+\end{figure}
+```
+
+The different methods of trend averaging do not seem to have a noteworthy impact on the results, as illustrated in \autoref{fig:z_score_average}. The differences between the methods are minimal and highly scattered. While there are occasional small peaks in performance for the Exponential Moving Average (EMA) at certain time intervals, these results are not consistent. Given that the inclusion of the trend itself had only a modest effect, these findings are somewhat expected.
+
+### Trend definition method
+
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_decision_QQQ.pdf}
+   \caption[Effect of trend defining method]{Effect of different trend defining methods on the adjusted $z$-score. Similar to the trend averaging methods, the different definition methods do not have much influence.}
+   \label{fig:z_score_decision}
+\end{figure}
+```
+
+Similarly, the choice of trend definition method appears to have little influence on the results, as can be seen in \autoref{fig:z_score_decision}. Performance remains extremely similar across all methods, with no one approach standing out. Again, this is consistent with the observation that trend inclusion does not significantly impact the overall performance of the candlestick patterns.
+
+### Margins
+
+
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_evaluation_constant_BND.pdf}
+   \caption[Effect of margins (constant)]{Comparing the effect of the constant versus the ATR margins on the adjusted $z$-score. The greater the constant margins, the better the performance. This difference can largely be explained due to the increased significance of the patterns. With longer time intervals, the effect seems to diminish somewhat, the differences becoming smaller.}
+   \label{fig:z_score_constant}
+\end{figure}
+```
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_evaluation_percent_SPY.pdf}
+   \caption[Effect of margins (percentage)]{Comparing the effect of the percentage versus the ATR margins on the adjusted $z$-score. Again, a greater percentage results in better performance. This difference can once more be explained due to the increased significance of the patterns. The effect again diminishes with longer time intervals.}
+   \label{fig:z_score_percent}
+\end{figure}
+```
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/buy_signals_evaluation_QQQ.pdf}
+   \caption[Effect of margins (buy signals)]{Comparing the effect of the percentage and the constant margins on the amount of significant buy signals. The alternative margins cause a noticeable increase in the number of significant patterns, which also causes their adjusted $z$-score to increase.}
+   \label{fig:buy_signals_evaluation}
+\end{figure}
+```
+
+What does appear to have a notable impact on the performance of candlestick patterns are the margins used for the stop-loss/take-profit evaluation. Both the percentage-based and constant margins outperform the ATR margins by a large amount, as shown in \autoref{fig:z_score_constant} and \autoref{fig:z_score_percent}. These alternative margin methods not only increase the adjusted $z$-score, but also lead to a higher number of significant buy signals, as demonstrated in \autoref{fig:buy_signals_evaluation}. Interestingly, the increase in significant buy signals seems to come at the expense of significant sell signals, as the latter disappear entirely when using the alternative margin methods.
+
+It is clear that the percentage and constant margins both outperform the ATR margins. However, the relative performance compared to each other of these two margin types depends on the specific data set. For example, on QQQ, the constant margins perform better, while on SPY, the percentage margins are more effective. The GLD data set appears to be more balanced, but even in this case, the alternative margins still provide better results. Additionally, the effect of the alternate margins diminishes with longer time intervals: the longer the interval, the smaller the impact of the margin choice.
+
+### Time of day
+
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_time_QQQ.pdf}
+   \caption[Effect of moment of day]{Comparing the effect of filtering by time versus the entire day on the adjusted $z$-score. We do not notice a positive effect. If anything, filtering down by time seems to reduce the profitability.}
+   \label{fig:z_score_time}
+\end{figure}
+```
+
+When filtering down to popular trading windows---market open and close; New York open---we see a rather negative effect on the profitability of candlestick patterns in \autoref{fig:z_score_time}. This could be explained in part by the vastly reduced sample size compared to analyzing the entire trading day. This results in fewer significant patterns, which is especially evident on the GLD data set.
+
+When focusing on popular trading windows---such as market open and close or the New York open---we observe a negative impact on the profitability of candlestick patterns, as shown in \autoref{fig:z_score_time}. This decline in performance may be partially explained by the substantially reduced sample size compared to analyzing the entire trading day. With fewer data points available, there are consequently fewer significant patterns detected, a trend that is particularly noticeable in the GLD data set (\autoref{fig:A.7}).
+
+### Economic news
+
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_news_SPY.pdf}
+   \caption[Effect of economic news]{Comparing the effect filtering by economic news on the adjusted $z$-score. This filtering operation does not appear to have a positive influence on the performance.}
+   \label{fig:z_score_news}
+\end{figure}
+```
+
+Filtering by economic news generally leads to negative effects on candlestick pattern performance, with one notable exception: the BND data set, where filtering out economic news outperforms the baseline in about 50% of cases. This finding contrasts with the results from filtering by specific time periods, where the performance decrease was much more pronounced. While filtering by news does reduce the number of significant patterns---again likely in part due to the much smaller sample size---the impact is less drastic compared to the effect of time-based filtering.
+
+### Technical indicators
+
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_technical_indicator_1_QQQ.pdf}
+   \caption[Effect of technical indicators 1]{Comparing the effect of filtering by the technical indicators ADX, DPO and MACD on the adjusted $z$-score. Overall, the results seem to be quite similar across the board, the indicators slightly lowering the performance, with some exceptions (and pretty big peaks) here and there.}
+   \label{fig:z_score_technical_indicator_1}
+\end{figure}
+```
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_technical_indicator_2_QQQ.pdf}
+   \caption[Effect of technical indicators 2]{Comparing the effect of filtering by the technical indicators MFI, momentum and RSI on the adjusted $z$-score. Again, the results seem to be quite similar across the board, the indicators slightly lowering the performance, with some exceptions (and pretty big peaks) here and there.}
+   \label{fig:z_score_technical_indicator_2}
+\end{figure}
+```
+```{=latex}
+\begin{figure}
+   \centering
+   \includegraphics[width=0.8\textwidth]{Images/z_score_technical_indicator_3_SPY.pdf}
+   \caption[Effect of technical indicators 3]{Comparing the effect of filtering by the technical indicators TRIX and \%R on the adjusted $z$-score. Overall, the results seem to be quite similar across the board, the indicators slightly lowering the performance, with some exceptions (and pretty big peaks) here and there.}
+   \label{fig:z_score_technical_indicator_3}
+\end{figure}
+```
+
+When applying filters based on technical indicators, the results are quite mixed. Some indicators performed very poorly, to the point where they led to no significant patterns being detected at all. These indicators---ATR, Bollinger Bands (BB), Moving Average (MA), Parabolic SAR (PSAR), Volatility Index (VI), and Volume Weight (VW)---were excluded from the graphs.
+
+As shown in \autoref{fig:z_score_technical_indicator_1}, \autoref{fig:z_score_technical_indicator_2}, and \autoref{fig:z_score_technical_indicator_3}, the results remain mixed. In general, technical indicators tend to slightly reduce the performance of candlestick patterns, though there are occasional exceptions and performance peaks. This trend holds across all the indicators we studied and for all data sets.
