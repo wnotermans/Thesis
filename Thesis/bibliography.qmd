@@ -14,120 +14,744 @@
   \label{app:A}
   Here we present the plots we left out of section 5.3.\\
 
-  \autoref{fig:A.1} shows the effect of including the correct, no, or the opposite trend. \autoref{fig:A.2} and \autoref{fig:A.3} the effects of trend averaging and definition methods, respectively. \autoref{fig:A.4}, \autoref{fig:A.5} and \autoref{fig:A.6} show the results of using different margins: the influence of the constant and percentage margins on the adjusted $z$-score; and the number of significant buy signals. \autoref{fig:A.7} and \autoref{fig:A.8} show the effect of filtering by time of day and by economic news events, respectively. Finally, \autoref{fig:A.9}, \autoref{fig:A.10} and \autoref{fig:A.11} show the results of filtering by technical indicators.
-    \begin{figure}
+  \autoref{fig-A.1} shows the effect of including the correct, no, or the opposite trend. \autoref{fig-A.2} the effects of trend definition methods. \autoref{fig-A.3} and \autoref{fig-A.4} display the effect of filtering by time period on the adjusted $z$-score and excess return, respectively.
+    \begin{figure}[H]
       \centering
-      \includegraphics[width=0.7\textwidth]{Images/z_score_trend_BND.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_trend_GLD.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_trend_QQQ.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/performance/z_score_trend_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/performance/z_score_trend_QQQ.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/performance/z_score_trend_SPY.pdf}
       \caption{Effect of including trend.}
-      \label{fig:A.1}
+      \label{fig-A.1}
     \end{figure}
-    \begin{figure}
+    \begin{figure}[H]
       \centering
-      \includegraphics[width=0.7\textwidth]{Images/z_score_average_BND.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_average_QQQ.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_average_SPY.pdf}
-      \caption{Effect of trend averaging methods.}
-      \label{fig:A.2}
-    \end{figure}
-    \begin{figure}
-      \centering
-      \includegraphics[width=0.7\textwidth]{Images/z_score_decision_BND.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_decision_GLD.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_decision_SPY.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/performance/z_score_definition_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/performance/z_score_definition_QQQ.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/performance/z_score_definition_SPY.pdf}
       \caption{Effect of trend definitions.}
-      \label{fig:A.3}
+      \label{fig-A.2}
     \end{figure}
-    \begin{figure}
+    \begin{figure}[H]
       \centering
-      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_constant_GLD.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_constant_QQQ.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_constant_SPY.pdf}
-      \caption{Effect of different margins (constant).}
-      \label{fig:A.4}
+      \includegraphics[width=0.7\textwidth]{Images/performance/z_score_time_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/performance/z_score_time_QQQ.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/performance/z_score_time_SPY.pdf}
+      \caption{Effect of filtering by time of day (adjusted $z$-score).}
+      \label{fig-A.3}
     \end{figure}
-    \begin{figure}
+    \begin{figure}[H]
       \centering
-      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_percent_BND.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_percent_GLD.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_evaluation_percent_QQQ.pdf}
-      \caption{Effect of different margins (percentage).}
-      \label{fig:A.5}
+      \includegraphics[width=0.7\textwidth]{Images/performance/excess_time_BND.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/performance/excess_time_GLD.pdf}
+      \includegraphics[width=0.7\textwidth]{Images/performance/excess_time_QQQ.pdf}
+      \caption{Effect of filtering by time of day (excess return).}
+      \label{fig-A.4}
     \end{figure}
-    \begin{figure}
+
+  \chapter{Candlestick patterns}
+  \label{app:B}
+  \section*{One-line candles}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
       \centering
-      \includegraphics[width=0.7\textwidth]{Images/buy_signals_evaluation_BND.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/buy_signals_evaluation_GLD.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/buy_signals_evaluation_SPY.pdf}
-      \caption{Significant buy signals with the different margins.}
-      \label{fig:A.6}
-    \end{figure}
-    \begin{figure}
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/beltholdbearish.pdf}
+      \caption{Belt Hold, Bearish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
       \centering
-      \includegraphics[width=0.7\textwidth]{Images/z_score_time_BND.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_time_GLD.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_time_SPY.pdf}
-      \caption{Effect of filtering by time of day.}
-      \label{fig:A.7}
-    \end{figure}
-    \begin{figure}
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/beltholdbullish.pdf}
+      \caption{Belt Hold, Bullish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
       \centering
-      \includegraphics[width=0.7\textwidth]{Images/z_score_news_BND.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_news_GLD.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_news_QQQ.pdf}
-      \caption{Effect of filtering by economic news.}
-      \label{fig:A.8}
-    \end{figure}
-    \begin{figure}
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/candleblack.pdf}
+      \caption{Candle, Black}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
       \centering
-      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_1_BND.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_1_GLD.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_1_SPY.pdf}
-      \caption{Effect of filtering by technical indicators (1).}
-      \label{fig:A.9}
-    \end{figure}
-    \begin{figure}
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/candleshortblack.pdf}
+      \caption{Candle, Short Black}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
       \centering
-      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_2_BND.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_2_GLD.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_2_SPY.pdf}
-      \caption{Effect of filtering by technical indicators (2).}
-      \label{fig:A.10}
-    \end{figure}
-    \begin{figure}
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/candleshortwhite.pdf}
+      \caption{Candle, Short White}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
       \centering
-      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_3_BND.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_3_GLD.pdf}
-      \includegraphics[width=0.7\textwidth]{Images/z_score_technical_indicator_3_QQQ.pdf}
-      \caption{Effect of filtering by technical indicators (3).}
-      \label{fig:A.11}
-    \end{figure}
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/candlewhite.pdf}
+      \caption{Candle, White}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/dojidragonfly.pdf}
+      \caption{Doji, Dragonfly}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/dojigappingdown.pdf}
+      \caption{\centering Doji, Gapping down\\(only valid after a downwards gap)}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/dojigappingup.pdf}
+      \caption{\centering Doji, Gapping Up\\(only valid after a downwards gap)}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/dojigravestone.pdf}
+      \caption{Doji, Gravestone}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/dojilonglegged.pdf}
+      \caption{Doji, Long-Legged}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/dojinorthern.pdf}
+      \caption{\centering Doji, Northern\\(only valid in an upwards trend)}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/dojisouthern.pdf}
+      \caption{\centering Doji, Southern\\(only valid in a downwards trend)}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/hammer.pdf}
+      \caption{Hammer}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/hangingman.pdf}
+      \caption{Hanging Man}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/highwave.pdf}
+      \caption{High Wave}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/longblackday.pdf}
+      \caption{\centering Long Black Day\\(longer than preceding average)}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/longwhiteday.pdf}
+      \caption{\centering Long White Day\\(longer than preceding average)}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/marubozublack.pdf}
+      \caption{Marubozu, Black}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/marubozuclosingblack.pdf}
+      \caption{Marubozu, Closing Black}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/marubozuclosingwhite.pdf}
+      \caption{Marubozu, Closing Black}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/marubozuopeningblack.pdf}
+      \caption{Marubozu, Opening Black}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/marubozuopeningwhite.pdf}
+      \caption{Marubozu, Opening White}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/marubozuwhite.pdf}
+      \caption{Marubozu, White}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/rickshawman.pdf}
+      \caption{Rickshaw Man}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/shootingstaronecandle.pdf}
+      \caption{Shooting Star, One-Candle}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/spinningtopblack.pdf}
+      \caption{Spinning Top, Black}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/spinningtopwhite.pdf}
+      \caption{Spinning Top, White}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/takuriline.pdf}
+      \caption{Takuri Line}
+    \end{minipage}
+  \end{figure}
+
+  \newpage
+
+  \section*{Two-line candles}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/abovethestomach.pdf}
+      \caption{Above the Stomach}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/belowthestomach.pdf}
+      \caption{Below the Stomach}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/darkcloudcover.pdf}
+      \caption{Dark Cloud Cover}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/dojistarbearish.pdf}
+      \caption{Doji Star, Bearish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/dojistarbullish.pdf}
+      \caption{Doji Star, Bullish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/engulfingbearish.pdf}
+      \caption{Engulfing, Bearish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/engulfingbullish.pdf}
+      \caption{Engulfing, Bullish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/hammerinverted.pdf}
+      \caption{Hammer, Inverted}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/haramibearish.pdf}
+      \caption{Harami, Bearish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/haramibullish.pdf}
+      \caption{Harami, Bullish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/haramicrossbearish.pdf}
+      \caption{Harami Cross, Bearish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/haramicrossbullish.pdf}
+      \caption{Harami Cross, Bullish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/homingpigeon.pdf}
+      \caption{Homing Pigeon}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/inneck.pdf}
+      \caption{In Neck}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/kickingbearish.pdf}
+      \caption{Kicking, Bearish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/kickingbullish.pdf}
+      \caption{Kicking, Bullish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/lastengulfingbottom.pdf}
+      \caption{Last Engulfing, Bottom}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/lastengulfingtop.pdf}
+      \caption{Last Engulfing, Top}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/matchinglow.pdf}
+      \caption{Matching Low}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/meetinglinesbearish.pdf}
+      \caption{Meeting Lines, Bearish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/meetinglinesbullish.pdf}
+      \caption{Meeting Lines, Bullish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/onneck.pdf}
+      \caption{On Neck}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/piercingpattern.pdf}
+      \caption{Piercing Pattern}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/separatinglinesbearish.pdf}
+      \caption{Separating Lines, Bearish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/separatinglinesbullish.pdf}
+      \caption{Separating Lines, Bullish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/shootingstartwocandle.pdf}
+      \caption{Shooting Star, Two-Candle}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/thrusting.pdf}
+      \caption{Thrusting}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/tweezersbottom.pdf}
+      \caption{Tweezers, Bottom}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/tweezerstop.pdf}
+      \caption{Tweezers, top}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/twoblackgappingcandles.pdf}
+      \caption{Two Black Gapping Candles}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/windowfalling.pdf}
+      \caption{Window, Falling}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/windowrising.pdf}
+      \caption{Window, Rising}
+    \end{minipage}
+  \end{figure}
+
+  \newpage
+
+  \section*{Three-line candles}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/abandonedbabybearish.pdf}
+      \caption{Abandoned Baby, Bearish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/abandonedbabybullish.pdf}
+      \caption{Abandoned Baby, Bullish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/advanceblock.pdf}
+      \caption{Advance Block}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/deliberation.pdf}
+      \caption{Deliberation}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/dojistarcollapsing.pdf}
+      \caption{Doji Star, Collapsing}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/downsidegapthreemethods.pdf}
+      \caption{Downside Gap Three Methods}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/downsidetasukigap.pdf}
+      \caption{Downside Tasuki Gap}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/eveningdojistar.pdf}
+      \caption{Evening Doji Star}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/eveningstar.pdf}
+      \caption{Evening Star}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/identicalthreecrows.pdf}
+      \caption{Identical Three Crows}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/morningdojistar.pdf}
+      \caption{Morning Doji Star}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/morningstar.pdf}
+      \caption{Morning Star}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/sidebysidewhitelinesbearish.pdf}
+      \caption{Side-by-Side White Lines, Bearish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/sidebysidewhitelinesbullish.pdf}
+      \caption{Side-by-Side White Lines, Bullish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/sticksandwich.pdf}
+      \caption{Stick Sandwich}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/threeblackcrows.pdf}
+      \caption{Three Black Crows}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/threeinsidedown.pdf}
+      \caption{Three Inside Down}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/threeinsideup.pdf}
+      \caption{Three Inside Up}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/threeoutsidedown.pdf}
+      \caption{Three Outside Down}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/threeoutsideup.pdf}
+      \caption{Three Outside Up}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/threestarsinthesouth.pdf}
+      \caption{Three Stars in the South}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/threewhitesoldiers.pdf}
+      \caption{Three White Soldiers}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/tristarbearish.pdf}
+      \caption{Tri-Star, Bearish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/tristarbullish.pdf}
+      \caption{Tri-Star, Bullish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/twocrows.pdf}
+      \caption{Two Crows}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/uniquethreeriverbottom.pdf}
+      \caption{Unique Three-River Bottom}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/upsidegapthreemethods.pdf}
+      \caption{Upside Gap Three Methods}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/upsidegaptwocrows.pdf}
+      \caption{Upside Gap Two Crows}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/upsidetasukigap.pdf}
+      \caption{Upside Tasuki Gap}
+    \end{minipage}
+  \end{figure}
+
+  \newpage
+
+  \section*{Four-line candles}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/concealingbabyswallow.pdf}
+      \caption{Concealing Baby Swallow}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/threelinestrikebearish.pdf}
+      \caption{Three-Line Strike, Bearish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/threelinestrikebullish.pdf}
+      \caption{Three-Line Strike, Bullish}
+    \end{minipage}
+  \end{figure}
+
+  \newpage
+
+  \section*{Five(+)-line candles}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/eightnewpricelines.pdf}
+      \caption{8 New Price Lines}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/tennewpricelines.pdf}
+      \caption{10 New Price Lines}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/twelvenewpricelines.pdf}
+      \caption{12 New Price Lines}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/thirteennewpricelines.pdf}
+      \caption{13 New Price Lines}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/breakawaybearish.pdf}
+      \caption{Breakaway, Bearish}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/breakawaybullish.pdf}
+      \caption{Breakaway, Bullish}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/fallingthreemethods.pdf}
+      \caption{Falling Three Methods}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/ladderbottom.pdf}
+      \caption{Ladder Bottom}
+    \end{minipage}
+  \end{figure}
+  \begin{figure}[H]
+    \centering
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/mathold.pdf}
+      \caption{Mat Hold}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+      \centering
+      \includegraphics[width=0.4\textwidth]{Images/candlesticks_appendix/risingthreemethods.pdf}
+      \caption{Rising Three Methods}
+    \end{minipage}
+  \end{figure}
 
   \chapter{Technical indicators}
-  \label{app:B}
-  Here we present the various technical indicators we used throughout this thesis. They were taken from \cite{kirkpatrick2007}, \cite{murphy1999} and \cite{pring1991}.\\
+  \label{app:C}
+  Here we present the implementations of the indicators ATR and PSAR.
+  \section*{ATR}
+  We employed a window size of 15, this matches the window size of the exponential moving average.
+  \inputpythonfile{indicators.py}[32][42]
+  \section*{PSAR}
+  We employed the defaults of \cite{kirkpatrick2007}: $\texttt{step=0.02}$, $\texttt{max\_accel\_factor=0.2}$.
+  \inputpythonfile{indicators.py}[210][260]
 
-  The following are included:\\
-  \begin{tabular}{ll}
-    \textbf{ATR} & Average True Range.\\
-    \textbf{ADX} & Average Directional Movement Index.\\
-    \textbf{BB} & Bollinger Bands.\\
-    \textbf{DPO} & Detrended Price Oscillator.\\
-    \textbf{MA} & Moving Average.\\
-    \textbf{MACD} & Moving Average Convergence Divergence.\\
-    \textbf{MFI} & Money Flow Index.\\
-    \textbf{PSAR} & Parabolic Stop and Reverse.\\
-    \textbf{RSI} & Relative Strength Index.\\
-    \textbf{TRIX} & Triple Exponential.\\
-    \textbf{VI} & Vortex Indicator.\\
-    \textbf{VW} & Volume Weight.\\
-    \textbf{WMA} & Weighted Moving Average.\\
-    \textbf{\%R} & Williams' \%R.\\
-  \end{tabular}
-  \newpage
-  \section*{\texttt{indicators.py} (7--413)}
-  \inputpythonfile{indicators.py}[7][413]
 
 \end{appendices}
 ```

@@ -30,22 +30,15 @@ def true_range(df: pd.DataFrame) -> pd.Series:
 
 
 def average_true_range(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
-    """
-    Calculates the average true range (ATR).
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        DataFrame with OHLC data.
-    indicator_kwargs : dict
-        ``window``: controls the window size.
-
-    Returns
-    -------
-    pd.Series
-        The ATR indicator.
-    """
-    tr = true_range(df)
+    prev_close = df["close"].shift()
+    tr = pd.concat(
+        [
+            df["high"] - df["low"],
+            (df["high"] - prev_close).abs(),
+            (df["low"] - prev_close).abs(),
+        ],
+        axis=1,
+    ).max(axis=1)
     return tr.ewm(alpha=1 / indicator_kwargs["window"], adjust=False).mean()
 
 
@@ -215,21 +208,6 @@ def momentum(df: pd.DataFrame, *, indicator_kwargs: dict) -> pd.Series:
 
 
 def parabolic_SAR(df: pd.DataFrame, *, indicator_kwargs: dict) -> list:
-    """
-    Calculates the parabolic stop and reverse indicator (PSAR).
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        DataFrame with OHLC data.
-    indicator_kwargs : dict
-        ``step``: how much to increment the acceleration factor by.
-
-    Returns
-    -------
-    list
-        The PSAR indicator.
-    """
     step = indicator_kwargs["step"]
     max_accel_factor = indicator_kwargs["max_accel_factor"]
 
