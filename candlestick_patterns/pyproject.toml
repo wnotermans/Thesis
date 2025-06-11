@@ -7,6 +7,7 @@ authors = [{ name = "wnotermans", email = "woutnotermans1@gmail.com" }]
 requires-python = ">=3.13"
 dependencies = [
     "pandas[computation,parquet,performance]>=2.2.3",
+    "scikit-learn>=1.7.0",
     "word2number>=1.1",
 ]
 
