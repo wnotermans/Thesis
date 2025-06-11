@@ -87,14 +87,14 @@ INDICATOR_DEFAULTS = {
 # Filter by indicators
 INDICATOR_FILTER_KWARGS = {}
 # Which averaging method to use in trend calculation; options are: SMA, WMA, EMA
-TREND_AVERAGING_METHOD = "SMA"
+TREND_AVERAGING_METHOD = "EMA"
 # Override
 TREND_AVERAGING_METHOD_KWARGS = {}
 # Defaults
 TREND_AVERAGING_DEFAULTS = {
-    "SMA": {"window": 5},
-    "WMA": {"window": 5},
-    "EMA": {"window": 5},
+    "SMA": {"window": 15},
+    "WMA": {"window": 15},
+    "EMA": {"window": 15},
 }
 # Which trend decision method to use; options are: monotonic, counting, high_low, PSAR
 TREND_DECISION_METHOD = "monotonic"
@@ -103,7 +103,7 @@ TREND_DECISION_METHOD_KWARGS = {}
 # Defaults
 TREND_DECISION_DEFAULTS = {
     "monotonic": {"span": 7},
-    "counting": {"span": 7, "fraction": 0.7},
+    "counting": {"span": 7, "fraction": 2 / 3},
     "PSAR": {"step": 0.02, "max_accel_factor": 0.2},
 }
 # How to handle gaps in the data

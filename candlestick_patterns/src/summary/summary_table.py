@@ -1,121 +1,11 @@
 import os
-import time
 
 import numpy as np
 import pandas as pd
 from scipy.stats import false_discovery_control
 from word2number import w2n
 
-from indicators import backtest
 from shared import constants
-
-BUY_NAMES = {
-    "belt hold bullish",
-    "doji southern",
-    "hammer",
-    "takuri line",
-    "above the stomach",
-    "doji star bullish",
-    "engulfing bullish",
-    "hammer inverted",
-    "harami bullish",
-    "harami cross bullish",
-    "homing pigeon",
-    "last engulfing bottom",
-    "matching low",
-    "meeting lines bullish",
-    "piercing pattern",
-    "tweezers bottom",
-    "abandoned baby bullish",
-    "morning doji star",
-    "morning star",
-    "stick sandwich",
-    "three inside up",
-    "three outside up",
-    "three stars in the south",
-    "three white soldiers",
-    "tri star bullish",
-    "unique three river bottom",
-    "concealing baby swallow",
-    "breakaway bullish",
-    "ladder bottom",
-}
-SELL_NAMES = {
-    "belt hold bearish",
-    "doji northern",
-    "hanging man",
-    "shooting star one candle",
-    "below the stomach",
-    "dark cloud cover",
-    "doji star bearish",
-    "engulfing bearish",
-    "harami bearish",
-    "harami cross bearish",
-    "last engulfing top",
-    "meeting lines bearish",
-    "shooting star two candle",
-    "tweezers top",
-    "abandoned baby bearish",
-    "advance block",
-    "deliberation",
-    "doji star collapsing",
-    "evening doji star",
-    "evening star",
-    "identical three crows",
-    "three black crows",
-    "three inside down",
-    "three outside down",
-    "tri star bearish",
-    "two crows",
-    "upside gap two crows",
-    "breakaway bearish",
-    "eight new price lines",
-    "ten new price lines",
-    "twelve new price lines",
-    "thirteen new price lines",
-}
-HOLD_NAMES = {
-    "marubozu black",
-    "marubozu closing black",
-    "marubozu closing white",
-    "marubozu opening black",
-    "marubozu opening white",
-    "marubozu white",
-    "doji gapping down",
-    "doji gapping up",
-    "in neck",
-    "on neck",
-    "separating lines bearish",
-    "separating lines bullish",
-    "thrusting",
-    "window falling",
-    "window rising",
-    "downside gap three methods",
-    "downside tasuki gap",
-    "side by side white lines bearish",
-    "side by side white lines bullish",
-    "two black gapping candles",
-    "upside gap three methods",
-    "upside tasuki gap",
-    "three line strike bearish",
-    "three line strike bullish",
-    "falling three methods",
-    "mat hold",
-    "rising three methods",
-    "long black day",
-    "long white day",
-}
-
-COLUMN_HEADERS = [
-    "Pattern",
-    "Number of candlesticks",
-    "Number detected",
-    "Signal type",
-    "Win rate",
-    "Binomial test sell",
-    "Binomial test buy",
-    "Significance",
-]
 
 
 def make_summary_table(*, run_name: str) -> None:
@@ -148,7 +38,7 @@ def make_summary_table(*, run_name: str) -> None:
 
             ser = pd.Series()
 
-            win_rate, down_test, up_test, number_detected = pd.read_csv(
+            obs_win_rate, null_win_rate, p_value, number_detected = pd.read_csv(
                 f"data/runs/{run_name}/evaluation/{number_str}/{pattern}",
                 header=None,
             ).iloc[0]
@@ -160,21 +50,34 @@ def make_summary_table(*, run_name: str) -> None:
                 number_detected,
             )
 
-            down_test = down_test if down_test != "/" else 1.0
-            up_test = up_test if up_test != "/" else 1.0
-            ser["Absolute win rate"] = win_rate
-            ser["p value"] = min(down_test, up_test)
+            if any(x in str(obs_win_rate) for x in ["+", "-"]):
+                plus_minus = obs_win_rate[-1]
+                obs_win_rate = float(obs_win_rate[:-1])
+            else:
+                plus_minus = ""
+            if any(x in str(null_win_rate) for x in ["+", "-"]):
+                plus_minus = null_win_rate[-1]
+                null_win_rate = float(null_win_rate[:-1])
 
-            if down_test < up_test:
+            ser["Observed win rate"] = obs_win_rate
+            ser["Null win rate"] = null_win_rate
+            ser["p value"] = p_value
+
+            if plus_minus == "-":
                 ser["Signal type"] = "Sell"
-            elif up_test < down_test:
+            elif plus_minus == "+":
                 ser["Signal type"] = "Buy"
             else:
                 ser["Signal type"] = ""
 
-            if ser["Absolute win rate"] != "/":
+            if ser["Observed win rate"] != "/" and ser["Null win rate"] not in [
+                "/",
+                0,
+                1,
+            ]:
                 ser["Adjusted z-score"] = (
-                    (2 * win_rate - 1)
+                    (obs_win_rate - null_win_rate)
+                    / (null_win_rate * (1 - null_win_rate))
                     * np.sqrt(number_detected)
                     * min(np.log(number_detected), np.log(5000))
                 )
@@ -182,7 +85,7 @@ def make_summary_table(*, run_name: str) -> None:
                 ser["Adjusted z-score"] = 0
             dataframe_rows.append(ser)
     data = pd.DataFrame(dataframe_rows)
-    data["p value"] = false_discovery_control(data["p value"])
+    data["p value"] = false_discovery_control(data["p value"], method="by")
     data["Significance"] = ""
     data.loc[data["p value"] < constants.ONE_STAR_SIGNIFICANCE, "Significance"] = "*"
     data.loc[data["p value"] < constants.TWO_STAR_SIGNIFICANCE, "Significance"] = "**"
@@ -234,7 +137,7 @@ def make_meta_summary(*, run_name: str) -> None:
         best_buy_index = buy_signals.idxmin()
         best_buy_pattern, best_buy_pvalue, best_buy_win_rate, best_buy_z_score = (
             data.iloc[best_buy_index][
-                ["Pattern", "p value", "Absolute win rate", "Adjusted z-score"]
+                ["Pattern", "p value", "Observed win rate", "Adjusted z-score"]
             ].to_numpy()
         )
     if (sell_signals := data.loc[data["Signal type"] == "Sell", "p value"]).empty:
@@ -248,7 +151,7 @@ def make_meta_summary(*, run_name: str) -> None:
         best_sell_index = sell_signals.idxmin()
         best_sell_pattern, best_sell_pvalue, best_sell_win_rate, best_sell_z_score = (
             data.iloc[best_sell_index][
-                ["Pattern", "p value", "Absolute win rate", "Adjusted z-score"]
+                ["Pattern", "p value", "Observed win rate", "Adjusted z-score"]
             ].to_numpy()
         )
     total_patterns_detected = (data["Number detected"]).sum()
@@ -264,18 +167,41 @@ def make_meta_summary(*, run_name: str) -> None:
         meta["Best buy p value"],
         meta["Best buy win rate"],
         meta["Best buy adjusted z-score"],
-    ) = (best_buy_pattern, best_buy_pvalue, best_buy_win_rate, best_buy_z_score)
+    ) = best_buy_pattern, best_buy_pvalue, best_buy_win_rate, best_buy_z_score
     (
         meta["Best sell pattern"],
         meta["Best sell p value"],
         meta["Best sell win rate"],
         meta["Best sell adjusted z-score"],
-    ) = (best_sell_pattern, best_sell_pvalue, best_sell_win_rate, best_sell_z_score)
+    ) = best_sell_pattern, best_sell_pvalue, best_sell_win_rate, best_sell_z_score
     meta["Average adjusted z-score"] = data.loc[
         (data["Adjusted z-score"] != 0) & (~data["Significance"].isna()),
         "Adjusted z-score",
     ].mean()
     meta["Total number detected"] = int(total_patterns_detected)
+    data["Observed win rate"] = data["Observed win rate"].replace("/", None)
+    data["Null win rate"] = data["Null win rate"].replace("/", None)
+    meta["Mean observed win rate"] = (
+        mean_obs := (
+            data.loc[
+                ~data["Observed win rate"].isna(),
+                "Observed win rate",
+            ]
+            .astype(float)
+            .mean()
+        )
+    )
+    meta["Mean null win rate"] = (
+        mean_null := (
+            data.loc[
+                ~data["Null win rate"].isna(),
+                "Null win rate",
+            ]
+            .astype(float)
+            .mean()
+        )
+    )
+    meta["Excess return"] = mean_obs - mean_null
     meta.to_csv(f"data/runs/{run_name}/meta_summary.csv", header=False)
 
 
@@ -288,12 +214,5 @@ def make_summaries(*, run_name: str) -> None:
     run_name : str
         The run name.
     """
-    print("Making summary tables", end="\r")
-    t = time.perf_counter()
     make_summary_table(run_name=run_name)
     make_meta_summary(run_name=run_name)
-    backtest.aggregate_indicators(run_name=run_name)
-    print(
-        f"Making summary tables done in {time.perf_counter() - t:3.2f}s",
-        end="\n\n",
-    )

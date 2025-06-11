@@ -1,5 +1,3 @@
-import time
-
 import numpy as np
 import pandas as pd
 
@@ -237,8 +235,6 @@ def calculate_trend(
     pd.DataFrame
         Original df along with a "trend" column.
     """
-    t = time.perf_counter()
-
     averaging_kwargs = shared_functions.set_kwarg_defaults(
         averaging_kwargs,
         kwargs_to_set=AVERAGING_METHODS,
@@ -262,7 +258,5 @@ def calculate_trend(
 
     if "rolling_average" in df.columns:
         del df["rolling_average"]
-
-    print(f"Calculating trend done in {time.perf_counter() - t:3.2f}s", end="\n\n")
 
     return df

@@ -1,12 +1,10 @@
-import time
-
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import TimeSeriesSplit
 
 from aggregation import aggregate
 from calibration import calibration
-from news import news
-from shared import constants, shared_functions
+from shared import constants
 
 pd.options.mode.copy_on_write = True
 
@@ -15,8 +13,6 @@ def read_and_preprocess(
     filename: str,
     interval_minutes: int,
     start_end_time: tuple[str, str],
-    *,
-    filter_news_kwargs: dict,
 ) -> pd.DataFrame | tuple:
     """
     Read the data from disk and perform some basic operations on it.
@@ -54,11 +50,6 @@ def read_and_preprocess(
         black and white if it fails the Kolmogorov-Smirnov test);
         10th/30th/70th/90th percentiles for upper and lower shadow length, respectively.
     """
-    print(
-        f"Reading and handling dataset {filename} "
-        f"with {interval_minutes} minute aggregation"
-    )
-    t = time.perf_counter()
 
     ohlc_df = pd.read_parquet(f"data/raw/{filename}.parquet")
     ohlc_df["datetime"] = pd.to_datetime(ohlc_df["datetime"])
@@ -86,30 +77,20 @@ def read_and_preprocess(
         aggregated_df["gap"] - aggregated_df["gap"].shift(1)
     ) // 60 > interval_minutes
 
-    reference_set, main_set = split_data(aggregated_df, unique_dates)
+    tscv = TimeSeriesSplit()
+    all_splits = list(tscv.split(aggregated_df))
+    main_sets_idx = [test for _, test in all_splits]
+    init_set, _ = list(all_splits)[0]
+    reference_sets_idx = [init_set, *main_sets_idx[:-1]]
+    main_sets = [aggregated_df.iloc[x] for x in main_sets_idx]
+    reference_sets = [aggregated_df.iloc[x] for x in reference_sets_idx]
 
-    percentiles = calibration.calculate_percentiles(reference_set.to_numpy())
+    percentiles_list = [
+        calibration.calculate_percentiles(reference_set.to_numpy())
+        for reference_set in reference_sets
+    ]
 
-    if filter_news_kwargs and filter_news_kwargs["impact_level"]:
-        filter_news_kwargs = shared_functions.set_kwarg_defaults(
-            filter_news_kwargs,
-            kwargs_to_set=["minutes_after"],
-            default_dict=constants.FILTER_NEWS_DEFAULTS,
-        )
-        news_df, filter_index = news.get_news_df(
-            impact_level=filter_news_kwargs["impact_level"],
-            minutes_after=filter_news_kwargs["minutes_after"],
-        )
-        main_set["news"] = news_df["Impact"]
-        main_set = main_set[main_set.index.isin(filter_index)]
-
-    print(
-        f"Reading and handling dataset {filename} done in {
-            time.perf_counter() - t:3.2f
-        }s",
-        end="\n\n",
-    )
-    return main_set, percentiles
+    return main_sets, percentiles_list
 
 
 def calculate_missing(df: pd.DataFrame, time_idx: pd.DatetimeIndex) -> str:

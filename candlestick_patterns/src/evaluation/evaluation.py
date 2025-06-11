@@ -1,18 +1,16 @@
 import csv
 import os
-import time
 
 import numba
 import numpy as np
 import pandas as pd
 import pyarrow.parquet
-from scipy.stats import binomtest
 
 from shared import constants, shared_functions
 
 
 def stop_loss_take_profit_evaluation(
-    df: pd.DataFrame, margins: dict[str, float | None], *, run_name: str
+    df: pd.DataFrame, margins: dict[str, float | None], *, run_name: str, split: int
 ) -> None:
     """
     Stop loss/take profit-based candlestick pattern evaluation.
@@ -30,7 +28,6 @@ def stop_loss_take_profit_evaluation(
     None
         Win %, "less" and "greater" binomial tests to disk.
     """
-    t = time.perf_counter()
     open_array = df["open"].to_numpy()
     high_array = df["high"].to_numpy()
     low_array = df["low"].to_numpy()
@@ -40,7 +37,10 @@ def stop_loss_take_profit_evaluation(
     for number_str in constants.PATTERN_NUMBERS_AS_STRING:
         for pattern in os.listdir(f"data/runs/{run_name}/detection/{number_str}"):
             shared_functions.print_status_bar(
-                pattern.removesuffix(".parquet"), i, constants.TOTAL_NUMBER_OF_PATTERNS
+                pattern.removesuffix(".parquet"),
+                i,
+                constants.TOTAL_NUMBER_OF_PATTERNS,
+                split,
             )
 
             i += 1
@@ -52,7 +52,7 @@ def stop_loss_take_profit_evaluation(
                 .to_pandas()
                 .set_index(df.index)
                 .shift(1)
-            )
+            ).astype(bool)
             df.loc[df.index[0], "pattern"] = False
             num_detected = df["pattern"].sum()
 
@@ -61,16 +61,17 @@ def stop_loss_take_profit_evaluation(
                 f"{pattern.removesuffix('.parquet')}"
             )
 
+            if split == 1:
+                with open(f"{csv_path}_evaluation.csv", "w") as _:
+                    pass
+
             if num_detected <= constants.MINIMAL_SIGNIFICANT_DETECTION_SIZE:
                 csv_data = {
-                    f"{csv_path}evaluation.csv": ["/"] * 3 + [0],
-                    f"{csv_path}indicators.csv": [""]
-                    * len(constants.INDICATOR_COLUMNS),
+                    f"{csv_path}_evaluation.csv": ["/"] * 2 + [0],
                 }
                 write_csvs(csv_data)
 
             else:
-                bool_array = df["pattern"].astype(bool).to_numpy()
                 if all(
                     method not in margins
                     for method in ["ATR", "constant", "percentage"]
@@ -79,9 +80,23 @@ def stop_loss_take_profit_evaluation(
                         "No correct margin method specified, choose either "
                         "'ATR', 'constant' or 'percentage'"
                     )
+                bool_array = df["pattern"].to_numpy()
+                non_pattern = ~bool_array
+                if non_pattern.sum() > (N := len(non_pattern) // 3):
+                    selected_indices = np.random.choice(
+                        np.where(non_pattern)[0], size=N, replace=False
+                    )
+                    null_array = np.zeros_like(bool_array, dtype=bool)
+                    null_array[selected_indices] = True
+                else:
+                    null_array = non_pattern
                 if "percentage" in margins:
                     eval_list = find_first_breakthroughs_percent(
                         (bool_array, open_array, high_array, low_array),
+                        margins["percentage"],
+                    )
+                    null_list = find_first_breakthroughs_percent(
+                        (null_array, open_array, high_array, low_array),
                         margins["percentage"],
                     )
                 elif "constant" in margins:
@@ -89,56 +104,46 @@ def stop_loss_take_profit_evaluation(
                         (bool_array, open_array, high_array, low_array),
                         margins["constant"],
                     )
+                    null_list = find_first_breakthroughs_constant(
+                        (null_array, open_array, high_array, low_array),
+                        margins["constant"],
+                    )
                 else:
                     eval_list = find_first_breakthroughs_ATR(
                         (bool_array, open_array, high_array, low_array, ATR_array)
+                    )
+                    null_list = find_first_breakthroughs_ATR(
+                        (null_array, open_array, high_array, low_array, ATR_array)
                     )
 
                 df["evaluation"] = None
                 df.loc[df["pattern"], "evaluation"] = eval_list
                 del df["pattern"]
 
-                success_indicator_means = df.loc[
-                    df["evaluation"] == 1, constants.INDICATOR_COLUMNS
-                ].mean()
-
                 wins = int(np.nansum(eval_list))
                 number_detected = len(eval_list)
                 win_rate = wins / number_detected
                 absolute_win_rate = (
-                    win_rate
+                    str(win_rate) + "+"
                     if win_rate >= 0.5  # noqa: PLR2004
-                    else 0.5 + abs(0.5 - win_rate)
+                    else str(0.5 + abs(0.5 - win_rate)) + "-"
                 )
 
-                down_test = binomtest(
-                    wins,
-                    number_detected,
-                    p=0.5,
-                    alternative="less",
-                ).pvalue
-                up_test = binomtest(
-                    wins,
-                    number_detected,
-                    p=0.5,
-                    alternative="greater",
-                ).pvalue
+                null_win = int(np.nansum(null_list)) / len(null_list)
+                null_win = (
+                    str(null_win) + "+"
+                    if null_win >= 0.5  # noqa: PLR2004
+                    else str(0.5 + abs(0.5 - null_win)) + "-"
+                )
 
                 csv_data = {
-                    f"{csv_path}evaluation.csv": [
+                    f"{csv_path}_evaluation.csv": [
                         absolute_win_rate,
-                        down_test,
-                        up_test,
+                        null_win,
                         number_detected,
                     ],
-                    f"{csv_path}indicators.csv": success_indicator_means,
                 }
                 write_csvs(csv_data)
-    print()
-    print(
-        f"All done. Total evaluation time: {time.perf_counter() - t:3.2f}s",
-        end="\n\n",
-    )
 
 
 def write_csvs(csv_data: dict) -> None:
@@ -151,7 +156,7 @@ def write_csvs(csv_data: dict) -> None:
         Dict containing filepaths as keys and data as values.
     """
     for path, data in csv_data.items():
-        with open(path, "w") as csvfile:
+        with open(path, "a") as csvfile:
             csv.writer(csvfile).writerow(data)
 
 

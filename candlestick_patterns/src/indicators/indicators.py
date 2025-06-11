@@ -1,5 +1,3 @@
-import time
-
 import pandas as pd
 
 from shared import constants, shared_functions
@@ -450,7 +448,6 @@ def calculate_indicators(
     pd.DataFrame
         Original df together with additional indicators as new columns.
     """
-    t = time.perf_counter()
     indicator_kwargs = shared_functions.set_kwarg_defaults(
         indicator_kwargs,
         kwargs_to_set=INDICATORS,
@@ -472,8 +469,4 @@ def calculate_indicators(
             )
         else:
             df[indicator_name] = indicator_function(df, indicator_kwargs=kwargs)
-    print(
-        f"Calculating additional indicators done in {time.perf_counter() - t:3.2f}s",
-        end="\n\n",
-    )
     return df

@@ -14,11 +14,11 @@ def rerun_all_summaries() -> None:
     t = time.perf_counter()
     print()
     for i, run_name in enumerate(run_names):
-        shared_functions.print_status_bar("", i, N)
+        shared_functions.print_status_bar("", i, N, 5)
         summary_table.make_summaries(run_name=run_name)
-        print("\033[F\033[F\033[F")
+        print("\033[F\033[F")
     shared_functions.print_status_bar(
-        f"Rerunning summary tables done in {time.perf_counter() - t:3.2f}s", N - 1, N
+        f"Rerunning summary tables done in {time.perf_counter() - t:3.2f}s", N - 1, N, 5
     )
     print()
 

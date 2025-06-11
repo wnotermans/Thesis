@@ -1,4 +1,4 @@
-def print_status_bar(message: str, i: int, total_patterns: int) -> None:
+def print_status_bar(message: str, i: int, total_patterns: int, split: int) -> None:
     """
     Prints out the status bar (function name, progress bar and count), overwriting the
     previous status bar.
@@ -13,10 +13,12 @@ def print_status_bar(message: str, i: int, total_patterns: int) -> None:
     total_patterns : int
         Total number of patterns.
     """
-    left_line = (51 * (i + 1) // total_patterns) * "-"
-    right_line = (51 - len(left_line)) * "-"
+    left_line = (47 * (i + 1) // total_patterns) * "-"
+    right_line = (47 - len(left_line)) * "-"
     progress_bar = f"|{left_line}>>{right_line}|"
-    status_bar = f"{message:<62}" + progress_bar + f"({i + 1:>3}/{total_patterns})"
+    status_bar = (
+        f"{message:<62}" + progress_bar + f"({i + 1:>3}/{total_patterns})({split}/5)"
+    )
     print(status_bar, end="\r")
 
 

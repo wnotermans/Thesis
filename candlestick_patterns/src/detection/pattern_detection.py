@@ -1,5 +1,3 @@
-import time
-
 import numpy as np
 import pandas as pd
 import pyarrow.parquet
@@ -21,13 +19,14 @@ from indicators import filtering
 from shared import constants, shared_functions
 
 
-def detection(
+def detection(  # noqa: PLR0913
     df: pd.DataFrame,
     percentile: tuple,
     data_gap_handling: str,
     *,
     run_name: str,
     filter_kwargs: dict,
+    split: int,
 ) -> None:
     """
     Performs pattern detection.
@@ -46,8 +45,6 @@ def detection(
     None
         Outputs the 309 candlestick patterns to disk in `.parquet` format.
     """
-    t = time.perf_counter()
-
     column_dict = {
         f"{col}_{shift}": df[col].shift(shift).to_numpy()
         for col in ["open", "high", "low", "close", "volume"]
@@ -90,7 +87,7 @@ def detection(
 
         for func_name in func_name_list:
             shared_functions.print_status_bar(
-                func_name, i, constants.TOTAL_NUMBER_OF_PATTERNS
+                func_name, i, constants.TOTAL_NUMBER_OF_PATTERNS, split
             )
 
             i += 1
@@ -110,12 +107,6 @@ def detection(
                 f"data/runs/{run_name}/detection/{number}/{func_name}.parquet",
                 compression="brotli",
             )
-
-    print()
-    print(
-        f"All done. Total detection time: {time.perf_counter() - t:3.2f}s",
-        end="\n\n",
-    )
 
 
 def extract_func_names(number_candles: str) -> list[str]:

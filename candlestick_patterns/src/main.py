@@ -1,7 +1,5 @@
-import time
-
 from detection import pattern_detection
-from evaluation import evaluation
+from evaluation import cleanup, evaluation
 from folder_setup import folder_setup
 from indicators import indicators
 from reading import read_data
@@ -11,7 +9,6 @@ from trend import trend_calculation
 
 
 def main() -> None:
-    t = time.perf_counter()
     with open("logo.txt", encoding="utf-8") as f:
         print(f.read(), end="\n\n")
     for filename in constants.FILENAMES:
@@ -35,51 +32,48 @@ def main() -> None:
             if mode == "pass":
                 continue
             if mode == "rerun":
-                print(" Reading data ".center(127, "#"), end="\n\n")
-                main_set, percentiles = read_data.read_and_preprocess(
+                main_sets, percentiles_list = read_data.read_and_preprocess(
                     filename,
                     interval_minutes,
                     constants.START_END_TIME,
                     filter_news_kwargs=constants.FILTER_NEWS_KWARGS,
                 )
 
-                print(" Calculating trend ".center(127, "#"), end="\n\n")
-                main_set_with_trend = trend_calculation.calculate_trend(
-                    main_set,
-                    averaging_method=constants.TREND_AVERAGING_METHOD,
-                    averaging_kwargs=constants.TREND_AVERAGING_METHOD_KWARGS,
-                    decision_method=constants.TREND_DECISION_METHOD,
-                    decision_kwargs=constants.TREND_DECISION_METHOD_KWARGS,
-                )
+                for n, (main_set, percentiles) in enumerate(
+                    zip(main_sets, percentiles_list, strict=False)
+                ):
+                    main_set_with_trend = trend_calculation.calculate_trend(
+                        main_set,
+                        averaging_method=constants.TREND_AVERAGING_METHOD,
+                        averaging_kwargs=constants.TREND_AVERAGING_METHOD_KWARGS,
+                        decision_method=constants.TREND_DECISION_METHOD,
+                        decision_kwargs=constants.TREND_DECISION_METHOD_KWARGS,
+                    )
 
-                print(
-                    " Calculating additional indicators ".center(127, "#"), end="\n\n"
-                )
-                main_set_with_trend = indicators.calculate_indicators(
-                    main_set_with_trend,
-                    indicator_kwargs=constants.INDICATOR_KWARGS,
-                )
+                    main_set_with_trend = indicators.calculate_indicators(
+                        main_set_with_trend,
+                        indicator_kwargs=constants.INDICATOR_KWARGS,
+                    )
 
-                print(" Pattern detection ".center(127, "#"), end="\n\n")
-                pattern_detection.detection(
-                    main_set_with_trend,
-                    percentiles,
-                    constants.DATA_GAP_HANDLING,
-                    run_name=run_name,
-                    filter_kwargs=constants.INDICATOR_FILTER_KWARGS,
-                )
+                    pattern_detection.detection(
+                        main_set_with_trend,
+                        percentiles,
+                        constants.DATA_GAP_HANDLING,
+                        run_name=run_name,
+                        filter_kwargs=constants.INDICATOR_FILTER_KWARGS,
+                        split=n + 1,
+                    )
 
-                print(" Pattern evaluation ".center(127, "#"), end="\n\n")
-                evaluation.stop_loss_take_profit_evaluation(
-                    main_set_with_trend,
-                    constants.STOP_LOSS_TAKE_PROFIT_MARGINS,
-                    run_name=run_name,
-                )
+                    evaluation.stop_loss_take_profit_evaluation(
+                        main_set_with_trend,
+                        constants.STOP_LOSS_TAKE_PROFIT_MARGINS,
+                        run_name=run_name,
+                        split=n + 1,
+                    )
+                cleanup.clean(run_name)
+                print()
 
-            print(" Summary table ".center(127, "#"), end="\n\n")
             summary_table.make_summaries(run_name=run_name)
-            print("".center(127, "#"), end="\n\n")
-    print(f" All done in {time.perf_counter() - t:3.2f}s ".center(127, "#"))
 
 
 if __name__ == "__main__":

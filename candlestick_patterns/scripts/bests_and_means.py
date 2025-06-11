@@ -16,6 +16,9 @@ COLS = {
     "Best sell adjusted z-score": float,
     "Average adjusted z-score": float,
     "Total number detected": int,
+    "Mean observed win rate": float,
+    "Mean null win rate": float,
+    "Excess return": float,
 }
 
 
@@ -94,6 +97,10 @@ def bests_and_means(include: list[str] = None, exclude: list[str] = None) -> Non
     )
 
     print(f"Average adjusted z-score: {data['Average adjusted z-score'].mean():.2f}")
+    print(f"Total number detected: {data['Total number detected'].mean():.2f}")
+    print(f"Mean observed win rate: {data['Mean observed win rate'].mean():.3f}")
+    print(f"Mean null win rate: {data['Mean null win rate'].mean():.3f}")
+    print(f"Excess return: {data['Excess return'].mean():.3f}")
 
 
 if __name__ == "__main__":

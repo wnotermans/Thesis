@@ -43,15 +43,17 @@ if __name__ == "__main__":
             pd.date_range(
                 start=f"{date} 09:30:00", end=f"{date} 15:59:59", freq="s"
             ).to_series()
-            for date in pd.date_range(start="2001-01-01", end="2001-12-31")
+            for date in pd.date_range(start="2001-01-01", end="2020-12-31")
         ]
     )
 
-    GBM_series = pd.Series(geometric_brownian_motion(len(time_idx)), time_idx)
+    M = 8.764849e-07
+    S = 6.466583e-04
+    GBM_series = pd.Series(geometric_brownian_motion(len(time_idx), sigma=S), time_idx)
     # GBM_series = pd.Series(
-    #     geometric_brownian_motion(len(time_idx), mu=0.2), time_idx
+    #     geometric_brownian_motion(len(time_idx), mu=M, sigma=S), time_idx
     # )  # drift
     GBM_df = GBM_series.resample("1min", label="right").ohlc()
     GBM_df["datetime"] = GBM_df.index
     GBM_df["volume"] = 0
-    GBM_df.to_parquet("src/data/Wiener_small.parquet", compression="brotli")
+    GBM_df.to_parquet("src/data/Wiener.parquet", compression="brotli")

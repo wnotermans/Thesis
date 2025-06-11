@@ -74,7 +74,6 @@ def handle_existing_run(*, set_mode: int | None = None) -> str:
                 "0: pass, 1: remake summary, 2: rerun from scratch. "
             )
         )
-        print()
     else:
         mode = set_mode
     if mode == 0:
