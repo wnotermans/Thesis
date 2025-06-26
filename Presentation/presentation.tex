@@ -28,10 +28,10 @@
 
 \title[Candlestick Patterns]{Performance of candlestick patterns on
 intraday market data}
-\subtitle{Seminar}
+\subtitle{Thesis defence}
 \author[W.\ Notermans]{Wout Notermans} % between [] is short name,
 % between {} is long name
-\date{May 14, 2025} % Here you can also just type something, e.g.
+\date{July 27, 2025} % Here you can also just type something, e.g.
 % October 10, 2017
 \institute[KU Leuven]{Faculty of Science\\ Department of
 Mathematics\\ Section of Statistics and Risk}
@@ -68,15 +68,15 @@ Mathematics\\ Section of Statistics and Risk}
   \tableofcontents[currentsection]
 \end{frame}
 
+\begin{frame}
+  \begin{center}
+    Can you predict what is going to happen on the stock market and make a profit based on these predictions?
+  \end{center}
+\end{frame}
+
 \begin{frame}{Stock price \cite{berkshirehathaway}}
   \centering
   \includegraphics[width=0.8\textwidth]{Images/BRK.A_line.pdf}\\
-
-\end{frame}
-
-\begin{frame}[noframenumbering]{Stock price \cite{berkshirehathaway}}
-  \centering
-  \includegraphics[width=0.8\textwidth]{Images/BRK.A_candle.pdf}
 \end{frame}
 
 \begin{frame}{Candlestick construction}
@@ -85,18 +85,28 @@ Mathematics\\ Section of Statistics and Risk}
   Construction of a candlestick \cite{chen2020}.
 \end{frame}
 
+\begin{frame}[noframenumbering]{Stock price \cite{berkshirehathaway}}
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/BRK.A_candle.pdf}
+\end{frame}
+
+\begin{frame}[noframenumbering]{Stock price \cite{berkshirehathaway}}
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/BRK.A_candlestick_pattern.pdf}
+\end{frame}
+
 \begin{frame}{Candlestick pattern examples}
   \centering
-  \includegraphics[width=0.5\textwidth]{Images/window_falling.pdf}%
-  \includegraphics[width=0.5\textwidth]{Images/meeting_lines_bearish.pdf}
+  \includegraphics[width=0.5\textwidth]{Images/risingthreemethods.pdf}%
+  \includegraphics[width=0.5\textwidth]{Images/sticksandwich.pdf}
+  ``Rising Three Methods'' and ``Stick Sandwich''
 \end{frame}
 
 \begin{frame}{History}
   \begin{itemize}
     \item Developed in the 1700s in Japan.
     \item Remained exclusive to the East until 1991.
-    \item This is reflected in the literature.
-    \item Quite well-known technical analysis technique.
+    \item Has become a well-known technique, used by many traders.
   \end{itemize}
 \end{frame}
 
@@ -110,7 +120,8 @@ Mathematics\\ Section of Statistics and Risk}
 
 \begin{frame}
   \begin{kulblock}{Research question}
-    Do candlestick patterns possess any predictive power on intraday market data?
+    Do candlestick patterns possess predictive power on\\
+    intraday market data?
   \end{kulblock}
 \end{frame}
 
@@ -140,16 +151,15 @@ Mathematics\\ Section of Statistics and Risk}
     \item GLD: Gold.
     \item QQQ: Stocks.
     \item SPY: Stocks.
-    \item Wiener: Generated.
+    \item Geometric Brownian motion: Generated.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Preprocessing}
   \begin{itemize}
-    \item Filter pre/after-market and economic news.
-    \item Missing data $\rightarrow$ interpolation.
+    \item Filter pre/after-market.
     \item Aggregation.
-    \item Splitting of the data set for calibration.
+    \item Cross-validation to avoid bias and overfitting.
   \end{itemize}
 \end{frame}
 
@@ -184,26 +194,19 @@ Mathematics\\ Section of Statistics and Risk}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Technical indicators}
-  \begin{itemize}
-    \item Values calculated from asset prices and volume.
-    \item Some publications only find significant patterns when combining them with technical indicators.
-    \item Quite a number found in the literature.
-    \item Example: triple exponential (TRIX).
-  \end{itemize}
-\end{frame}
-
 \begin{frame}{Pattern detection}
   \begin{itemize}
     \item Patterns are vaguely defined at best: a rigid classification is necessary.
     \item The paper ``A formal approach to candlestick pattern classification in financial time series'' does exactly this \cite{hu2019}.
     \item Define 103 candlestick patterns with strict conditions.
+    \item Multiple comparisons problem addressed through Benjamini-Yekutieli.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Pattern detection: example}
   \centering
-  \includegraphics[width=0.75\textwidth]{Images/doji_star_bearish.pdf}
+  \includegraphics[width=0.75\textwidth]{Images/mathold.pdf}\\
+  ``Mat Hold''
 \end{frame}
 
 \begin{frame}{Pattern detection: prediction}
@@ -211,31 +214,38 @@ Mathematics\\ Section of Statistics and Risk}
     \item Typically classified as buy/sell signal.
     \item Look at the results themselves instead of the predictions.
   \end{itemize}
-  \centering
-  \includegraphics[width=0.6\textwidth]{Images/stick_sandwich.pdf}
 \end{frame}
 
-\begin{frame}{Pattern evaluation}
+\begin{frame}{Pattern evaluation: stop-loss/take-profit}
   \begin{itemize}
-    \item Buy/sell after pattern is detected.
+    \item Buy after pattern is detected.
     \item Make use of stop loss/take profit margins.
-    \item This gives us a winning rate.
-    \item Test significance with binomial test. \\ $$H_0:\pi=0.5\qquad\qquad H_1:\pi>0.5$$
+    \item These are based on the ATR technical indicator so they scale with market activity.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Pattern evaluation: stop loss/take profit \cite{berkshirehathaway}}
-  \centering
-  \includegraphics[width=0.75\textwidth]{Images/BRK.A_candle_stop_loss.pdf}
+\begin{frame}[noframenumbering]{Pattern evaluation: stop-loss/take-profit}
+  \begin{itemize}
+    \item This gives us a winning rate $\hat{\pi}$.
+    \item Obtain a ``null win rate'' $\hat{\pi_0}$ through random sampling.
+    \item Test significance with binomial test. \\ $$H_0:\hat{\pi}=\hat{\pi_0}\qquad\qquad H_1:\hat{\pi}>\hat{\pi_0}$$
+  \end{itemize}
 \end{frame}
 
 \begin{frame}{Pattern evaluation: profitability score}
-  Quantify profitability score with three factors:
+  $$\text{Adjusted $z$-score}=\overbrace{\dfrac{\hat{\pi}-\hat{\pi_0}}{\sqrt{\dfrac{\hat{\pi_0}(1-\hat{\pi_0})}{n}}}}^{z\text{-test}}\cdot\overbrace{\ln(\min\{n,5000\})}^{\text{Frequency adjustment}}$$
+  This encapsulates:
   \begin{enumerate}
     \item The number of detected patterns.
-      $$\max\left(\dfrac{200}{1+\exp\left(-\dfrac{n-100}{100}\right)}-100,0\right)$$
-    \item The win rate (deviation from 50\%).
+    \item The win rate.
     \item The significance.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Pattern evaluation: excess return}
+  \begin{enumerate}
+    \item Also consider the ``excess return'' $\hat{\pi}-\hat{\pi_0}$
+    \item Duvinage et al. estimate that at least $0.05\%$ is required to be economically viable \cite{duvinage2013}.
   \end{enumerate}
 \end{frame}
 
@@ -255,46 +265,60 @@ Mathematics\\ Section of Statistics and Risk}
     \item Some patterns are rare due to stringent conditions.
   \end{itemize}
   \centering
-  \includegraphics[width=0.5\textwidth]{Images/window_falling.pdf}%
-  \includegraphics[width=0.5\textwidth]{Images/evening_doji_star.pdf}
+  \includegraphics[width=0.5\textwidth]{Images/windowfalling.pdf}%
+  \includegraphics[width=0.5\textwidth]{Images/eveningstar.pdf}
+  ``Window, Falling'' and ``Evening Star''
 \end{frame}
 
 \begin{frame}{Evaluation results: significance}
   \begin{itemize}
     \item Significant patterns are found.
-    \item Many more significant buy than sell signals.
+    \item More significant buy than sell signals.
     \item A lot of variance between data sets/asset types.
-    \item Aggregation decreases significance but not profitability.
+    \item Aggregation decreases significance and $z$-score, but not excess return.
+    \item Profit margins too small to be economical.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Evaluation results: effect of data set}
+\begin{frame}[noframenumbering]{Evaluation results: significance}
   \centering
-  \includegraphics[width=0.8\textwidth]{Images/mean_profit_diff_data.pdf}
+  \includegraphics[width=0.8\textwidth]{Images/buy_signals_QQQ.pdf}
 \end{frame}
 
-\begin{frame}{Evaluation results: effect of time interval}
+\begin{frame}[noframenumbering]{Evaluation results: significance}
   \centering
-  \includegraphics[width=0.8\textwidth]{Images/mean_profit_diff_minutes.pdf}
+  \includegraphics[width=0.8\textwidth]{Images/z_score_QQQ.pdf}
 \end{frame}
 
-\begin{frame}{Evaluation results: effect of news}
+\begin{frame}[noframenumbering]{Evaluation results: significance}
   \centering
-  \includegraphics[width=0.8\textwidth]{Images/mean_profit_news.pdf}
+  \includegraphics[width=0.8\textwidth]{Images/excess_QQQ.pdf}
 \end{frame}
 
-\begin{frame}{Evaluation results: no effect}
+\begin{frame}{Evaluation results: time of day}
   \begin{itemize}
-    \item Different start and end times.
-    \item Filtering based on technical indicators.
-    \item Averaging methods: SMA, WMA, EMA.
+    \item Entire day.
+    \item One hour after open/before close.
+    \item One hour after New York open.
+    \item Limit to maximum 5 minutes.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[noframenumbering]{Evaluation results: time of day}
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/z_score_time_BND.pdf}
+\end{frame}
+
+\begin{frame}[noframenumbering]{Evaluation results: time of day}
+  \centering
+  \includegraphics[width=0.8\textwidth]{Images/z_score_time_GLD.pdf}
+\end{frame}
+
+\begin{frame}{Evaluation results: little/no effect}
+  \begin{itemize}
+    \item Trend inclusion.
     \item Trend defining methods.
   \end{itemize}
-\end{frame}
-
-\begin{frame}{Evaluation results: MVP}
-  \centering
-  \includegraphics[width=0.75\textwidth]{Images/stick_sandwich.pdf}
 \end{frame}
 
 % ----------
@@ -315,17 +339,20 @@ Mathematics\\ Section of Statistics and Risk}
 
 \begin{frame}{Conclusion}
   \begin{itemize}
-    \item Some patterns do appear to possess (consistent) significant predictive power.
+    \item Some patterns do appear to possess significant predictive power.
+    \item Typically not consistent.
     \item This mainly holds true for buy signals.
     \item There is a lot of variance to these results.
+    \item Not profitable enough to be economically viable.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Further research}
   \begin{itemize}
-    \item Machine learning-based approach to detection.
-    \item Fuzzy rules for detection.
-    \item ``Evolving margins'' evaluation.
+    \item Machine learning-based approach to detection/evaluation.
+    \item Adapting definitions of patterns to market conditions.
+    \item Tick-based candlesticks.
+    \item Many alternative methods to define trends and to evaluate performance.
   \end{itemize}
 \end{frame}
 
