@@ -31,7 +31,7 @@ intraday market data}
 \subtitle{Thesis defence}
 \author[W.\ Notermans]{Wout Notermans} % between [] is short name,
 % between {} is long name
-\date{July 27, 2025} % Here you can also just type something, e.g.
+\date{June 27, 2025} % Here you can also just type something, e.g.
 % October 10, 2017
 \institute[KU Leuven]{Faculty of Science\\ Department of
 Mathematics\\ Section of Statistics and Risk}
@@ -44,9 +44,9 @@ Mathematics\\ Section of Statistics and Risk}
 
 % TITLE PAGE
 {
-  \setbeamertemplate{headline}{} %define local, empty header for title page
-  \setbeamertemplate{footline}{} %define local, empty footer for title page
-  \maketitle
+\setbeamertemplate{headline}{} %define local, empty header for title page
+\setbeamertemplate{footline}{} %define local, empty footer for title page
+\maketitle
 }
 \addtocounter{framenumber}{-1} % We don't count the title page
 
@@ -69,9 +69,10 @@ Mathematics\\ Section of Statistics and Risk}
 \end{frame}
 
 \begin{frame}
-  \begin{center}
-    Can you predict what is going to happen on the stock market and make a profit based on these predictions?
-  \end{center}
+  \begin{kulblock}{Question}
+    Can you predict what is going to happen on the stock\\
+    market and make a profit based on these predictions?
+  \end{kulblock}
 \end{frame}
 
 \begin{frame}{Stock price \cite{berkshirehathaway}}
@@ -139,7 +140,7 @@ Mathematics\\ Section of Statistics and Risk}
   \begin{itemize}
     \item Selection of data sets.
     \item Preprocessing of the data.
-    \item Trends and technical indicators.
+    \item Trends.
     \item Pattern detection.
     \item Pattern evaluation.
   \end{itemize}
@@ -160,29 +161,6 @@ Mathematics\\ Section of Statistics and Risk}
     \item Filter pre/after-market.
     \item Aggregation.
     \item Cross-validation to avoid bias and overfitting.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Preprocessing: calibration}
-  \scalebox{0.8}{
-    \begin{tabular}{cccccc}
-      \hline
-      & Doji & Short & Normal & Tall & Extremely tall \\
-      Real body & $[0-10)$ & $[10-30)$ & $[30-70)$ & $[70-100]$ &  \\ \hline
-      Shadow & $[0-10)$ & $[10-30)$ & $[30-70)$ & $[70-90)$ & $[90-100]$ \\ \hline
-    \end{tabular}
-  }
-  \centering\\[1em]
-  Percentiles of real bodies and shadows \cite{etschberger2006}.\\
-  \includegraphics[width=0.5\textwidth]{Images/matching_low.pdf}
-\end{frame}
-
-\begin{frame}{Preprocessing: calibration}
-  \begin{itemize}
-    \item Assumes length and color candle independent.
-    \item Has to be checked $\rightarrow$ Kolmogorov-Smirnov test.
-      $$H_0: W = B \qquad H_1: W \neq B.$$
-    \item Reject at 5\% significance.
   \end{itemize}
 \end{frame}
 
@@ -272,7 +250,7 @@ Mathematics\\ Section of Statistics and Risk}
 
 \begin{frame}{Evaluation results: significance}
   \begin{itemize}
-    \item Significant patterns are found.
+    \item Significant patterns are found, but not on GBM.
     \item More significant buy than sell signals.
     \item A lot of variance between data sets/asset types.
     \item Aggregation decreases significance and $z$-score, but not excess return.
@@ -333,7 +311,8 @@ Mathematics\\ Section of Statistics and Risk}
 
 \begin{frame}
   \begin{kulblock}{Research question}
-    Do candlestick patterns possess any predictive power on intraday market data?
+    Do candlestick patterns possess predictive power on\\
+    intraday market data?
   \end{kulblock}
 \end{frame}
 
